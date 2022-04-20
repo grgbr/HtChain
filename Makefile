@@ -14,7 +14,7 @@ HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
                    -fstack-protector-strong -fstack-clash-protection
 HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
-projects := make m4 autoconf kconfig-frontends
+projects := make m4 autoconf automake kconfig-frontends
 
 include helpers.mk
 
@@ -28,7 +28,8 @@ packages := curl \
             libncurses-dev \
             libglade2-dev \
             qtbase5-dev \
-            grep sed perl m4
+            grep sed perl m4 \
+            awk
 
 define setup_pkgs_cmd
 sudo apt --yes update && sudo apt --yes install $(packages)
