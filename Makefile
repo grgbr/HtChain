@@ -5,6 +5,15 @@ STAMPDIR := $(OUTDIR)/stamp
 PREFIX   := $(HOME)/devel/root
 DESTDIR  :=
 
+MACHINE_CFLAGS  := -march=native -mhard-float
+MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
+OPTIM_CFLAGS    := -O2 -flto
+OPTIM_LDFLAGS   := $(OPTIM_CFLAGS)
+HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
+                   -fpie \
+                   -fstack-protector-strong -fstack-clash-protection
+HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
+
 projects := make m4 kconfig-frontends
 
 include helpers.mk
@@ -54,7 +63,13 @@ define make_cmd
 	        BUILDDIR="$(BUILDDIR)/$(patsubst $(2)-%,%,$(1))" \
 	        STAMPDIR="$(STAMPDIR)/$(patsubst $(2)-%,%,$(1))" \
 	        PREFIX="$(PREFIX)" \
-	        DESTDIR="$(DESTDIR)"
+	        DESTDIR="$(DESTDIR)" \
+	        MACHINE_CFLAGS="$(MACHINE_CFLAGS)" \
+	        MACHINE_LDFLAGS="$(MACHINE_LDFLAGS)" \
+	        OPTIM_CFLAGS="$(OPTIM_CFLAGS)" \
+	        OPTIM_LDFLAGS="$(OPTIM_LDFLAGS)" \
+	        HARDEN_CFLAGS="$(HARDEN_CFLAGS)" \
+	        HARDEN_LDFLAGS="$(HARDEN_LDFLAGS)"
 endef
 
 .PHONY: fetch-all
