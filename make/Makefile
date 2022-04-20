@@ -21,11 +21,11 @@ config_args     := --prefix="$(PREFIX)" \
 
 .PHONY: install
 install: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install
+	$(MAKE) -C $(BUILDDIR) install-strip
 	$(call touch,$(STAMPDIR)/installed)
 
 $(STAMPDIR)/installed: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
+	$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
 	$(call touch,$(@))
 
 .PHONY: uninstall

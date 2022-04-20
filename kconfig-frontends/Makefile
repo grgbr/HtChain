@@ -21,11 +21,11 @@ config_args     := --prefix="$(PREFIX)" \
 
 .PHONY: install
 install: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install
+	$(MAKE) -C $(BUILDDIR) install-strip
 	$(call touch,$(STAMPDIR)/installed)
 
 $(STAMPDIR)/installed: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
+	$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
 	$(call touch,$(@))
 
 .PHONY: uninstall
@@ -62,8 +62,8 @@ $(STAMPDIR)/configured: $(STAMPDIR)/xtracted
 	cd $(BUILDDIR) && ./configure $(config_args)
 	$(call touch,$(@))
 
-.PHONY: distclean
-distclean: clean
+.PHONY: clobber
+clobber: clean
 	if [ -f "$(STAMPDIR)/configured" ]; then \
 		$(MAKE) -C $(BUILDDIR) distclean; \
 	fi
