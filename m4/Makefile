@@ -1,8 +1,8 @@
 include ../autotools.mk
 
-pkg_url     := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz
-sig_url     := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz.sig
-tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
+pkg_url := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz
+sig_url := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz.sig
+tarball := $(FETCHDIR)/$(notdir $(pkg_url))
 
 define fetch_cmds
 $(call download,$(pkg_url),$(tarball))
@@ -21,8 +21,6 @@ cd $(BUILDDIR) && \
             --enable-c++ \
             --disable-assert \
             --enable-changeword \
-            --with-packager="htchain" \
-            --with-packager-version="2" \
             CFLAGS="$(MACHINE_CFLAGS) $(OPTIM_CFLAGS) $(HARDEN_CFLAGS)" \
             LDFLAGS="$(MACHINE_LDFLAGS) $(OPTIM_LDFLAGS) $(HARDEN_LDFLAGS)"
 endef
