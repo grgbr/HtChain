@@ -25,13 +25,13 @@ install: $(STAMPDIR)/built
 	$(call touch,$(STAMPDIR)/installed)
 
 $(STAMPDIR)/installed: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
+	$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
 	$(call touch,$(@))
 
 .PHONY: uninstall
 uninstall:
 	if [ -f "$(STAMPDIR)/installed" ]; then \
-		$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"; \
+		$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"; \
 	fi
 	$(call rmf,$(STAMPDIR)/installed)
 
@@ -91,3 +91,8 @@ $(STAMPDIR)/xtracted: $(tarball) | $(STAMPDIR)
 fetch: $(tarball)
 $(tarball): | $(FETCHDIR)
 	$(call download,$(pkg_url),$(@))
+
+.PHONY: mrproper
+mrproper: uninstall
+	$(call rmrf,$(BUILDDIR))
+	$(call rmrf,$(STAMPDIR))

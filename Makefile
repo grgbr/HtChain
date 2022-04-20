@@ -100,3 +100,5 @@ $(addprefix uninstall-,$(projects)): uninstall-%:
 .PHONY: mproper
 mrproper: uninstall-all
 	$(call rmrf,$(OUTDIR))
+$(addprefix mrproper-,$(projects)): mrproper-%:
+	$(call make_cmd,$(@),mrproper)
