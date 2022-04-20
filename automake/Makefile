@@ -1,7 +1,7 @@
 include ../autotools.mk
 
 pkg_url := https://ftp.gnu.org/gnu/automake/automake-1.16.tar.xz
-sig_url :=  https://ftp.gnu.org/gnu/automake/automake-1.16.tar.xz.sig
+sig_url := https://ftp.gnu.org/gnu/automake/automake-1.16.tar.xz.sig
 tarball := $(FETCHDIR)/$(notdir $(pkg_url))
 
 define fetch_cmds
