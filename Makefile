@@ -57,11 +57,11 @@ $(FETCHDIR)/.gnupg: $(STAMPDIR)/pkgs-setup | $(FETCHDIR)
 setup: setup-pkgs setup-sigs
 
 define make_cmd
-	$(MAKE) -C $(patsubst $(2)-%,%,$(1)) \
+	$(MAKE) -C $(1) \
 	        $(2) \
 	        FETCHDIR="$(FETCHDIR)" \
-	        BUILDDIR="$(BUILDDIR)/$(patsubst $(2)-%,%,$(1))" \
-	        STAMPDIR="$(STAMPDIR)/$(patsubst $(2)-%,%,$(1))" \
+	        BUILDDIR="$(BUILDDIR)/$(1)" \
+	        STAMPDIR="$(STAMPDIR)/$(1)" \
 	        PREFIX="$(PREFIX)" \
 	        DESTDIR="$(DESTDIR)" \
 	        MACHINE_CFLAGS="$(MACHINE_CFLAGS)" \
@@ -73,47 +73,62 @@ define make_cmd
 endef
 
 .PHONY: fetch-all
-fetch-all: $(addprefix fetch-,$(projects))
+fetch: $(addprefix $(STAMPDIR)/,$(addsuffix /fetched,$(projects)))
+$(addprefix $(STAMPDIR)/,$(addsuffix /fetched,$(projects))): $(FETCHDIR)/.gnupg
 $(addprefix fetch-,$(projects)): fetch-%: $(FETCHDIR)/.gnupg
-	$(call make_cmd,$(@),fetch)
+	$(call rmf,$(STAMPDIR)/$(subst fetch-,,$(@))/fetched)
+	$(call make_cmd,$(subst fetch-,,$(@)),fetch)
 
-.PHONY: xtract-all
-xtract-all: $(addprefix xtract-,$(projects))
-$(addprefix xtract-,$(projects)): xtract-%:
-	$(call make_cmd,$(@),xtract)
+.PHONY: xtract
+xtract: $(addprefix $(STAMPDIR)/,$(addsuffix /xtracted,$(projects)))
+$(addprefix $(STAMPDIR)/,$(addsuffix /xtracted,$(projects))): $(FETCHDIR)/.gnupg
+$(addprefix xtract-,$(projects)): xtract-%: $(FETCHDIR)/.gnupg
+	$(call rmf,$(STAMPDIR)/$(subst xtract-,,$(@))/xtracted)
+	$(call make_cmd,$(subst xtract-,,$(@)),xtract)
 
-.PHONY: config-all
-config-all: $(addprefix config-,$(projects))
-$(addprefix config-,$(projects)): config-%:
-	$(call make_cmd,$(@),config)
+.PHONY: config
+config: $(addprefix $(STAMPDIR)/,$(addsuffix /configured,$(projects)))
+$(addprefix $(STAMPDIR)/,$(addsuffix /configured,$(projects))): \
+	$(FETCHDIR)/.gnupg
+$(addprefix config-,$(projects)): config-%: $(FETCHDIR)/.gnupg
+	$(call rmf,$(STAMPDIR)/$(subst config-,,$(@))/configured)
+	$(call make_cmd,$(subst config-,,$(@)),config)
 
-.PHONY: clobber-all
-clobber-all: $(addprefix clobber-,$(projects))
+.PHONY: clobber
+clobber: $(addprefix clobber-,$(projects))
 $(addprefix clobber-,$(projects)): clobber-%:
-	$(call make_cmd,$(@),clobber)
+	$(call make_cmd,$(subst clobber-,,$(@)),clobber)
 
-.PHONY: build-all
-build-all: $(addprefix build-,$(projects))
-$(addprefix build-,$(projects)): build-%:
-	$(call make_cmd,$(@),build)
+.PHONY: build
+build: $(addprefix $(STAMPDIR)/,$(addsuffix /built,$(projects)))
+$(addprefix $(STAMPDIR)/,$(addsuffix /built,$(projects))): $(FETCHDIR)/.gnupg
+$(addprefix build-,$(projects)): build-%: $(FETCHDIR)/.gnupg
+	$(call rmf,$(STAMPDIR)/$(subst build-,,$(@))/built)
+	$(call make_cmd,$(subst build-,,$(@)),build)
 
-.PHONY: clean-all
-clean-all: $(addprefix clean-,$(projects))
+.PHONY: clean
+clean: $(addprefix clean-,$(projects))
 $(addprefix clean-,$(projects)): clean-%:
-	$(call make_cmd,$(@),clean)
+	$(call make_cmd,$(subst clean-,,$(@)),clean)
 
-.PHONY: install-all
-install-all: $(addprefix install-,$(projects))
-$(addprefix install-,$(projects)): install-%:
-	$(call make_cmd,$(@),install)
+.PHONY: install
+install: $(addprefix $(STAMPDIR)/,$(addsuffix /installed,$(projects)))
+$(addprefix $(STAMPDIR)/,$(addsuffix /installed,$(projects))): \
+	$(FETCHDIR)/.gnupg
+	$(call make_cmd,$(patsubst $(STAMPDIR)/%/installed,%,$(@)),install)
+$(addprefix install-,$(projects)): install-%: $(FETCHDIR)/.gnupg
+	$(call rmf,$(STAMPDIR)/$(subst install-,,$(@))/installed)
+	$(call make_cmd,$(subst install-,,$(@)),install)
 
-.PHONY: uninstall-all
-uninstall-all: $(addprefix uninstall-,$(projects))
+$(projects): %: $(STAMPDIR)/%/installed
+
+.PHONY: uninstall
+uninstall: $(addprefix uninstall-,$(projects))
 $(addprefix uninstall-,$(projects)): uninstall-%:
-	$(call make_cmd,$(@),uninstall)
+	$(call make_cmd,$(subst uninstall-,,$(@)),uninstall)
 
 .PHONY: mproper
-mrproper: uninstall-all
+mrproper: uninstall
 	$(call rmrf,$(OUTDIR))
 $(addprefix mrproper-,$(projects)): mrproper-%:
-	$(call make_cmd,$(@),mrproper)
+	$(call make_cmd,$(subst mrproper-,,$(@)),mrproper)
