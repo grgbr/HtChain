@@ -1,96 +1,44 @@
-include ../helpers.mk
+include ../autotools.mk
 
-MACHINE_CFLAGS  := -march=native -mhard-float
-MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
+pkg_url     := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz
+sig_url     := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz.sig
+tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 
-OPTIM_CFLAGS    := -O2 -flto
-OPTIM_LDFLAGS   := $(OPTIM_CFLAGS)
+define fetch_cmds
+$(call download,$(pkg_url),$(tarball))
+$(call download,$(sig_url),$(tarball).sig)
+$(call gpg_verify_detach,$(tarball).sig,$(tarball))
+endef
 
-HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
-                   -fpie \
-                   -fstack-protector-strong -fstack-clash-protection
-HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
+define xtract_cmds
+$(call untar,$(tarball),--strip-components=1)
+endef
 
-pkg_url         := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz
-sig_url         := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz.sig
-tarball         := $(FETCHDIR)/$(notdir $(pkg_url))
-config_args     := --prefix="$(PREFIX)" \
-                   --enable-silent-rules \
-                   --enable-c++ \
-                   --disable-assert \
-                   --enable-changeword \
-                   --with-packager="htchain" \
-                   --with-packager-version="2" \
-                   CFLAGS="$(MACHINE_CFLAGS) $(OPTIM_CFLAGS) $(HARDEN_CFLAGS)" \
-                   LDFLAGS="$(MACHINE_LDFLAGS) $(OPTIM_LDFLAGS) $(HARDEN_LDFLAGS)"
+define config_cmds
+cd $(BUILDDIR) && \
+./configure --prefix="$(PREFIX)" \
+            --enable-silent-rules \
+            --enable-c++ \
+            --disable-assert \
+            --enable-changeword \
+            --with-packager="htchain" \
+            --with-packager-version="2" \
+            CFLAGS="$(MACHINE_CFLAGS) $(OPTIM_CFLAGS) $(HARDEN_CFLAGS)" \
+            LDFLAGS="$(MACHINE_LDFLAGS) $(OPTIM_LDFLAGS) $(HARDEN_LDFLAGS)"
+endef
 
-.PHONY: install
-install: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install-strip
-	$(call touch,$(STAMPDIR)/installed)
+define build_cmds
+$(MAKE) -C $(BUILDDIR) all
+endef
 
-$(STAMPDIR)/installed: $(STAMPDIR)/built
-	$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
-	$(call touch,$(@))
+define clean_cmds
+$(MAKE) -C $(BUILDDIR) clean
+endef
 
-.PHONY: uninstall
-uninstall:
-	if [ -f "$(STAMPDIR)/installed" ]; then \
-		$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"; \
-	fi
-	$(call rmf,$(STAMPDIR)/installed)
+define install_cmds
+$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
+endef
 
-.PHONY: build
-build: $(STAMPDIR)/configured
-	$(MAKE) -C $(BUILDDIR)
-	$(call touch,$(STAMPDIR)/built)
-
-$(STAMPDIR)/built: $(STAMPDIR)/configured
-	$(MAKE) -C $(BUILDDIR)
-	$(call touch,$(@))
-
-.PHONY: clean
-clean: uninstall
-	if [ -f "$(STAMPDIR)/built" ]; then \
-		$(MAKE) -C $(BUILDDIR) clean; \
-	fi
-	$(call rmf,$(STAMPDIR)/built)
-
-.PHONY: config
-config: $(STAMPDIR)/xtracted
-	cd $(BUILDDIR) && ./configure $(config_args)
-	$(call touch,$(STAMPDIR)/configured)
-
-$(STAMPDIR)/configured: $(STAMPDIR)/xtracted
-	cd $(BUILDDIR) && ./configure $(config_args)
-	$(call touch,$(@))
-
-.PHONY: clobber
-clobber: clean
-	if [ -f "$(STAMPDIR)/configured" ]; then \
-		$(MAKE) -C $(BUILDDIR) distclean; \
-	fi
-	$(call rmf,$(STAMPDIR)/configured)
-
-.PHONY: xtract
-xtract: $(tarball) | $(STAMPDIR)
-	$(call rmrf,$(BUILDDIR))
-	$(call untar,$(<),--strip-components=1)
-	$(call touch,$(STAMPDIR)/xtracted)
-
-$(STAMPDIR)/xtracted: $(tarball) | $(STAMPDIR)
-	$(call untar,$(<),--strip-components=1)
-	$(call touch,$(@))
-
-.PHONY: fetch
-fetch: $(tarball)
-$(tarball): | $(FETCHDIR)
-	$(call download,$(pkg_url),$(@).tmp)
-	$(call download,$(sig_url),$(@).sig)
-	$(call gpg_verify_detach,$(@).sig,$(@).tmp)
-	mv $(@).tmp $(@)
-
-.PHONY: mrproper
-mrproper: uninstall
-	$(call rmrf,$(BUILDDIR))
-	$(call rmrf,$(STAMPDIR))
+define uninstall_cmds
+$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
+endef
