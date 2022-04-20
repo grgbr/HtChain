@@ -5,7 +5,7 @@ STAMPDIR := $(OUTDIR)/stamp
 PREFIX   := $(HOME)/devel/root
 DESTDIR  :=
 
-projects := make kconfig-frontends
+projects := make m4 kconfig-frontends
 
 include helpers.mk
 
@@ -53,7 +53,7 @@ define make_cmd
 	        FETCHDIR="$(FETCHDIR)" \
 	        BUILDDIR="$(BUILDDIR)/$(patsubst $(2)-%,%,$(1))" \
 	        STAMPDIR="$(STAMPDIR)/$(patsubst $(2)-%,%,$(1))" \
-	        PREFIX="$(PREFIX)" \
+	        PREFIX="$(PREFIX)" \
 	        DESTDIR="$(DESTDIR)"
 endef
 
