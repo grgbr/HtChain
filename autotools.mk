@@ -2,9 +2,11 @@ include ../helpers.mk
 
 .PHONY: fetch
 fetch: $(STAMPDIR)/fetched
-$(STAMPDIR)/fetched: | $(STAMPDIR) $(FETCHDIR)
+$(STAMPDIR)/fetched: $(fetch_dists) | $(STAMPDIR) $(FETCHDIR)
 	$(call fetch_cmds)
 	$(call touch,$(@))
+$(fetch_dists): | $(FETCHDIR)
+	@:
 
 .PHONY: mrproper
 mrproper: uninstall
@@ -13,7 +15,7 @@ mrproper: uninstall
 
 .PHONY: xtract
 xtract: $(STAMPDIR)/xtracted
-$(STAMPDIR)/xtracted: $(STAMPDIR)/fetched
+$(STAMPDIR)/xtracted: $(STAMPDIR)/fetched | $(STAMPDIR)
 	$(call rmrf,$(BUILDDIR))
 	$(call xtract_cmds)
 	$(call touch,$(@))

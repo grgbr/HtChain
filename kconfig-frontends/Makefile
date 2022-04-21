@@ -1,10 +1,11 @@
+pkg_url     := https://salsa.debian.org/philou/kconfig-frontends/-/archive/debian/4.11.0.1+dfsg-6/kconfig-frontends-debian-4.11.0.1+dfsg-6.tar.bz2
+tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
+fetch_dists := $(tarball)
+
 include ../autotools.mk
 
-pkg_url := https://salsa.debian.org/philou/kconfig-frontends/-/archive/debian/4.11.0.1+dfsg-6/kconfig-frontends-debian-4.11.0.1+dfsg-6.tar.bz2
-tarball := $(FETCHDIR)/$(notdir $(pkg_url))
-
 define fetch_cmds
-$(call download,$(pkg_url),$(@))
+$(call download,$(pkg_url),$(tarball))
 endef
 
 define xtract_cmds
