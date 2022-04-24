@@ -1,4 +1,4 @@
-pkg_url     := http://mirror.ibcp.fr/pub/gnu/gperf/gperf-3.1.tar.gz
+pkg_url     := https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz
 sig_url     := $(pkg_url).sig
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
