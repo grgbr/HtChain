@@ -19,7 +19,8 @@ HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
                    -fcf-protection=full
 HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
-projects := make m4 autoconf automake libtool kconfig-frontends pkg-config gperf
+projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
+            gperf bison
 
 .NOTPARALLEL:
 
