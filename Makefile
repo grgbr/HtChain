@@ -5,7 +5,8 @@ STAMPDIR := $(OUTDIR)/stamp
 PREFIX   := $(HOME)/devel/root
 DESTDIR  :=
 
-# TODO: add -fvtable-verify to HARDEN_CXXFLAGS
+# As of gcc 10.2.1 -fvtable-verify cannot be specified together with lto
+# See https://gcc.gnu.org/legacy-ml/gcc-patches/2019-09/msg00222.html
 
 MACHINE_CFLAGS  := -march=native
 MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
@@ -18,7 +19,7 @@ HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
                    -fcf-protection=full
 HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
-projects := make m4 autoconf automake libtool kconfig-frontends pkg-config
+projects := make m4 autoconf automake libtool kconfig-frontends pkg-config gperf
 
 .NOTPARALLEL:
 
