@@ -9,7 +9,7 @@ $(call download,$(pkg_url),$(tarball))
 endef
 
 define xtract_cmds
-$(call untar,$(tarball),--strip-components=1)
+$(call untar,$(BUILDDIR),$(tarball),--strip-components=1)
 cd $(BUILDDIR) && \
 for p in $$(grep -v gtk debian/patches/series); do \
 	patch -p1 < debian/patches/$$p; \
@@ -30,17 +30,17 @@ cd $(BUILDDIR) && \
 endef
 
 define build_cmds
-$(MAKE) -C $(BUILDDIR) all
++$(MAKE) -C $(BUILDDIR) all
 endef
 
 define clean_cmds
-$(MAKE) -C $(BUILDDIR) clean
++$(MAKE) -C $(BUILDDIR) clean
 endef
 
 define install_cmds
-$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
 endef
 
 define uninstall_cmds
-$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
 endef

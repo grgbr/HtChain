@@ -18,6 +18,10 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
 projects := make m4 autoconf automake libtool kconfig-frontends
 
+.NOTPARALLEL:
+
+SCRIPTDIR := $(CURDIR)/scripts
+
 include helpers.mk
 
 packages := curl \
@@ -64,8 +68,9 @@ $(STAMPDIR)/sigs-setup: $(STAMPDIR)/pkgs-setup | $(FETCHDIR)
 setup: setup-pkgs setup-sigs
 
 define make_cmd
-	$(MAKE) -C $(1) \
+	+$(MAKE) -C $(1) \
 	        $(2) \
+	        SCRIPTDIR="$(SCRIPTDIR)" \
 	        FETCHDIR="$(FETCHDIR)" \
 	        BUILDDIR="$(BUILDDIR)/$(1)" \
 	        STAMPDIR="$(STAMPDIR)/$(1)" \

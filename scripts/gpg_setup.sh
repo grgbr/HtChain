@@ -2,6 +2,13 @@
 
 GNU_KEYRING_URL="https://ftp.gnu.org/gnu/gnu-keyring.gpg"
 
+# Default keys.openpgp.org server strip UIDs unless the owner of the
+# corresponding email address has allowed them to be published.
+# This prevents us from importing multiple public keys used to sign software
+# packages.
+# Uses MIT key server instead.
+GPG_KEY_SERVER="--keyserver hkps://pgp.mit.edu"
+
 log()
 {
 	printf "$(basename $0): $1\n" >&2
@@ -38,8 +45,8 @@ export SHELLOPTS
 # Check and sanitize command line content
 if ! opts=$(getopt \
             --name "$(basename $0)" \
-            --options c:f:h \
-            --longoptions compr:,fake:,help \
+            --options h \
+            --longoptions help \
             -- "$@"); then
 	# Something went wrong, getopt will put out an error message for us
 	echo
@@ -66,14 +73,14 @@ fi
 
 fetchdir="$1"
 if [ ! -d "$fetchdir" ]; then
-	log "Invalid fetching directory: '$fetchdir': No such directory.\n"
-	usage 1
+	log "Invalid fetching directory: '$fetchdir': No such directory."
+	exit 1
 fi
 
 lock="$(realpath --canonicalize-missing $fetchdir/$(basename $0).lock)"
 keyring="$(realpath --canonicalize-missing $fetchdir/keyring.gpg)"
 gpg_homedir="$(realpath --canonicalize-missing $fetchdir/.gnupg)"
-gpg_cmd="gpg --homedir $gpg_homedir --batch --quiet"
+gpg_cmd="gpg --homedir $gpg_homedir --batch $GPG_KEY_SERVER --quiet"
 
 exec 200<>$lock
 if ! flock --nonblock --exclusive 200; then

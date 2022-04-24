@@ -7,53 +7,59 @@ MV    := mv
 SYNC  := sync
 
 define _download
-$(CURL) --silent '$(1)' --output '$(2)'
+$(CURL) --silent '$(strip $(1))' --output '$(strip $(2))'
 endef
 
 define gpg_verify_detach
-$(GPG) --batch \
-       --homedir $(FETCHDIR)/.gnupg \
-       --log-file /dev/null \
-       --verify '$(1)' '$(2)'
+$(SCRIPTDIR)/gpg_verify.sh --homedir "$(FETCHDIR)/.gnupg" \
+                           '$(strip $(1))' \
+                           '$(strip $(2))'
 endef
 
 define mkdir
-$(MKDIR) --parents '$(1)'
+$(MKDIR) --parents '$(strip $(1))'
 endef
 
 define rmrf
-$(RM) --recursive '$(1)'
+$(RM) --recursive '$(strip $(1))'
 endef
 
 define rmf
-$(RM) '$(1)'
+$(RM) '$(strip $(1))'
 endef
 
 define untar
-$(MKDIR) --parents '$(BUILDDIR)'
-$(TAR) --extract --directory='$(BUILDDIR)' --file='$(1)' $(2)
+$(MKDIR) --parents '$(strip $(1))'
+$(TAR) --extract \
+       --directory='$(strip $(1))' \
+       --file='$(strip $(2))' \
+       $(strip $(3))
 endef
 
 define touch
-$(TOUCH) '$(1)'
+$(TOUCH) '$(strip $(1))'
 endef
 
 define mv
-$(MV) '$(1)' '$(2)'
+$(MV) '$(strip $(1))' '$(strip $(2))'
 endef
 
 define download
-$(call _download,$(1),$(2).tmp)
-$(call mv,$(2).tmp,$(2))
-$(SYNC) --file-system '$(2)'
+if [ ! -r "$(strip $(2))" ]; then \
+	$(call _download,$(1),$(strip $(2)).tmp) && \
+	$(call mv,$(strip $(2)).tmp,$(2)) && \
+	$(SYNC) --file-system '$(strip $(2))'; \
+fi
 endef
 
 define download_verify_detach
-$(call _download,$(1),$(3).tmp)
-$(call _download,$(2),$(3).sig)
-$(call gpg_verify_detach,$(3).sig,$(3).tmp)
-$(call mv,$(3).tmp,$(3))
-$(SYNC) --file-system '$(3)'
+if [ ! -r "$(strip $(3))" ]; then \
+	$(call _download,$(1),$(strip $(3)).tmp) && \
+	$(call _download,$(2),$(strip $(3)).sig) && \
+	$(call gpg_verify_detach,$(strip $(3)).sig,$(strip $(3)).tmp) && \
+	$(call mv,$(strip $(3)).tmp,$(3)) && \
+	$(SYNC) --file-system '$(strip $(3))'; \
+fi
 endef
 
 $(FETCHDIR) $(BUILDDIR) $(STAMPDIR):
