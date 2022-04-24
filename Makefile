@@ -5,9 +5,11 @@ STAMPDIR := $(OUTDIR)/stamp
 PREFIX   := $(HOME)/devel/root
 DESTDIR  :=
 
-MACHINE_CFLAGS  := -march=native -mhard-float
+# TODO: add -fvtable-verify to HARDEN_CXXFLAGS
+
+MACHINE_CFLAGS  := -march=native
 MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
-OPTIM_CFLAGS    := -O2 -flto -fuse-linker-plugin
+OPTIM_CFLAGS    := -O2 -flto=auto -fuse-linker-plugin
 OPTIM_LDFLAGS   := $(OPTIM_CFLAGS)
 HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
                    -DNDEBUG \
