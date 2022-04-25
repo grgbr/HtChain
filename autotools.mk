@@ -23,6 +23,7 @@ $(STAMPDIR)/configured: $(STAMPDIR)/xtracted | $(BUILDDIR)
 
 .PHONY: clobber
 clobber: uninstall
+	$(if $(realpath $(STAMPDIR)/configured),$(call clobber_cmds))
 	$(call rmrf,$(BUILDDIR))
 	$(call rmf,$(addprefix $(STAMPDIR)/,built))
 	$(call rmf,$(addprefix $(STAMPDIR)/,configured))

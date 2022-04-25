@@ -22,7 +22,7 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
 # TODO: make flex depend on bison
 projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
-            gperf bison flex
+            gperf bison flex gcc
 
 .NOTPARALLEL:
 
@@ -45,7 +45,9 @@ packages := curl \
             coreutils \
             bash \
             texinfo \
-            diffutils
+            diffutils \
+            libzstd-dev \
+            dejagnu tcl python3-pytest
 
 define setup_pkgs_cmd
 sudo apt --yes update && sudo apt --yes install $(packages)
