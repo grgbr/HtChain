@@ -10,19 +10,15 @@ $(call download_verify_detach,$(pkg_url),$(sig_url),$(tarball))
 endef
 
 define xtract_cmds
-$(call untar,$(BUILDDIR),$(tarball),--strip-components=1)
+$(call untar,$(SRCDIR),$(tarball),--strip-components=1)
 endef
 
 define config_cmds
-cd $(BUILDDIR) && ./configure --prefix="$(PREFIX)" --enable-silent-rules
+cd $(BUILDDIR) && $(SRCDIR)/configure --prefix="$(PREFIX)" --enable-silent-rules
 endef
 
 define build_cmds
 +$(MAKE) -C $(BUILDDIR) all
-endef
-
-define clean_cmds
-+$(MAKE) -C $(BUILDDIR) clean
 endef
 
 define install_cmds

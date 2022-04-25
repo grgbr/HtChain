@@ -64,5 +64,5 @@ if [ ! -r "$(strip $(3))" ]; then \
 fi
 endef
 
-$(FETCHDIR) $(BUILDDIR) $(STAMPDIR):
+$(FETCHDIR) $(BUILDDIR) $(STAMPDIR) $(SRCDIR):
 	$(call mkdir,$(@))

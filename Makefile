@@ -1,5 +1,6 @@
 OUTDIR   := $(CURDIR)/out
 FETCHDIR := $(OUTDIR)/fetch
+SRCDIR   := $(OUTDIR)/src
 BUILDDIR := $(OUTDIR)/build
 STAMPDIR := $(OUTDIR)/stamp
 PREFIX   := $(HOME)/devel/root
@@ -25,6 +26,7 @@ projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
 
 .NOTPARALLEL:
 
+TOPDIR    := $(CURDIR)
 SCRIPTDIR := $(CURDIR)/scripts
 
 include helpers.mk
@@ -75,6 +77,8 @@ setup: setup-pkgs setup-sigs
 define make_cmd
 	+$(MAKE) -C $(1) \
 	        $(2) \
+	        TOPDIR="$(TOPDIR)" \
+	        SRCDIR="$(SRCDIR)/$(1)" \
 	        SCRIPTDIR="$(SCRIPTDIR)" \
 	        FETCHDIR="$(FETCHDIR)" \
 	        BUILDDIR="$(BUILDDIR)/$(1)" \
