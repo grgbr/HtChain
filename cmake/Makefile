@@ -30,8 +30,8 @@ define config_cmds
 $(SRCDIR)/bootstrap \
 	--parallel=0 \
 	--prefix="$(PREFIX)" \
-	--docdir="$(PREFIX)/share/doc/cmake" \
-	--mandir="$(PREFIX)/share/man" \
+	--docdir="/share/doc/cmake" \
+	--mandir="/share/man" \
 	--system-curl \
 	--system-expat \
 	--system-jsoncpp \
