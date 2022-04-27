@@ -14,12 +14,14 @@ $(call untar,$(SRCDIR),$(tarball),--strip-components=1)
 cd $(SRCDIR) && patch -p1 < $(CURDIR)/glib_gdate_Werror_format_nonliteral.patch
 endef
 
+# --disable-host-tool: do not install link pkg-config with $host- prefix
 define config_cmds
 cd $(BUILDDIR) && \
 $(SRCDIR)/configure \
 	--prefix="$(PREFIX)" \
 	--enable-silent-rules \
 	--with-internal-glib \
+	--disable-host-tool \
 	CFLAGS="$(MACHINE_CFLAGS) $(OPTIM_CFLAGS) $(HARDEN_CFLAGS)" \
 	LDFLAGS="$(MACHINE_LDFLAGS) $(OPTIM_LDFLAGS) $(HARDEN_LDFLAGS)"
 endef
