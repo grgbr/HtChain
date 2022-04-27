@@ -68,7 +68,6 @@ ln -s $(topsrcdir)/isl $(SRCDIR)/isl
 endef
 
 #TODO:
-# * check zstd lto support is enabled using gcc -v
 # * use --with-pkgversion= / --with-bugurl= ?
 # * refine target library build flags using CFLAGS_FOR_TARGET,
 #   CXXFLAGS_FOR_TARGET and LDFLAGS_FOR_TARGET
@@ -105,7 +104,9 @@ $(SRCDIR)/configure --prefix="$(PREFIX)" \
                     --enable-decimal-float=yes \
                     --enable-cet \
                     --enable-lto \
-                    --enable-bootstrap
+                    --enable-bootstrap \
+                    --libexecdir="$(PREFIX)/lib" \
+                    --libdir="$(PREFIX)/lib"
 endef
 
 define clobber_cmds

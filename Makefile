@@ -41,13 +41,13 @@ packages := curl \
             libncurses-dev \
             libglade2-dev \
             qtbase5-dev \
-            grep sed perl m4 mawk \
+            grep sed perl m4 gawk \
             coreutils \
             bash \
             texinfo \
             diffutils \
             libzstd-dev \
-            dejagnu tcl python3-pytest
+            dejagnu tcl python3-pytest autogen \
 
 define setup_pkgs_cmd
 sudo apt --yes update && sudo apt --yes install $(packages)
