@@ -1,4 +1,4 @@
---- a/Utilities/Sphinx/CMakeLists.txt.orig	2022-04-26 19:43:56.641764323 +0200
+--- a/Utilities/Sphinx/CMakeLists.txt	2022-04-26 19:43:56.641764323 +0200
 +++ b/Utilities/Sphinx/CMakeLists.txt	2022-04-26 19:23:34.916087712 +0200
 @@ -292,7 +292,7 @@
  

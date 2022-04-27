@@ -23,6 +23,7 @@ endef
 define xtract_cmds
 $(call untar,$(SRCDIR),$(tarball),--strip-components=1)
 cd $(SRCDIR) && patch -p1 < $(CURDIR)/fix_sphinx_pdf_path.patch
+cd $(SRCDIR) && patch -p1 < $(CURDIR)/fix_sphinx_share_paths.patch
 endef
 
 define config_cmds
@@ -30,6 +31,7 @@ define config_cmds
 $(SRCDIR)/bootstrap \
 	--parallel=0 \
 	--prefix="$(PREFIX)" \
+	--datadir="/share/cmake" \
 	--docdir="/share/doc/cmake" \
 	--mandir="/share/man" \
 	--system-curl \
