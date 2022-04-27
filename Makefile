@@ -22,7 +22,7 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
 # TODO: make flex depend on bison
 projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
-            gperf bison flex gcc
+            gperf bison flex gcc cmake
 
 .NOTPARALLEL:
 
@@ -48,6 +48,12 @@ packages := curl \
             diffutils \
             libzstd-dev \
             dejagnu tcl python3-pytest autogen \
+            \
+            libuv1-dev librhash-dev libjsoncpp-dev libnghttp2-dev \
+            libcurlpp-dev libarchive-dev \
+            python3-sphinx python3-sphinxcontrib.qthelp qhelpgenerator-qt5 \
+            python3-sphinx-rtd-theme latexmk texlive-latex-recommended \
+            texlive-latex-extra
 
 define setup_pkgs_cmd
 sudo apt --yes update && sudo apt --yes install $(packages)
