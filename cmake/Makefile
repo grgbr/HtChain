@@ -4,7 +4,7 @@ sig_url     := https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
-include ../autotools.mk
+include $(TOPDIR)/helpers.mk
 
 define fetch_cmds
 $(call download,$(pkg_url),$(tarball).down)

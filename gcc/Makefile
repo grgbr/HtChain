@@ -30,7 +30,7 @@ fetch_dists       := $(gcc_dist) \
 
 topsrcdir         := $(abspath $(SRCDIR)/..)
 
-include ../autotools.mk
+include $(TOPDIR)/helpers.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(gcc_dist_url),$(gcc_sig_url),$(gcc_dist))

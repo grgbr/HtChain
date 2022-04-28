@@ -2,7 +2,7 @@ pkg_url     := https://salsa.debian.org/philou/kconfig-frontends/-/archive/debia
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
-include ../autotools.mk
+include $(TOPDIR)/helpers.mk
 
 define fetch_cmds
 $(call download,$(pkg_url),$(tarball))

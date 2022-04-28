@@ -3,7 +3,7 @@ sig_url     := $(pkg_url).sig
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
-include ../autotools.mk
+include $(TOPDIR)/helpers.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(pkg_url),$(sig_url),$(tarball))
