@@ -25,6 +25,10 @@ define build_cmds
 +$(MAKE) -C $(BUILDDIR) all
 endef
 
+define clean_cmds
++$(MAKE) -C $(BUILDDIR) clean
+endef
+
 define install_cmds
 +$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
 endef
