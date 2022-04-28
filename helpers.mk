@@ -6,6 +6,32 @@ TOUCH := touch
 MV    := mv
 SYNC  := sync
 
+PACKAGES := curl \
+            gpg \
+            tar gzip bzip2 xz-utils lzip \
+            patch \
+            make autoconf automake m4 libtool-bin pkg-config \
+            gcc g++ gperf flex bison \
+            gettext intltool \
+            libncurses-dev \
+            libglade2-dev \
+            qtbase5-dev \
+            grep sed perl m4 gawk \
+            coreutils \
+            bash \
+            texinfo \
+            diffutils \
+            libzstd-dev \
+            dejagnu tcl python3-pytest autogen \
+            \
+            libuv1-dev librhash-dev libjsoncpp-dev libnghttp2-dev \
+            libcurlpp-dev libarchive-dev \
+            python3-sphinx python3-sphinxcontrib.qthelp qhelpgenerator-qt5 \
+            python3-sphinx-rtd-theme latexmk texlive-latex-recommended \
+            texlive-latex-extra \
+            \
+            qemu-system-x86
+
 # Use --location for sites where URL points to a page that has moved to a
 # different location, e.g. github.
 define _download
@@ -64,5 +90,14 @@ if [ ! -r "$(strip $(3))" ]; then \
 fi
 endef
 
-$(FETCHDIR) $(BUILDDIR) $(STAMPDIR) $(SRCDIR):
+$(OUTDIR)/pkgs-setup: | $(OUTDIR)
+	sudo apt-get --assume-yes update
+	sudo apt-get --assume-yes --no-upgrade install $(PACKAGES)
+	$(call touch,$(@))
+
+$(OUTDIR)/sigs-setup: $(OUTDIR)/pkgs-setup | $(FETCHDIR)
+	$(SCRIPTDIR)/gpg_setup.sh $(FETCHDIR)
+	$(call touch,$(@))
+
+$(FETCHDIR) $(BUILDDIR) $(STAMPDIR) $(SRCDIR) $(OUTDIR):
 	$(call mkdir,$(@))
