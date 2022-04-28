@@ -104,9 +104,7 @@ $(SRCDIR)/configure --prefix="$(PREFIX)" \
                     --enable-decimal-float=yes \
                     --enable-cet \
                     --enable-lto \
-                    --enable-bootstrap \
-                    --libexecdir="$(PREFIX)/lib" \
-                    --libdir="$(PREFIX)/lib"
+                    --enable-bootstrap
 endef
 
 define clobber_cmds
@@ -122,9 +120,9 @@ define build_cmds
 endef
 
 define install_cmds
-+$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)" tooldir="$(PREFIX)"
 endef
 
 define uninstall_cmds
-+$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)" tooldir="$(PREFIX)"
 endef
