@@ -1,6 +1,12 @@
 #!/bin/bash -e
 
+# Official GNU public keyring.
 GNU_KEYRING_URL="https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+
+# Pablo Galindo Salgado GPG public key for 3.10.x and 3.11.x source files and
+# tags (fingerprint: 64E628F8D684696D)
+# See https://www.python.org/downloads/, section 'OpenPGP Public Keys'.
+PYTHON_SRC_KEY_URL="https://keybase.io/pablogsal/pgp_keys.asc"
 
 # Default keys.openpgp.org server strip UIDs unless the owner of the
 # corresponding email address has allowed them to be published.
@@ -12,6 +18,26 @@ GPG_KEY_SERVER="--keyserver hkps://pgp.mit.edu"
 log()
 {
 	printf "$(basename $0): $1\n" >&2
+}
+
+gpg_fetch_import_key()
+{
+	local name="$1"
+	local url="$2"
+
+	log "Downloading ${name}..."
+	if ! curl --silent --output $keyring "$url"; then
+		log "Failed to download ${name}."
+		return 1
+	fi
+
+	log "Importing ${name}..."
+	if ! $gpg_cmd $GPG_KEY_SERVER --import $keyring; then
+		log "Failed to import ${name}."
+		return 1
+	fi
+
+	return 0
 }
 
 # Show help
@@ -80,7 +106,7 @@ fi
 lock="$(realpath --canonicalize-missing $fetchdir/$(basename $0).lock)"
 keyring="$(realpath --canonicalize-missing $fetchdir/keyring.gpg)"
 gpg_homedir="$(realpath --canonicalize-missing $fetchdir/.gnupg)"
-gpg_cmd="gpg --homedir $gpg_homedir --batch $GPG_KEY_SERVER --quiet"
+gpg_cmd="gpg --homedir $gpg_homedir --batch --quiet"
 
 exec 200<>$lock
 if ! flock --nonblock --exclusive 200; then
@@ -97,8 +123,13 @@ if ! curl --silent --output $keyring "$GNU_KEYRING_URL"; then
 fi
 
 log "Importing GNU public GPG keyring..."
-if ! $gpg_cmd --import $keyring; then
+if ! $gpg_cmd $GPG_KEY_SERVER --import $keyring; then
 	log "Failed to import GNU public GPG keyring."
+	exit 1
+fi
+
+if ! gpg_fetch_import_key "Python source releases GPG public key" \
+                          "$PYTHON_SRC_KEY_URL"; then
 	exit 1
 fi
 
@@ -116,4 +147,4 @@ if ! $gpg_cmd --export-ownertrust | \
 	exit 1
 fi
 
-log "GNU public GPG keyring setup successfully."
+log "Local GPG keyring setup successfully."
