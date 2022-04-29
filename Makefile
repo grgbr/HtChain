@@ -34,9 +34,11 @@ include helpers.mk
 .PHONY: setup
 setup: setup-pkgs setup-sigs
 .PHONY: setup-pkgs
-setup-pkgs: $(OUTDIR)/pkgs-setup
+setup-pkgs:
+	$(call setup_pkgs_cmds)
 .PHONY: setup-sigs
-setup-sigs: $(OUTDIR)/sigs-setup
+setup-sigs:
+	$(call setup_sigs_cmds)
 
 define make_cmd
 	+$(MAKE) -C $(1) \

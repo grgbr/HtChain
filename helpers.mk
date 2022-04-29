@@ -97,13 +97,21 @@ if [ ! -r "$(strip $(3))" ]; then \
 fi
 endef
 
+define setup_pkgs_cmds
+sudo apt-get --assume-yes update
+sudo apt-get --assume-yes --no-upgrade install $(PACKAGES)
+endef
+
+define setup_sigs_cmds
+$(SCRIPTDIR)/gpg_setup.sh $(FETCHDIR)
+endef
+
 $(OUTDIR)/pkgs-setup: | $(OUTDIR)
-	sudo apt-get --assume-yes update
-	sudo apt-get --assume-yes --no-upgrade install $(PACKAGES)
+	$(call setup_pkgs_cmds)
 	$(call touch,$(@))
 
 $(OUTDIR)/sigs-setup: $(OUTDIR)/pkgs-setup | $(FETCHDIR)
-	$(SCRIPTDIR)/gpg_setup.sh $(FETCHDIR)
+	$(call setup_sigs_cmds)
 	$(call touch,$(@))
 
 .PHONY: fetch
