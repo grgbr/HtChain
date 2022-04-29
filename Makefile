@@ -3,7 +3,7 @@ FETCHDIR := $(OUTDIR)/fetch
 SRCDIR   := $(OUTDIR)/src
 BUILDDIR := $(OUTDIR)/build
 STAMPDIR := $(OUTDIR)/stamp
-PREFIX   := $(HOME)/devel/root
+PREFIX   := $(HOME)/devel/tools/htchain
 DESTDIR  :=
 
 # As of gcc 10.2.1 -fvtable-verify cannot be specified together with lto
@@ -11,10 +11,9 @@ DESTDIR  :=
 
 MACHINE_CFLAGS  := -march=native
 MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
-OPTIM_CFLAGS    := -O2 -flto=auto -fuse-linker-plugin
+OPTIM_CFLAGS    := -DNDEBUG -O2 -flto=auto -fuse-linker-plugin
 OPTIM_LDFLAGS   := $(OPTIM_CFLAGS)
 HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
-                   -DNDEBUG \
                    -fpie \
                    -fstack-protector-strong -fstack-clash-protection \
                    -fcf-protection=full
@@ -22,7 +21,7 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
 # TODO: make flex depend on bison
 projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
-            gperf bison flex gcc cmake bmake ncurses
+            gperf bison flex gcc cmake bmake ncurses python
 
 .NOTPARALLEL:
 

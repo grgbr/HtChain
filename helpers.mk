@@ -30,6 +30,16 @@ PACKAGES := curl \
             python3-sphinx-rtd-theme latexmk texlive-latex-recommended \
             texlive-latex-extra \
             \
+            libreadline-dev \
+            liblzma-dev \
+            libssl-dev \
+            libmpdec-dev \
+            libbz2-dev \
+            libgdbm-dev libgdbm-compat-dev \
+            libsqlite3-dev \
+            tcl-dev \
+            tk-dev \
+            \
             qemu-system-x86
 
 empty :=
