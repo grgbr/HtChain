@@ -32,6 +32,13 @@ PACKAGES := curl \
             \
             qemu-system-x86
 
+empty :=
+
+define newline
+$(empty)
+$(empty)
+endef
+
 # Use --location for sites where URL points to a page that has moved to a
 # different location, e.g. github.
 define _download
