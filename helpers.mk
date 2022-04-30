@@ -40,6 +40,8 @@ PACKAGES := curl \
             tcl-dev \
             tk-dev \
             \
+            python3-full \
+            re2c \
             qemu-system-x86
 
 empty :=
