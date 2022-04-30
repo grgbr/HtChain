@@ -3,6 +3,10 @@ sig_url     := $(pkg_url).asc
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
+# Remove all makefile variables defined by make command line to prevent from
+# confliting with internal python makefiles.
+MAKEOVERRIDES :=
+
 include $(TOPDIR)/helpers.mk
 
 define fetch_cmds
@@ -29,10 +33,12 @@ define config_cmds
 cd $(BUILDDIR) && \
 $(SRCDIR)/configure \
 	--prefix="$(PREFIX)" \
-	--enable-silent-rules \
 	--enable-shared \
 	--enable-optimizations \
+	--with-computed-gotos \
 	--with-lto \
+	--enable-ipv6 \
+	--enable-loadable-sqlite-extensions \
 	--with-system-expat \
 	--with-system-ffi \
 	--with-system-libmpdec \
@@ -50,7 +56,7 @@ define clean_cmds
 endef
 
 define install_cmds
-+$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
 endef
 
 define uninstall_cmds
