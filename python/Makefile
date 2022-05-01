@@ -60,5 +60,5 @@ define install_cmds
 endef
 
 define uninstall_cmds
-+$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
++-$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
 endef
