@@ -21,7 +21,7 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
 # TODO: make flex depend on bison
 projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
-            gperf bison flex gcc cmake bmake ncurses python ninja
+            gperf bison flex gcc cmake bmake ncurses python ninja meson
 
 .NOTPARALLEL:
 
