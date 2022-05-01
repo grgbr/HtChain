@@ -31,6 +31,7 @@ endef
 
 define install_cmds
 +$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
+chmod u+w '$(DESTDIR)$(PREFIX)/bin/bmake'
 endef
 
 #TODO: define me
