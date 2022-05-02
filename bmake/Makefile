@@ -3,7 +3,7 @@ sig_url     := $(pkg_url).asc
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
-include $(TOPDIR)/helpers.mk
+include $(TOPDIR)/rules.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(pkg_url),$(sig_url),$(tarball))
@@ -30,8 +30,8 @@ define clean_cmds
 endef
 
 define install_cmds
-+$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
-chmod u+w '$(DESTDIR)$(PREFIX)/bin/bmake'
++$(MAKE) -C $(BUILDDIR) install DESTDIR="$(STAGEDIR)"
+chmod u+w '$(STAGEDIR)$(PREFIX)/bin/bmake'
 endef
 
 #TODO: define me

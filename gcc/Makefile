@@ -30,7 +30,7 @@ fetch_dists       := $(gcc_dist) \
 
 topsrcdir         := $(abspath $(SRCDIR)/..)
 
-include $(TOPDIR)/helpers.mk
+include $(TOPDIR)/rules.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(gcc_dist_url),$(gcc_sig_url),$(gcc_dist))
@@ -124,9 +124,9 @@ define clean_cmds
 endef
 
 define install_cmds
-+$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(DESTDIR)" tooldir="$(PREFIX)"
++$(MAKE) -C $(BUILDDIR) install-strip DESTDIR="$(STAGEDIR)" tooldir="$(PREFIX)"
 endef
 
 define uninstall_cmds
-+$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)" tooldir="$(PREFIX)"
++$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(STAGEDIR)" tooldir="$(PREFIX)"
 endef

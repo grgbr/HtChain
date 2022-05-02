@@ -7,7 +7,7 @@ rxvt_unicode_tinfo_url := https://raw.githubusercontent.com/exg/rxvt-unicode/rxv
 rxvt_unicode_tinfo     := $(FETCHDIR)/$(notdir $(rxvt_unicode_tinfo_url))
 fetch_dists            := $(tarball) $(rxvt_unicode_tinfo)
 
-include $(TOPDIR)/helpers.mk
+include $(TOPDIR)/rules.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(pkg_url),$(sig_url),$(tarball))
@@ -68,10 +68,10 @@ endef
 #
 # See https://invisible-island.net/ncurses/ncurses-urxvt.html
 define install_cmds
-+$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
-$(BUILD_NCURSES_TIC) -o $(DESTDIR)$(PREFIX)/share/terminfo $(rxvt_unicode_tinfo)
++$(MAKE) -C $(BUILDDIR) install DESTDIR="$(STAGEDIR)"
+$(BUILD_NCURSES_TIC) -o $(STAGEDIR)$(PREFIX)/share/terminfo $(rxvt_unicode_tinfo)
 endef
 
 define uninstall_cmds
-+$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(STAGEDIR)"
 endef

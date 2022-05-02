@@ -3,11 +3,7 @@ sig_url     := $(pkg_url).asc
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
-# Remove all makefile variables defined by make command line to prevent from
-# confliting with internal python makefiles.
-MAKEOVERRIDES :=
-
-include $(TOPDIR)/helpers.mk
+include $(TOPDIR)/rules.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(pkg_url),$(sig_url),$(tarball))
@@ -56,9 +52,9 @@ define clean_cmds
 endef
 
 define install_cmds
-+$(MAKE) -C $(BUILDDIR) install DESTDIR="$(DESTDIR)"
++$(MAKE) -C $(BUILDDIR) install DESTDIR="$(STAGEDIR)"
 endef
 
 define uninstall_cmds
-+-$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(DESTDIR)"
++-$(MAKE) -C $(BUILDDIR) uninstall DESTDIR="$(STAGEDIR)"
 endef

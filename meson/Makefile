@@ -4,7 +4,7 @@ sig_url     := $(pkg_url).asc
 tarball     := $(FETCHDIR)/$(notdir $(pkg_url))
 fetch_dists := $(tarball)
 
-include $(TOPDIR)/helpers.mk
+include $(TOPDIR)/rules.mk
 
 define fetch_cmds
 $(call download_verify_detach,$(pkg_url),$(sig_url),$(tarball))
@@ -16,7 +16,8 @@ endef
 
 define build_cmds
 cd $(SRCDIR) && \
-$(BUILDDIR)/../python/python \
+env LD_LIBRARY_PATH="$(STAGEDIR)$(PREFIX)/lib" \
+$(STAGEDIR)$(PREFIX)/bin/python3 -s \
 	setup.py $(if $(V),--verbose) \
 	         build --force \
 	               --build-base "$(BUILDDIR)" \
@@ -29,16 +30,17 @@ endef
 
 define install_cmds
 cd $(SRCDIR) && \
-$(BUILDDIR)/../python/python \
+env LD_LIBRARY_PATH="$(STAGEDIR)$(PREFIX)/lib" \
+$(STAGEDIR)$(PREFIX)/bin/python3 -s \
 	setup.py $(if $(V),--verbose) \
 	         build --build-base "$(BUILDDIR)" \
 	               --executable "$(PREFIX)/bin/python3" \
-	         install $(if $(DESTDIR),--root "$(DESTDIR)") \
-	                 --force \
+	         install --force \
+	                 --root "$(STAGEDIR)" \
 	                 --prefix "$(PREFIX)" \
 	                 --compile --optimize 2 \
 	                 --record "$(BUILDDIR)/.installed"
-sed -i '1c#!$(PREFIX)/bin/python3' $(DESTDIR)$(PREFIX)/bin/meson
+sed -i '1c#!$(PREFIX)/bin/python3' $(STAGEDIR)$(PREFIX)/bin/meson
 endef
 
 define uninstall_cmds

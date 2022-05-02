@@ -2,8 +2,9 @@ OUTDIR   := $(CURDIR)/out
 FETCHDIR := $(OUTDIR)/fetch
 SRCDIR   := $(OUTDIR)/src
 BUILDDIR := $(OUTDIR)/build
+STAGEDIR := $(OUTDIR)/stage
 STAMPDIR := $(OUTDIR)/stamp
-PREFIX   := $(HOME)/devel/tools/htchain
+PREFIX   := $(abspath $(HOME)/devel/tools/htchain)
 DESTDIR  :=
 
 # As of gcc 10.2.1 -fvtable-verify cannot be specified together with lto
@@ -48,9 +49,9 @@ define make_cmd
 	        SCRIPTDIR="$(SCRIPTDIR)" \
 	        FETCHDIR="$(FETCHDIR)" \
 	        BUILDDIR="$(BUILDDIR)/$(1)" \
+	        STAGEDIR="$(STAGEDIR)" \
 	        STAMPDIR="$(STAMPDIR)/$(1)" \
 	        PREFIX="$(PREFIX)" \
-	        DESTDIR="$(DESTDIR)" \
 	        MACHINE_CFLAGS="$(MACHINE_CFLAGS)" \
 	        MACHINE_LDFLAGS="$(MACHINE_LDFLAGS)" \
 	        OPTIM_CFLAGS="$(OPTIM_CFLAGS)" \
@@ -58,6 +59,9 @@ define make_cmd
 	        HARDEN_CFLAGS="$(HARDEN_CFLAGS)" \
 	        HARDEN_LDFLAGS="$(HARDEN_LDFLAGS)"
 endef
+
+.PHONY: all
+all: $(projects)
 
 .PHONY: fetch
 fetch: $(addprefix $(STAMPDIR)/,$(addsuffix /fetched,$(projects)))
@@ -87,7 +91,11 @@ $(addprefix config-,$(projects)):
 	$(call make_cmd,$(subst config-,,$(@)),config)
 
 .PHONY: clobber
-clobber: $(addprefix clobber-,$(projects))
+clobber:
+	$(call rmrf,$(STAGEDIR))
+	$(call rmrf,$(BUILDDIR))
+	$(call rmrf,$(SRCDIR))
+	$(call rmrf,$(STAMPDIR))
 $(addprefix clobber-,$(projects)): clobber-%:
 	$(call make_cmd,$(subst clobber-,,$(@)),clobber)
 
@@ -114,10 +122,13 @@ $(addprefix install-,$(projects)):
 	$(call rmf,$(STAMPDIR)/$(subst install-,,$(@))/installed)
 	$(call make_cmd,$(subst install-,,$(@)),install)
 
+.PHONY: $(projects)
 $(projects): %: $(STAMPDIR)/%/installed
 
 .PHONY: uninstall
-uninstall: $(addprefix uninstall-,$(projects))
+uninstall:
+	find $(STAMPDIR) -maxdepth 2 -name installed -delete
+	$(call rmrf,$(STAGEDIR))
 $(addprefix uninstall-,$(projects)): uninstall-%:
 	$(call make_cmd,$(subst uninstall-,,$(@)),uninstall)
 
@@ -125,5 +136,7 @@ $(addprefix uninstall-,$(projects)): uninstall-%:
 mrproper: uninstall
 	$(call rmrf,$(OUTDIR))
 
-.PHONY: all
-all: $(projects)
+.PHONY: deploy
+deploy: $(addprefix $(STAMPDIR)/,$(addsuffix /installed,$(projects)))
+	$(call mirror_cmd,$(STAGEDIR)$(PREFIX),$(DESTDIR)$(PREFIX))
+	$(call strip_cmd,$(DESTDIR)$(PREFIX))
