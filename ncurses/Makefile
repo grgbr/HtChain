@@ -29,7 +29,7 @@ $(SRCDIR)/configure \
 	--prefix="$(PREFIX)" \
 	--without-ada \
 	--with-pkg-config \
-	--with-pkg-config-libdir="$(PREFIX)/lib/pkgconfig" \
+	--with-pkg-config-libdir="$(STAGEDIR)$(PREFIX)/lib/pkgconfig" \
 	--enable-pc-files \
 	--with-shared \
 	--with-libtool \
