@@ -17,7 +17,8 @@ cd $(BUILDDIR) && \
 env CFLAGS="$(MACHINE_CFLAGS) $(OPTIM_CFLAGS) $(HARDEN_CFLAGS)" \
     CXXFLAGS="$(MACHINE_CFLAGS) $(OPTIM_CFLAGS) $(HARDEN_CFLAGS)" \
     LDFLAGS="$(MACHINE_LDFLAGS) $(OPTIM_LDFLAGS) $(HARDEN_LDFLAGS)" \
-$(BUILDDIR)/../python/python \
+    LD_LIBRARY_PATH="$(STAGEDIR)$(PREFIX)/lib" \
+$(STAGEDIR)$(PREFIX)/bin/python3 \
 	$(SRCDIR)/configure.py \
 	$(if $(V),--verbose) \
 	--bootstrap \
