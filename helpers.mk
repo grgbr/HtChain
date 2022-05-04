@@ -7,45 +7,14 @@ MV    := mv
 SYNC  := sync
 RSYNC := rsync
 
-PACKAGES := curl \
-            gpg \
-            tar gzip bzip2 xz-utils lzip \
-            patch \
-            make autoconf automake m4 libtool-bin pkg-config \
-            gcc g++ gperf flex bison \
-            gettext intltool \
-            libncurses-dev \
-            libglade2-dev \
-            qtbase5-dev \
-            grep sed perl m4 gawk \
-            coreutils \
-            bash \
-            texinfo \
-            diffutils \
-            libzstd-dev \
-            dejagnu tcl python3-pytest autogen \
-            \
-            libuv1-dev librhash-dev libjsoncpp-dev libnghttp2-dev \
-            libcurlpp-dev libarchive-dev \
-            python3-sphinx python3-sphinxcontrib.qthelp qhelpgenerator-qt5 \
-            python3-sphinx-rtd-theme latexmk texlive-latex-recommended \
-            texlive-latex-extra \
-            \
-            libreadline-dev \
-            liblzma-dev \
-            libssl-dev \
-            libmpdec-dev \
-            libbz2-dev \
-            libgdbm-dev libgdbm-compat-dev \
-            libsqlite3-dev \
-            tcl-dev \
-            tk-dev \
-            \
-            python3-full \
-            re2c \
-            qemu-system-x86
-
 empty :=
+
+comma := ,
+
+space := $(empty) $(empty)
+
+# Location where to find various script utilities
+scriptdir := $(TOPDIR)/scripts
 
 define newline
 $(empty)
@@ -59,7 +28,7 @@ $(CURL) --silent --location '$(strip $(1))' --output '$(strip $(2))'
 endef
 
 define gpg_verify_detach
-$(SCRIPTDIR)/gpg_verify.sh --homedir "$(FETCHDIR)/.gnupg" \
+$(scriptdir)/gpg_verify.sh --homedir "$(FETCHDIR)/.gnupg" \
                            '$(strip $(1))' \
                            '$(strip $(2))'
 endef
@@ -112,16 +81,14 @@ endef
 
 define setup_pkgs_cmds
 sudo apt-get --assume-yes update
-sudo apt-get --assume-yes --no-upgrade install $(PACKAGES)
+sudo apt-get --assume-yes --no-upgrade install $(DEBSRCDEPS)
 endef
 
 define setup_sigs_cmds
-$(SCRIPTDIR)/gpg_setup.sh $(FETCHDIR)
+$(scriptdir)/gpg_setup.sh $(FETCHDIR)
 endef
 
-define mirror_cmd
-$(if $(realpath $(strip $(1))),,$(error '$(strip $(1))': Invalid mirror destination))
-$(call rmrf,$(2))
+define _mirror_cmd
 umask=0022 && \
 $(RSYNC) --recursive \
          --links \
@@ -133,6 +100,13 @@ $(RSYNC) --recursive \
          '$(strip $(1))/' '$(strip $(2))'
 endef
 
+
+define mirror_cmd
+$(if $(realpath $(strip $(1))),,$(error '$(strip $(1))': Invalid mirror destination))
+$(call rmrf,$(2))
+$(call _mirror_cmd,$(1),$(2))
+endef
+
 define strip_cmd
-umask=0022 && $(SCRIPTDIR)/strip.sh '$(strip $(1))'
+umask=0022 && $(scriptdir)/strip.sh '$(strip $(1))'
 endef
