@@ -1,0 +1,21 @@
+# Python install make target relies upon ensurepip which does not properly
+# handle --root destination directory based installation.
+# We may end up in the situation where Python modules don't get installed if
+# they are already deployed into final prefix'ed destination.
+#
+# This patch is a dirty hack to enforce installation of Python modules at pip
+# bootstrapping time.
+#
+# See issue https://bugs.python.org/issue31916
+# and https://github.com/pypa/pip/issues/3063
+--- a/Lib/ensurepip/__init__.py	2022-05-10 18:02:50.339538516 +0200
++++ b/Lib/ensurepip/__init__.py	2022-05-10 17:46:48.078121896 +0200
+@@ -180,7 +180,7 @@
+             additional_paths.append(filename)
+ 
+         # Construct the arguments to be passed to the pip command
+-        args = ["install", "--no-cache-dir", "--no-index", "--find-links", tmpdir]
++        args = ["install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links", tmpdir]
+         if root:
+             args += ["--root", root]
+         if upgrade:

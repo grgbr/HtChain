@@ -11,6 +11,7 @@ endef
 
 define xtract_cmds
 $(call untar,$(SRCDIR),$(tarball),--strip-components=1)
+cd $(SRCDIR) && patch -p1 < $(CURDIR)/ensurepip_force_modules_install.patch
 endef
 
 # Remove -flto from build flags since preventing python configure script to
