@@ -4,25 +4,26 @@ include $(TOPDIR)/helpers.mk
 # confliting with internal project makefiles.
 MAKEOVERRIDES :=
 
-$(OUTDIR)/pkgs-setup: | $(OUTDIR)
+$(OUTDIR)/stamp/pkgs-setup: | $(OUTDIR)/stamp
 	$(call setup_pkgs_cmds)
 	$(call touch,$(@))
 
-$(OUTDIR)/sigs-setup: $(OUTDIR)/pkgs-setup | $(FETCHDIR)
+$(OUTDIR)/stamp/sigs-setup: | $(OUTDIR)/stamp/pkgs-setup $(FETCHDIR)
 	$(call setup_sigs_cmds)
 	$(call touch,$(@))
 
 .PHONY: fetch
-fetch: $(STAMPDIR)/fetched
-$(STAMPDIR)/fetched: $(fetch_dists) | $(STAMPDIR) $(FETCHDIR)
+fetch: $(OUTDIR)/stamp/$(notdir $(STAMPDIR))/fetched
+$(OUTDIR)/stamp/$(notdir $(STAMPDIR))/fetched: $(fetch_dists) \
+                                               | $(OUTDIR)/stamp/$(notdir $(STAMPDIR))
 	$(call fetch_cmds)
 	$(call touch,$(@))
-$(fetch_dists): $(OUTDIR)/sigs-setup | $(FETCHDIR)
+$(fetch_dists): $(OUTDIR)/stamp/sigs-setup
 	@:
 
 .PHONY: xtract
 xtract: $(STAMPDIR)/xtracted
-$(STAMPDIR)/xtracted: $(STAMPDIR)/fetched
+$(STAMPDIR)/xtracted: $(OUTDIR)/stamp/$(notdir $(STAMPDIR))/fetched | $(STAMPDIR)
 	$(call rmrf,$(SRCDIR))
 	$(call xtract_cmds)
 	$(call touch,$(@))
@@ -62,5 +63,6 @@ uninstall:
 	$(if $(realpath $(STAMPDIR)/installed),$(call uninstall_cmds))
 	$(call rmf,$(STAMPDIR)/installed)
 
-$(FETCHDIR) $(BUILDDIR) $(STAMPDIR) $(SRCDIR) $(OUTDIR) $(STAGEDIR):
+$(FETCHDIR) $(BUILDDIR) $(STAMPDIR) $(SRCDIR) $(OUTDIR) $(STAGEDIR) \
+$(OUTDIR)/stamp/$(notdir $(STAMPDIR)):
 	$(call mkdir,$(@))

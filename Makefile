@@ -2,6 +2,7 @@ OUTDIR   := $(CURDIR)/out
 FETCHDIR := $(OUTDIR)/fetch
 PREFIX   := /opt/htchain
 DESTDIR  :=
+DEBDIST  :=
 DEBORIG  := $(shell hostname --short)
 DEBMAIL  := $(USER)@$(shell hostname --short)
 
@@ -22,25 +23,42 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 # Do not touch these unless you really known what you are doing...
 ################################################################################
 
-TOPDIR          := $(CURDIR)
-# Where sources are extracted
-srcdir          := $(OUTDIR)/src
-# Where compile / link happens
-builddir        := $(OUTDIR)/build
-# Install destination base directory
-stagedir        := $(OUTDIR)/stage
-# Pathname to base directory used to build debian package.
-debdir          := $(OUTDIR)/debian
-# Base timestamps directory location
-stampdir        := $(OUTDIR)/stamp
+TOPDIR            := $(CURDIR)
+override OUTDIR   := $(strip $(OUTDIR))
+override FETCHDIR := $(strip $(FETCHDIR))
+override PREFIX   := $(strip $(PREFIX))
+override DESTDIR  := $(strip $(DESTDIR))
+override DEBDIST  := $(strip $(DEBDIST))
+override DEBORIG  := $(strip $(DEBORIG))
+override DEBMAIL  := $(strip $(DEBMAIL))
 
-# Debian based distribution codename
-debdist := $(shell lsb_release -cs)
+ifeq ($(strip $(JOBS)),)
+# Compute number of available CPUs.
+# Note: we should use the number of online CPUs...
+cpu_nr    := $(shell grep '^processor[[:blank:]]\+:' /proc/cpuinfo | wc -l)
+JOBS      := $(cpu_nr)
+endif
+MAKEFLAGS += --jobs $(JOBS)
+
+# Debian based distribution codename probing
+debdist := $(if $(DEBDIST),$(DEBDIST),$(shell lsb_release -cs))
 ifeq ($(realpath $(TOPDIR)/debian/$(debdist).mk),)
 $(error Unsupported build distribution '$(debdist)')
 endif
 include $(TOPDIR)/debian/$(debdist).mk
 export DEBSRCDEPS DEBBINDEPS
+
+outdir          := $(if $(DEBDIST),$(OUTDIR)/$(DEBDIST),$(OUTDIR)/current)
+# Where sources are extracted
+srcdir          := $(outdir)/src
+# Where compile / link happens
+builddir        := $(outdir)/build
+# Install destination base directory
+stagedir        := $(outdir)/stage
+# Pathname to base directory used to build debian package.
+debdir          := $(outdir)/debian
+# Base timestamps directory location
+stampdir        := $(outdir)/stamp
 
 # TODO: make flex depend on bison
 projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
@@ -49,6 +67,8 @@ projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
 .NOTPARALLEL:
 
 include helpers.mk
+
+ifeq ($(strip $(DEBDIST)),)
 
 .PHONY: setup
 setup: setup-pkgs setup-sigs
@@ -82,12 +102,12 @@ endef
 all: $(projects)
 
 .PHONY: fetch
-fetch: $(addprefix $(stampdir)/,$(addsuffix /fetched,$(projects)))
-$(addprefix $(stampdir)/,$(addsuffix /fetched,$(projects))):
-	$(call make_cmd,$(patsubst $(stampdir)/%/fetched,%,$(@)),fetch)
+fetch: $(addprefix $(OUTDIR)/stamp/,$(addsuffix /fetched,$(projects)))
+$(addprefix $(OUTDIR)/stamp/,$(addsuffix /fetched,$(projects))):
+	$(call make_cmd,$(patsubst $(OUTDIR)/stamp/%/fetched,%,$(@)),fetch)
 .PHONY: $(addprefix fetch-,$(projects))
 $(addprefix fetch-,$(projects)):
-	$(call rmf,$(stampdir)/$(subst fetch-,,$(@))/fetched)
+	$(call rmf,$(OUTDIR)/stamp/$(subst fetch-,,$(@))/fetched)
 	$(call make_cmd,$(subst fetch-,,$(@)),fetch)
 
 .PHONY: xtract
@@ -110,11 +130,7 @@ $(addprefix config-,$(projects)):
 
 .PHONY: clobber
 clobber:
-	$(call rmrf,$(stagedir))
-	$(call rmrf,$(debdir))
-	$(call rmrf,$(builddir))
-	$(call rmrf,$(srcdir))
-	$(call rmrf,$(stampdir))
+	$(call rmrf,$(outdir))
 $(addprefix clobber-,$(projects)): clobber-%:
 	$(call make_cmd,$(subst clobber-,,$(@)),clobber)
 
@@ -166,7 +182,7 @@ debbindeps = $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
 
 .PHONY: debian
 debian: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))) \
-        debian/control.in \
+        $(TOPDIR)/debian/control.in \
         Makefile
 	$(call rmrf,$(debdir))
 	$(MKDIR) --parents --mode=755 $(debdir)$(PREFIX)
@@ -180,5 +196,123 @@ debian: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))) \
 	    --expression='s/@@DEBARCH@@/$(debarch)/g' \
 	    --expression='s/@@DEBMAIL@@/$(DEBMAIL)/g' \
 	    --expression='s/@@DEBBINDEPS@@/$(debbindeps)/g' \
-	    debian/control.in > $(debdir)/DEBIAN/control
-	fakeroot dpkg-deb --build "$(debdir)" "$(OUTDIR)"
+	    $(TOPDIR)/debian/control.in > $(debdir)/DEBIAN/control
+	fakeroot dpkg-deb --build "$(debdir)" "$(outdir)"
+
+else  #!($(strip $(DEBDIST)),)
+
+define dock_run_cmd
+	docker run \
+	       --rm=true \
+	       --volume $(TOPDIR):$(TOPDIR):ro \
+	       --volume $(OUTDIR):$(OUTDIR):rw \
+	       --tty=true \
+	       --interactive=true \
+	       --env="HTCHAIN_UID=$$(id -u)" \
+	       --env="HTCHAIN_USER=$$(id -un)" \
+	       --env="HTCHAIN_GID=$$(id -g)" \
+	       --env="HTCHAIN_GROUP=$$(id -gn)" \
+	       --env="HTCHAIN_HOME=$(HOME)" \
+	       --entrypoint="$(TOPDIR)/scripts/dock_start.sh" \
+	       "htchain:$(strip $(1))" \
+	       make --directory="$(TOPDIR)" \
+	            $(2) \
+	            JOBS="$(JOBS)" \
+	            OUTDIR="$(OUTDIR)" \
+	            FETCHDIR="$(FETCHDIR)" \
+	            PREFIX="$(PREFIX)" \
+	            DESTDIR="$(DESTDIR)" \
+	            DEBDIST= \
+	            DEBORIG="$(DEBORIG)" \
+	            DEBMAIL="$(DEBMAIL)"
+endef
+
+.PHONY: all
+all: $(projects)
+
+.PHONY: fetch
+fetch: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),fetch)
+.PHONY: $(addprefix fetch-,$(projects))
+$(addprefix fetch-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: xtract
+xtract: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),xtract)
+.PHONY: $(addprefix xtract-,$(projects))
+$(addprefix xtract-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: config
+config: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),config)
+.PHONY: $(addprefix config-,$(projects))
+$(addprefix config-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: clobber
+clobber:
+	$(call rmrf,$(OUTDIR)/$(DEBDIST))
+.PHONY: $(addprefix clobber-,$(projects))
+$(addprefix clobber-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: build
+build: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),build)
+.PHONY: $(addprefix build-,$(projects))
+$(addprefix build-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: clean
+clean: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),clean)
+.PHONY: $(addprefix clean-,$(projects))
+$(addprefix clean-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: install
+install: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),install)
+.PHONY: $(addprefix install-,$(projects))
+$(addprefix install-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: uninstall
+uninstall: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),uninstall)
+.PHONY: $(addprefix uninstall-,$(projects))
+$(addprefix uninstall-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+.PHONY: $(projects)
+$(projects): %: install-%
+
+.PHONY: deploy
+deploy: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),deploy)
+
+.PHONY: debian
+debian: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),debian)
+
+$(OUTDIR)/$(DEBDIST)/stamp/docker-ready: $(OUTDIR)/$(DEBDIST)/build/Dockerfile \
+                                         | $(OUTDIR)/$(DEBDIST)/stamp
+	docker build \
+	       --file '$(<)' \
+	       --tag 'htchain:$(DEBDIST)' \
+	       $(TOPDIR)
+	$(call touch,$(@))
+
+$(OUTDIR)/$(DEBDIST)/build/Dockerfile: $(TOPDIR)/Dockerfile.in \
+                                       $(TOPDIR)/debian/$(DEBDIST).mk \
+	                               | $(OUTDIR)/$(DEBDIST)/build
+	sed --expression='s/@@DOCKIMG@@/$(DOCKIMG)/g' \
+	    --expression='s/@@DEBSRCDEPS@@/$(DEBSRCDEPS)/g' \
+	    $(<) > $(@)
+
+$(OUTDIR)/$(DEBDIST)/build $(OUTDIR)/$(DEBDIST)/stamp:
+	$(call mkdir,$(@))
+
+endif #($(strip $(DEBDIST)),)
