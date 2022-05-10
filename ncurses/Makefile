@@ -1,4 +1,5 @@
-BUILD_NCURSES_TIC      := tic
+BUILD_NCURSES_TIC      := env LD_LIBRARY_PATH="$(STAGEDIR)$(PREFIX)/lib" \
+                          $(STAGEDIR)$(PREFIX)/bin/tic
 
 pkg_url                := https://ftp.gnu.org/gnu/ncurses/ncurses-6.3.tar.gz
 sig_url                := $(pkg_url).sig
@@ -29,7 +30,7 @@ $(SRCDIR)/configure \
 	--prefix="$(PREFIX)" \
 	--without-ada \
 	--with-pkg-config \
-	--with-pkg-config-libdir="$(STAGEDIR)$(PREFIX)/lib/pkgconfig" \
+	--with-pkg-config-libdir="$(PREFIX)/lib/pkgconfig" \
 	--enable-pc-files \
 	--with-shared \
 	--with-libtool \
@@ -69,7 +70,8 @@ endef
 # See https://invisible-island.net/ncurses/ncurses-urxvt.html
 define install_cmds
 +$(MAKE) -C $(BUILDDIR) install DESTDIR="$(STAGEDIR)"
-$(BUILD_NCURSES_TIC) -o $(STAGEDIR)$(PREFIX)/share/terminfo $(rxvt_unicode_tinfo)
+$(BUILD_NCURSES_TIC) -o $(STAGEDIR)$(PREFIX)/share/terminfo \
+                        $(rxvt_unicode_tinfo)
 endef
 
 define uninstall_cmds
