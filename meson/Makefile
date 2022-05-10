@@ -46,7 +46,7 @@ endef
 define uninstall_cmds
 if [ -f "$(BUILDDIR)/.installed" ]; then \
 	while read ln; do \
-		$(RM) "$$ln"; \
+		$(RM) "$(STAGEDIR)$$ln"; \
 	done < $(BUILDDIR)/.installed; \
 	$(RM) "$(BUILDDIR)/.installed"; \
 fi
