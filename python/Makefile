@@ -54,6 +54,7 @@ endef
 
 define install_cmds
 +$(MAKE) -C $(BUILDDIR) install DESTDIR="$(STAGEDIR)"
+$(call slink,python3,$(STAGEDIR)$(PREFIX)/bin/python)
 endef
 
 define uninstall_cmds

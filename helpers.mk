@@ -4,6 +4,7 @@ GPG   := gpg
 TAR   := tar
 TOUCH := touch
 MV    := mv
+LN    := ln
 SYNC  := sync
 RSYNC := rsync
 
@@ -59,6 +60,13 @@ endef
 
 define mv
 $(MV) '$(strip $(1))' '$(strip $(2))'
+endef
+
+# Create symbolic link
+# $(1): link target
+# $(2): pathname
+define slink
+$(LN) -sf '$(strip $(1))' '$(strip $(2))'
 endef
 
 define download
