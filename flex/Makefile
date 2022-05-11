@@ -11,9 +11,12 @@ endef
 
 define xtract_cmds
 $(call untar,$(SRCDIR),$(tarball),--strip-components=1)
+cd $(SRCDIR) && \
+patch -p1 < $(TOPDIR)/flex/build_ac_use_system_extensions_in_configure_ac.patch
 endef
 
 define config_cmds
+cd $(SRCDIR) && ./autogen.sh
 cd $(BUILDDIR) && \
 $(SRCDIR)/configure \
 	--prefix="$(PREFIX)" \
