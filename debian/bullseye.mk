@@ -22,6 +22,7 @@ DEBSRCDEPS := lsb-release \
               coreutils \
               bash \
               texinfo \
+              help2man \
               diffutils \
               libzstd-dev \
               dejagnu tcl python3-pytest autogen \
