@@ -35,10 +35,8 @@ override DEBMAIL  := $(strip $(DEBMAIL))
 ifeq ($(strip $(JOBS)),)
 # Compute number of available CPUs.
 # Note: we should use the number of online CPUs...
-cpu_nr    := $(shell grep '^processor[[:blank:]]\+:' /proc/cpuinfo | wc -l)
-JOBS      := $(cpu_nr)
+JOBS := $(shell grep '^processor[[:blank:]]\+:' /proc/cpuinfo | wc -l)
 endif
-MAKEFLAGS += --jobs $(JOBS)
 
 # Debian based distribution codename probing
 debdist := $(if $(DEBDIST),$(DEBDIST),$(shell lsb_release -cs))
@@ -48,7 +46,11 @@ endif
 include $(TOPDIR)/debian/$(debdist).mk
 export DEBSRCDEPS DEBBINDEPS
 
-outdir          := $(if $(DEBDIST),$(OUTDIR)/$(DEBDIST),$(OUTDIR)/current)
+ifneq ($(realpath /.dockerenv),)
+outdir          := $(OUTDIR)/$(debdist)
+else
+outdir          := $(OUTDIR)/current
+endif
 # Where sources are extracted
 srcdir          := $(outdir)/src
 # Where compile / link happens
@@ -68,7 +70,9 @@ projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
 
 include helpers.mk
 
-ifeq ($(strip $(DEBDIST)),)
+ifeq ($(DEBDIST),)
+
+MAKEFLAGS += --jobs $(JOBS)
 
 .PHONY: setup
 setup: setup-pkgs setup-sigs
@@ -176,14 +180,16 @@ deploy: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects)))
 	$(call mirror_cmd,$(stagedir)$(PREFIX),$(DESTDIR)$(PREFIX))
 	$(call strip_cmd,$(DESTDIR)$(PREFIX))
 
-version    = $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
-debarch    = $(shell dpkg --print-architecture)
-debbindeps = $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
+version    := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
+debarch    := $(shell dpkg --print-architecture)
+debbindeps := $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
+debfile    := $(outdir)/htchain_$(version)_$(debarch).deb
 
 .PHONY: debian
-debian: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))) \
-        $(TOPDIR)/debian/control.in \
-        Makefile
+debian: $(debfile)
+$(debfile): $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))) \
+            $(TOPDIR)/debian/control.in \
+            Makefile
 	$(call rmrf,$(debdir))
 	$(MKDIR) --parents --mode=755 $(debdir)$(PREFIX)
 	$(call _mirror_cmd,$(stagedir)$(PREFIX),$(debdir)$(PREFIX))
@@ -199,7 +205,7 @@ debian: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))) \
 	    $(TOPDIR)/debian/control.in > $(debdir)/DEBIAN/control
 	fakeroot dpkg-deb --build "$(debdir)" "$(outdir)"
 
-else  #!($(strip $(DEBDIST)),)
+else  #!ifeq ($(DEBDIST),)
 
 define dock_run_cmd
 	docker run \
