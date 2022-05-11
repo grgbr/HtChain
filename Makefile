@@ -84,22 +84,22 @@ setup-sigs:
 	$(call setup_sigs_cmds)
 
 define make_cmd
-	+$(MAKE) -C $(1) \
-	        $(2) \
-	        TOPDIR="$(TOPDIR)" \
-	        OUTDIR="$(OUTDIR)" \
-	        FETCHDIR="$(FETCHDIR)" \
-	        SRCDIR="$(srcdir)/$(1)" \
-	        BUILDDIR="$(builddir)/$(1)" \
-	        STAGEDIR="$(stagedir)" \
-	        STAMPDIR="$(stampdir)/$(1)" \
-	        PREFIX="$(PREFIX)" \
-	        MACHINE_CFLAGS="$(MACHINE_CFLAGS)" \
-	        MACHINE_LDFLAGS="$(MACHINE_LDFLAGS)" \
-	        OPTIM_CFLAGS="$(OPTIM_CFLAGS)" \
-	        OPTIM_LDFLAGS="$(OPTIM_LDFLAGS)" \
-	        HARDEN_CFLAGS="$(HARDEN_CFLAGS)" \
-	        HARDEN_LDFLAGS="$(HARDEN_LDFLAGS)"
+	+$(MAKE) --directory="$(1)" \
+	         $(2) \
+	         TOPDIR="$(TOPDIR)" \
+	         OUTDIR="$(OUTDIR)" \
+	         FETCHDIR="$(FETCHDIR)" \
+	         SRCDIR="$(srcdir)/$(1)" \
+	         BUILDDIR="$(builddir)/$(1)" \
+	         STAGEDIR="$(stagedir)" \
+	         STAMPDIR="$(stampdir)/$(1)" \
+	         PREFIX="$(PREFIX)" \
+	         MACHINE_CFLAGS="$(MACHINE_CFLAGS)" \
+	         MACHINE_LDFLAGS="$(MACHINE_LDFLAGS)" \
+	         OPTIM_CFLAGS="$(OPTIM_CFLAGS)" \
+	         OPTIM_LDFLAGS="$(OPTIM_LDFLAGS)" \
+	         HARDEN_CFLAGS="$(HARDEN_CFLAGS)" \
+	         HARDEN_LDFLAGS="$(HARDEN_LDFLAGS)"
 endef
 
 .PHONY: all
@@ -321,4 +321,4 @@ $(OUTDIR)/$(DEBDIST)/build/Dockerfile: $(TOPDIR)/Dockerfile.in \
 $(OUTDIR)/$(DEBDIST)/build $(OUTDIR)/$(DEBDIST)/stamp:
 	$(call mkdir,$(@))
 
-endif #($(strip $(DEBDIST)),)
+endif #ifeq ($(DEBDIST),)
