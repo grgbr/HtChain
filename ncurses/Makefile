@@ -24,6 +24,11 @@ cppflags := $(filter -D%,$(flags))
 cflags   := $(filter-out -D%,$(flags))
 ldflags  := $(MACHINE_LDFLAGS) $(OPTIM_LDFLAGS) $(HARDEN_LDFLAGS)
 
+# As of version 6.3, it is required to set PKG_CONFIG_LIBDIR in addition to
+# --with-pkg-config-libdir.
+# Indeed, the configure script expects the directory passed as
+# --with-pkg-config-libdir argument to exist to properly complete.
+in argument.
 define config_cmds
 cd $(BUILDDIR) && \
 $(SRCDIR)/configure \
@@ -31,6 +36,7 @@ $(SRCDIR)/configure \
 	--without-ada \
 	--with-pkg-config \
 	--with-pkg-config-libdir="$(PREFIX)/lib/pkgconfig" \
+	PKG_CONFIG_LIBDIR="$(PREFIX)/lib/pkgconfig" \
 	--enable-pc-files \
 	--with-shared \
 	--with-libtool \
