@@ -44,6 +44,8 @@ DEBSRCDEPS := lsb-release \
               tk-dev \
               \
               python3-full \
-              re2c
+              re2c \
+              \
+              procps
 
 DOCKIMG    := debian:bullseye-slim
