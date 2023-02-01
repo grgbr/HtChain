@@ -67,10 +67,6 @@ override DEBDIST  := $(strip $(DEBDIST))
 override DEBORIG  := $(strip $(DEBORIG))
 override DEBMAIL  := $(strip $(DEBMAIL))
 
-# Location where to find various script utilities
-scriptdir := $(TOPDIR)/scripts
-override VERSION  := $(shell $(scriptdir)/localversion.sh)
-
 ifeq ($(strip $(JOBS)),)
 # Compute number of available CPUs.
 # Note: we should use the number of online CPUs...
@@ -106,6 +102,16 @@ finaldir        := $(outdir)/final
 debdir          := $(outdir)/debian
 # Base timestamps directory location
 stampdir        := $(outdir)/stamp
+# Location where to find various script utilities
+scriptdir       := $(TOPDIR)/scripts
+# HtChain version
+version         := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
+# Debian package architecture field
+debarch         := $(shell dpkg --print-architecture)
+# Debian package depends field
+debbindeps      := $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
+# Debian file path
+debfile         := $(OUTDIR)/htchain_$(version)_$(debarch).deb
 
 o_flags     := -O%
 ssp_flags   := -fstack-protector% -fstack-clash-protection
@@ -342,6 +348,10 @@ MAKEFLAGS += --jobs $(JOBS)
 include rules.mk
 include $(module_mkfiles)
 
+.PHONY: list-bstrap
+list-bstrap:
+	@$(foreach t,$(sort $(bstrap_targets)),echo $(t);)
+
 .PHONY: bstrap
 bstrap: $(bstrap_targets)
 	$(call rmrf,$(bstrapdir)/share/doc)
@@ -356,9 +366,9 @@ clobber-bstrap:
 	$(foreach d,$(wildcard $(installdir)/bstrap-*),$(call rmrf,$(d))$(newline))
 	$(call rmrf,$(bstrapdir))
 
-.PHONY: list-bstrap-modules
-list-bstrap-modules:
-	@$(foreach t,$(sort $(bstrap_targets)),echo $(t);)
+.PHONY: list-stage
+list-stage:
+	@$(foreach t,$(sort $(stage_targets)),echo $(t);)
 
 .PHONY: stage
 stage: $(stage_targets)
@@ -375,13 +385,12 @@ clobber-stage:
 	$(foreach d,$(wildcard $(installdir)/stage-*),$(call rmrf,$(d))$(newline))
 	$(call rmrf,$(stagedir))
 
-.PHONY: list-stage-modules
-list-stage-modules:
-	@$(foreach t,$(sort $(stage_targets)),echo $(t);)
+.PHONY: list-final
+list-final:
+	@$(foreach t,$(sort $(final_targets)),echo $(t);)
 
 .PHONY: final
 final: $(final_targets)
-	$(scriptdir)/strip.sh $(finaldir)
 
 .PHONY: clobber-final
 clobber-final:
@@ -390,13 +399,36 @@ clobber-final:
 	$(foreach d,$(wildcard $(installdir)/final-*),$(call rmrf,$(d))$(newline))
 	$(call rmrf,$(finaldir))
 
-.PHONY: list-final-modules
-list-final-modules:
-	@$(foreach t,$(sort $(final_targets)),echo $(t);)
-
-.PHONY: list-all-modules
-list-all-modules:
+.PHONY: list
+list:
 	@$(foreach t,$(sort $(all_targets)),echo $(t);)
+
+.PHONY: all
+all: final
+
+.PHONY: clobber
+clobber:
+	$(call rmrf,$(outdir))
+
+.PHONY: debian
+debian: $(debfile)
+$(debfile): $(final_targets) \
+            $(TOPDIR)/debian/control.in \
+            Makefile
+	$(call rmrf,$(debdir))
+	$(MKDIR) --parents --mode=755 $(debdir)
+	$(call mirror_cmd,$(finaldir),$(debdir))
+	$(scriptdir)/strip.sh $(debdir)$(PREFIX)
+	$(MKDIR) --mode=755 $(debdir)/DEBIAN
+	umask=0022 && \
+	sed --expression='s/@@DEBVERS@@/$(version)/g' \
+	    --expression='s/@@DEBDIST@@/$(debdist)/g' \
+	    --expression='s/@@DEBORIG@@/$(DEBORIG)/g' \
+	    --expression='s/@@DEBARCH@@/$(debarch)/g' \
+	    --expression='s/@@DEBMAIL@@/$(DEBMAIL)/g' \
+	    --expression='s/@@DEBBINDEPS@@/$(debbindeps)/g' \
+	    $(TOPDIR)/debian/control.in > $(debdir)/DEBIAN/control
+	fakeroot dpkg-deb --build "$(debdir)" "$(outdir)"
 
 include doc.mk
 

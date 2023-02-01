@@ -1,9 +1,6 @@
 # Debian 11.x (bullseye)
 
-DEBBINDEPS := libarchive13 libcrypt1 libcurl4 libexpat1 libfl2 \
-              libgdbm-compat4 libglade2-0 libjsoncpp24 libmpdec3 \
-              libncurses6 libncursesw6 libnsl2 libqt5widgets5 \
-              libreadline8 librhash0 libsqlite3-0 libtk8.6 libuuid1 libuv1
+DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates
 
 # procps: required by bmake build / check targets
 # netbase: required by perl check target

@@ -134,7 +134,6 @@ $(RSYNC) --recursive \
          '$(strip $(1))/' '$(strip $(2))' $(verbose)
 endef
 
-
 define mirror_cmd
 $(if $(realpath $(strip $(1))),,$(error '$(strip $(1))': Invalid mirror destination))
 $(call rmrf,$(2))

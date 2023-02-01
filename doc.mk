@@ -1,6 +1,6 @@
 SPHINXOPTS   := -a -j 1 \
-                -D version="$(VERSION)" \
-                -D release="$(VERSION)"
+                -D version="$(version)" \
+                -D release="$(version)"
 sphinx_build := $(stagedir)/bin/sphinx-build
 
 .PHONY: build-html
