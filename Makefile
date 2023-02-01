@@ -339,13 +339,13 @@ endef
 
 module_mkfiles  := $(wildcard modules/*.mk)
 
-include helpers.mk
+include build/helpers.mk
 
 ifeq ($(DEBDIST),)
 
 MAKEFLAGS += --jobs $(JOBS)
 
-include rules.mk
+include build/rules.mk
 include $(module_mkfiles)
 
 .PHONY: list-bstrap
@@ -430,7 +430,7 @@ $(debfile): $(final_targets) \
 	    $(TOPDIR)/debian/control.in > $(debdir)/DEBIAN/control
 	fakeroot dpkg-deb --build "$(debdir)" "$(outdir)"
 
-include doc.mk
+include build/doc.mk
 
 else  # !($(DEBDIST),)
 
