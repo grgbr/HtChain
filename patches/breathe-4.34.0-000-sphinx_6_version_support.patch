@@ -1,0 +1,11 @@
+--- a/setup.py	2023-01-18 18:47:49.996991162 +0100
++++ b/setup.py	2023-01-18 18:47:58.160893675 +0100
+@@ -17,7 +17,7 @@
+  render `Doxygen <http://www.doxygen.org>`__ xml output.
+ """
+ 
+-requires = ["Sphinx>=4.0,<6,!=5.0.0", "docutils>=0.12"]
++requires = ["Sphinx>=4.0,!=5.0.0", "docutils>=0.12"]
+ 
+ if sys.version_info < (3, 6):
+     print("ERROR: Sphinx requires at least Python 3.6 to run.")

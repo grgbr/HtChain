@@ -1,0 +1,46 @@
+Review:
+=======
+
+* cython: !!!TODO: run test suite (optional gdb) !!!
+* gcc
+
+Fix:
+====
+* fix guile linking to system-wide libgmp !!
+* pytz: fix pytest warnings
+* cpan-gettext: implement final support
+  see ExtUtils::MakeMaker doc: https://perldoc.perl.org/ExtUtils::MakeMaker
+* ncurses : fix libtinfo.so.6: version `NCURSES6_TINFO_6.2.current' not found
+            (required by bash)
+* libtool: fix final check (wrong library / gcc companion objects path)
+* automake:
+  * understand why gettext tests are skipped (`couldn't find or get gettext
+    macros')
+    we should probably patch <automake>/t/gettext-macros.sh to give 
+    AM_GNU_GETTEXT macros the `external' argument since mandatory...
+    see https://www.gnu.org/software/gettext/manual/html_node/AM_005fGNU_005fGETTEXT.html
+  * understand why pkg-config tests are skipped (`pkg-config m4 macros not
+    found')
+  * understand why (f)lex library tests are skipped (`no system-wide lex library
+    found')
+* packaging: fix DeprecationWarning: Creating a LegacyVersion message while
+  running unit tests / make check...
+* fix chrpath doc dir located at top-level staging directory
+* fix versioning scheme (include branch name, etc...)
+
+TODO:
+* help message(s) !!
+* include htchain version into default package version for toolchain (mainly gcc suite)
+* doxygen: xapian support for doxygen search engine ?
+* rename lz4 tarball properly (actually named 1.9.3.tar.gz)
+* curl: enable support for: libidn2, libpsl, libgsasl and ldap ?
+* openssl imagesize sphinx urllib3: replace SSL_CERT_DIR usage by a link from
+  <stagedir and finaldir>/etc/ssl/certs to system-wide /etc/ssl/certs
+* nghttp2 ?
+* gdb
+* pandoc
+* gtk-doc: for util-linux
+* po4a: for util-linux
+* yang / pyang
+* asciidoc: for util-linux
+* rustc

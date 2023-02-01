@@ -1,0 +1,73 @@
+From: =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Date: Sat, 27 Sep 2014 20:52:15 +0200
+Subject: Remove Zoneinfo Tarball
+
+---
+ MANIFEST.in                          | 1 +
+ dateutil/test/test_tz.py             | 2 ++
+ python_dateutil.egg-info/SOURCES.txt | 3 +--
+ setup.cfg                            | 3 ---
+ 4 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index d4d9f32..3e8b3fb 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -2,3 +2,4 @@ include LICENSE NEWS zonefile_metadata.json updatezinfo.py pyproject.toml
+ recursive-include dateutil/test *
+ global-exclude __pycache__
+ global-exclude *.py[co]
++exclude dateutil/zoneinfo/dateutil-zoneinfo.tar.gz
+diff --git a/dateutil/test/test_tz.py b/dateutil/test/test_tz.py
+index 6cd8ea0..042f28e 100644
+--- a/dateutil/test/test_tz.py
++++ b/dateutil/test/test_tz.py
+@@ -1193,6 +1193,7 @@ def test_gettz_weakref():
+     assert NYC_ref() is None    # Should have been pushed out
+     assert tz.gettz('America/New_York') is not NYC_ref()
+ 
++@unittest.skip("No prepackaged zoneinfo tarball")
+ class ZoneInfoGettzTest(GettzTest):
+     def gettz(self, name):
+         zoneinfo_file = zoneinfo.get_zonefile_instance()
+@@ -2417,6 +2418,7 @@ class TzPickleTest(PicklableMixin, unittest.TestCase):
+     def testPickleTzGettz(self):
+         self.assertPicklable(tz.gettz('America/New_York'))
+ 
++    @unittest.skip("No prepackaged zoneinfo tarball")
+     def testPickleZoneFileGettz(self):
+         zoneinfo_file = zoneinfo.get_zonefile_instance()
+         tzi = zoneinfo_file.get('America/New_York')
+diff --git a/python_dateutil.egg-info/SOURCES.txt b/python_dateutil.egg-info/SOURCES.txt
+index c0d2a0f..ae4d43f 100644
+--- a/python_dateutil.egg-info/SOURCES.txt
++++ b/python_dateutil.egg-info/SOURCES.txt
+@@ -60,7 +60,6 @@ dateutil/tz/_factories.py
+ dateutil/tz/tz.py
+ dateutil/tz/win.py
+ dateutil/zoneinfo/__init__.py
+-dateutil/zoneinfo/dateutil-zoneinfo.tar.gz
+ dateutil/zoneinfo/rebuild.py
+ docs/Makefile
+ docs/changelog.rst
+@@ -88,4 +87,4 @@ python_dateutil.egg-info/requires.txt
+ python_dateutil.egg-info/top_level.txt
+ python_dateutil.egg-info/zip-safe
+ requirements/3.3/constraints.txt
+-requirements/3.3/requirements-dev.txt
+\ No newline at end of file
++requirements/3.3/requirements-dev.txt
+diff --git a/setup.cfg b/setup.cfg
+index a5fe172..330b7cb 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -45,9 +45,6 @@ test_suite = dateutil.test
+ exclude = 
+ 	dateutil.test
+ 
+-[options.package_data]
+-dateutil.zoneinfo = dateutil-zoneinfo.tar.gz
+-
+ [sdist]
+ formats = gztar
+ 

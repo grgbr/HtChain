@@ -1,0 +1,182 @@
+OUTDIR   := $(CURDIR)/out
+FETCHDIR := $(OUTDIR)/fetch
+PREFIX   := /opt/htchain
+DESTDIR  :=
+DEBDIST  :=
+DEBORIG  := $(shell hostname --short)
+DEBMAIL  := $(USER)@$(shell hostname --short)
+
+# As of gcc 10.2.1 -fvtable-verify cannot be specified together with lto
+# See https://gcc.gnu.org/legacy-ml/gcc-patches/2019-09/msg00222.html
+
+MACHINE_CFLAGS  := -march=native
+MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
+OPTIM_CFLAGS    := -DNDEBUG -O2 -flto=auto -fuse-linker-plugin
+OPTIM_LDFLAGS   := $(OPTIM_CFLAGS)
+HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
+                   -fpie \
+                   -fstack-protector-strong -fstack-clash-protection \
+                   -fcf-protection=full
+HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
+
+
+
+BUILD_MACHINE_FLAGS := -march=native
+BUILD_CPPFLAGS      := $(BUILD_MACHINE_FLAGS) -DNDEBUG -D_FORTIFY_SOURCE=3
+BUILD_CFLAGS        := $(BUILD_CPPFLAGS) -O2 -flto=auto -fuse-linker-plugin \
+                       -fstack-protector-strong --param=ssp-buffer-size=4 \
+                       -fstack-clash-protection -fcf-protection=full -mshstk \
+                       -fpie
+BUILD_CXXFLAGS      := $(BUILD_CFLAGS) -fexceptions
+BUILD_LDFLAGS       := $(BUILD_CFLAGS) \
+                       -Wl,-z,combreloc -Wl,--hash-style=gnu \
+                       -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack \
+                       -Wl,-z,separate-code -Wl,-z,shstk
+
+BUILD_CC            := gcc
+BUILD_CXX           := g++
+BUILD_AR            := gcc-ar
+BUILD_NM            := gcc-nm
+BUILD_RANLIB        := gcc-ranlib
+BUILD_STRIP         := strip
+
+BUILD_CONFIG_FLAGS  := AR='$(BUILD_AR)' \
+                       NM='$(BUILD_NM)' \
+                       RANLIB='$(BUILD_RANLIB)' \
+                       CC='$(BUILD_CC)' \
+                       CXX='$(BUILD_CXX)' \
+                       STRIP='$(BUILD_STRIP)' \
+                       CPPFLAGS='$(BUILD_CPPFLAGS)' \
+                       CFLAGS='$(BUILD_CFLAGS)' \
+                       CXXFLAGS='$(BUILD_CXXFLAGS)' \
+                       LDFLAGS='$(BUILD_LDFLAGS)'
+
+# FIXMEEEEEEE ! Do we really need this ???
+# Build host pkg-config default system-wide search path. This is useful to probe
+# for system components we depend on.
+#SYS_PKG_CONFIG_PATH := $(shell pkg-config --variable pc_path pkg-config)
+
+################################################################################
+# Do not touch these unless you really known what you are doing...
+################################################################################
+
+TOPDIR            := $(CURDIR)
+override OUTDIR   := $(strip $(OUTDIR))
+override PATCHDIR := $(strip $(TOPDIR)/patches)
+override FETCHDIR := $(strip $(FETCHDIR))
+override PREFIX   := $(strip $(PREFIX))
+override DESTDIR  := $(strip $(DESTDIR))
+override DEBDIST  := $(strip $(DEBDIST))
+override DEBORIG  := $(strip $(DEBORIG))
+override DEBMAIL  := $(strip $(DEBMAIL))
+
+ifeq ($(strip $(JOBS)),)
+# Compute number of available CPUs.
+# Note: we should use the number of online CPUs...
+JOBS := $(shell grep '^processor[[:blank:]]\+:' /proc/cpuinfo | wc -l)
+endif
+
+# Debian based distribution codename probing
+debdist := $(if $(DEBDIST),$(DEBDIST),$(shell lsb_release -cs))
+ifeq ($(realpath $(TOPDIR)/debian/$(debdist).mk),)
+$(error Unsupported build distribution '$(debdist)')
+endif
+include $(TOPDIR)/debian/$(debdist).mk
+export DEBSRCDEPS DEBBINDEPS
+
+ifneq ($(realpath /.dockerenv),)
+outdir          := $(OUTDIR)/$(debdist)
+else
+outdir          := $(OUTDIR)/current
+endif
+# Where sources are extracted
+srcdir          := $(outdir)/src
+# Where compile / link happens
+builddir        := $(outdir)/build
+# Install destination base directory
+stagedir        := $(outdir)/stage
+# Pathname to base directory used to build debian package.
+debdir          := $(outdir)/debian
+# Base timestamps directory location
+stampdir        := $(outdir)/stamp
+
+module_mkfiles  := $(wildcard modules/*.mk)
+modules         := $(patsubst modules/%.mk,%,$(module_mkfiles))
+
+include helpers.mk
+
+ifeq ($(DEBDIST),)
+
+include common.mk
+include $(module_mkfiles)
+
+.PHONY: fetch
+fetch: $(addprefix fetch-,$(modules))
+
+.PHONY: xtract
+xtract: $(addprefix xtract-,$(modules))
+
+.PHONY: clobber
+clobber:
+	$(call rmrf,$(outdir))
+
+.PHONY: uninstall
+uninstall:
+	find $(stampdir) -maxdepth 2 -name installed -delete
+	$(call rmrf,$(stagedir))
+
+.PHONY: mproper
+mrproper:
+	$(call rmrf,$(OUTDIR))
+
+else  # !($(DEBDIST),)
+
+define dock_run_cmd
+	docker run \
+	       --rm=true \
+	       --volume $(TOPDIR):$(TOPDIR):ro \
+	       --volume $(OUTDIR):$(OUTDIR):rw \
+	       --tty=true \
+	       --interactive=true \
+	       --env="HTCHAIN_UID=$$(id -u)" \
+	       --env="HTCHAIN_USER=$$(id -un)" \
+	       --env="HTCHAIN_GID=$$(id -g)" \
+	       --env="HTCHAIN_GROUP=$$(id -gn)" \
+	       --env="HTCHAIN_HOME=$(HOME)" \
+	       --entrypoint="$(TOPDIR)/scripts/dock_start.sh" \
+	       "htchain:$(strip $(1))" \
+	       make --directory="$(TOPDIR)" \
+	            $(2) \
+	            JOBS="$(JOBS)" \
+	            OUTDIR="$(OUTDIR)" \
+	            FETCHDIR="$(FETCHDIR)" \
+	            PREFIX="$(PREFIX)" \
+	            DESTDIR="$(DESTDIR)" \
+	            DEBDIST= \
+	            DEBORIG="$(DEBORIG)" \
+	            DEBMAIL="$(DEBMAIL)"
+endef
+
+.PHONY: fetch $(addprefix fetch-,$(modules))
+fetch $(addprefix fetch-,$(modules)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(@))
+
+$(OUTDIR)/$(DEBDIST)/stamp/docker-ready: $(OUTDIR)/$(DEBDIST)/build/Dockerfile \
+                                         | $(OUTDIR)/$(DEBDIST)/stamp
+	docker build \
+	       --file '$(<)' \
+	       --tag 'htchain:$(DEBDIST)' \
+	       $(TOPDIR)
+	$(call touch,$(@))
+
+$(OUTDIR)/$(DEBDIST)/build/Dockerfile: $(TOPDIR)/Dockerfile.in \
+                                       $(TOPDIR)/debian/$(DEBDIST).mk \
+	                               | $(OUTDIR)/$(DEBDIST)/build
+	sed --expression='s/@@DOCKIMG@@/$(DOCKIMG)/g' \
+	    --expression='s/@@DEBSRCDEPS@@/$(DEBSRCDEPS)/g' \
+	    $(<) > $(@)
+
+$(OUTDIR)/$(DEBDIST)/build $(OUTDIR)/$(DEBDIST)/stamp:
+	$(call mkdir,$(@))
+
+endif # ($(DEBDIST),)

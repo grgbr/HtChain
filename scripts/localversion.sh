@@ -1,8 +1,8 @@
 #!/bin/sh
 
-MAJOR="1"
+MAJOR="12"
 MINOR="0"
-VERSION="${MAJOR}.${MINOR}-rc1"
+VERSION="${MAJOR}.${MINOR}"
 
 usage() {
 	echo "Usage: $(basename $0) [srctree]" >&2

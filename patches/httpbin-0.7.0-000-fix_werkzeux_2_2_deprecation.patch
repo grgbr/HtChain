@@ -1,0 +1,31 @@
+From: =?utf-8?q?Timo_R=C3=B6hling?= <roehling@debian.org>
+Date: Mon, 26 Sep 2022 11:41:29 +0200
+Subject: Werkzeug 2.2.x compat
+
+---
+ httpbin/core.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/httpbin/core.py b/httpbin/core.py
+index 14f2d06..5a4c186 100644
+--- a/httpbin/core.py
++++ b/httpbin/core.py
+@@ -19,7 +19,7 @@ from flask import Flask, Response, request, render_template, redirect, jsonify a
+ from six.moves import range as xrange
+ from werkzeug.datastructures import WWWAuthenticate, MultiDict
+ from werkzeug.http import http_date
+-from werkzeug.wrappers import BaseResponse
++from werkzeug.wrappers import Response
+ from werkzeug.http import parse_authorization_header
+ 
+ from . import filters
+@@ -47,7 +47,7 @@ def jsonify(*args, **kwargs):
+     return response
+ 
+ # Prevent WSGI from correcting the casing of the Location header
+-BaseResponse.autocorrect_location_header = False
++Response.autocorrect_location_header = False
+ 
+ # Find the correct template folder when running from a different location
+ tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+

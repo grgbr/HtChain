@@ -1,0 +1,11 @@
+--- a/testing/test_xfail_behavior.py	2023-01-01 15:49:11.666798415 +0100
++++ b/testing/test_xfail_behavior.py	2023-01-01 15:50:00.042229332 +0100
+@@ -48,7 +48,7 @@
+         expected_word = "XPASS"
+ 
+     session_start_title = "*==== test session starts ====*"
+-    loaded_pytest_plugins = "plugins: forked*"
++    loaded_pytest_plugins = "plugins: *forked*"
+     collected_tests_num = "collected 1 item"
+     expected_progress = "test_xfail.py {expected_letter!s}*".format(**locals())
+     failures_title = "*==== FAILURES ====*"

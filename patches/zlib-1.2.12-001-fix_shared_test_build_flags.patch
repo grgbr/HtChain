@@ -1,0 +1,40 @@
+--- a/Makefile.in	2022-06-23 19:14:12.131360138 +0200
++++ b/Makefile.in	2022-06-23 19:15:36.402449156 +0200
+@@ -26,7 +26,7 @@
+ 
+ SFLAGS=-O
+ LDFLAGS=
+-TEST_LDFLAGS=-L. libz.a
++TEST_LDFLAGS=
+ LDSHARED=$(CC)
+ CPP=$(CC) -E
+ 
+@@ -286,22 +286,22 @@
+ 	-@rmdir objs
+ 
+ example$(EXE): example.o $(STATICLIB)
+-	$(CC) $(CFLAGS) -o $@ example.o $(TEST_LDFLAGS)
++	$(CC) $(CFLAGS) -o $@ example.o $(TEST_LDFLAGS) -L. libz.a
+ 
+ minigzip$(EXE): minigzip.o $(STATICLIB)
+-	$(CC) $(CFLAGS) -o $@ minigzip.o $(TEST_LDFLAGS)
++	$(CC) $(CFLAGS) -o $@ minigzip.o $(TEST_LDFLAGS) -L. libz.a
+ 
+ examplesh$(EXE): example.o $(SHAREDLIBV)
+-	$(CC) $(CFLAGS) -o $@ example.o -L. $(SHAREDLIBV)
++	$(CC) $(CFLAGS) -o $@ example.o $(TEST_LDFLAGS) -L. $(SHAREDLIBV)
+ 
+ minigzipsh$(EXE): minigzip.o $(SHAREDLIBV)
+-	$(CC) $(CFLAGS) -o $@ minigzip.o -L. $(SHAREDLIBV)
++	$(CC) $(CFLAGS) -o $@ minigzip.o $(TEST_LDFLAGS) -L. $(SHAREDLIBV)
+ 
+ example64$(EXE): example64.o $(STATICLIB)
+-	$(CC) $(CFLAGS) -o $@ example64.o $(TEST_LDFLAGS)
++	$(CC) $(CFLAGS) -o $@ example64.o $(TEST_LDFLAGS) -L. libz.a
+ 
+ minigzip64$(EXE): minigzip64.o $(STATICLIB)
+-	$(CC) $(CFLAGS) -o $@ minigzip64.o $(TEST_LDFLAGS)
++	$(CC) $(CFLAGS) -o $@ minigzip64.o $(TEST_LDFLAGS) -L. libz.a
+ 
+ install-libs: $(LIBS)
+ 	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi

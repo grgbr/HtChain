@@ -1,0 +1,11 @@
+--- a/testing/test_assertion.py	2023-01-09 18:32:24.513195238 +0100
++++ b/testing/test_assertion.py	2023-01-09 18:33:41.711537180 +0100
+@@ -1664,7 +1664,7 @@
+     """
+     )
+     result = pytester.runpytest()
+-    if sys.version_info >= (3, 11):
++    if sys.version_info >= (3, 10):
+         # python 3.11 has native support for un-str-able exceptions
+         result.stdout.fnmatch_lines(
+             ["E       AssertionError: <exception str() failed>"]

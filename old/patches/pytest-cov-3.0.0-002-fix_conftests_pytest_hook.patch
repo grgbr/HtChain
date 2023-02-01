@@ -1,0 +1,11 @@
+--- a/src/pytest_cov/plugin.py	2023-01-08 22:06:10.900985414 +0100
++++ b/src/pytest_cov/plugin.py	2023-01-08 22:06:29.192769385 +0100
+@@ -133,7 +133,7 @@
+     return None if True in cov_source else [path for path in cov_source if path is not True]
+ 
+ 
+-@pytest.mark.tryfirst
++@pytest.hookimpl(tryfirst=True)
+ def pytest_load_initial_conftests(early_config, parser, args):
+     options = early_config.known_args_namespace
+     no_cov = options.no_cov_should_warn = False

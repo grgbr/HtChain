@@ -1,0 +1,14 @@
+--- a/t/porting/libperl.t	2022-06-16 08:24:45.165594471 +0200
++++ b/t/porting/libperl.t	2022-06-16 08:25:21.733164153 +0200
+@@ -111,9 +111,9 @@
+ 
+ if (defined $nm_style) {
+     if ($nm_style eq 'gnu') {
+-        $nm = '/usr/bin/nm';
++        $nm = "$Config{nm}";
+     } elsif ($nm_style eq 'darwin') {
+-        $nm = '/usr/bin/nm';
++        $nm = "$Config{nm}";
+         # With the -m option we get better information than the BSD-like
+         # default: with the default, a lot of symbols get dumped into 'S'
+         # or 's', for example one cannot tell the difference between const

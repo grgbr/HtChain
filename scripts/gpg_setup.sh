@@ -14,6 +14,18 @@ PYTHON_SRC_KEY_URL="https://keybase.io/pablogsal/pgp_keys.asc"
 # packages.
 # Uses MIT key server instead.
 GPG_KEY_SERVER="--keyserver hkps://pgp.mit.edu"
+#GPG_KEY_SERVER="--keyserver hkps://keys.openpgp.org"
+
+# Karel Zak GPG public key for util-linux source releases
+# (fingerprint E4B71D5EEC39C284)
+# For more infos about kernel developpers GPG key ring, see
+# https://korg.docs.kernel.org/pgpkeys.html
+UTIL_LINUX_SRC_KEY_URL="https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/plain/keys/E4B71D5EEC39C284.asc"
+
+# Daniel Stenberg GPG public key for curl source releases
+# For more infos about Curl GPG key ring, see
+# https://daniel.haxx.se/address.html
+CURL_SRC_KEY_URL="https://daniel.haxx.se/mykey.asc"
 
 log()
 {
@@ -130,6 +142,16 @@ fi
 
 if ! gpg_fetch_import_key "Python source releases GPG public key" \
                           "$PYTHON_SRC_KEY_URL"; then
+	exit 1
+fi
+
+if ! gpg_fetch_import_key "Util-linux source releases GPG public key" \
+                          "$UTIL_LINUX_SRC_KEY_URL"; then
+	exit 1
+fi
+
+if ! gpg_fetch_import_key "Curl source releases GPG public key" \
+                          "$CURL_SRC_KEY_URL"; then
 	exit 1
 fi
 

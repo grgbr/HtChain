@@ -2,22 +2,56 @@ OUTDIR   := $(CURDIR)/out
 FETCHDIR := $(OUTDIR)/fetch
 PREFIX   := /opt/htchain
 DESTDIR  :=
+PKGNAME  := HtChain
 DEBDIST  :=
 DEBORIG  := $(shell hostname --short)
 DEBMAIL  := $(USER)@$(shell hostname --short)
+V        :=
+
+ifeq ($(strip $(V)),)
+.SILENT:
+MAKEFLAGS += --silent --no-print-directory
+verbose   := >/dev/null
+endif
 
 # As of gcc 10.2.1 -fvtable-verify cannot be specified together with lto
 # See https://gcc.gnu.org/legacy-ml/gcc-patches/2019-09/msg00222.html
 
-MACHINE_CFLAGS  := -march=native
-MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
-OPTIM_CFLAGS    := -DNDEBUG -O2 -flto=auto -fuse-linker-plugin
-OPTIM_LDFLAGS   := $(OPTIM_CFLAGS)
-HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=2 \
-                   -fpie \
-                   -fstack-protector-strong -fstack-clash-protection \
-                   -fcf-protection=full
-HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
+#MACHINE_CFLAGS  := -march=native
+#MACHINE_LDFLAGS := $(MACHINE_CFLAGS)
+#OPTIM_CFLAGS    := -DNDEBUG -O2 -flto=auto -fuse-linker-plugin
+#OPTIM_LDFLAGS   := $(OPTIM_CFLAGS) -Wl,-z,combreloc -Wl,--hash-style=gnu
+#HARDEN_CFLAGS   := -D_FORTIFY_SOURCE=3 \
+#                   -fstack-protector-strong --param=ssp-buffer-size=4 \
+#                   -fstack-clash-protection -fcf-protection=full \
+#                   -mcet-switch -mshstk \
+#                   -fPIE -fasynchronous-unwind-tables \
+#HARDEN_CXXFLAGS := $(HARDEN_CFLAGS) -fexceptions
+#HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
+#                   -Wl,-z,separate-code -Wl,-z,ibt -Wl,-z,shstk
+
+BUILD_AS            := as
+BUILD_CC            := gcc
+BUILD_CXX           := g++
+BUILD_AR            := gcc-ar
+BUILD_NM            := gcc-nm
+BUILD_RANLIB        := gcc-ranlib
+BUILD_OBJCOPY       := objcopy
+BUILD_OBJDUMP       := objdump
+BUILD_READELF       := readelf
+BUILD_STRIP         := strip
+BUILD_M4            := m4
+
+BUILD_MACHINE_FLAGS := -march=native
+BUILD_CPPFLAGS      := $(BUILD_MACHINE_FLAGS) -DNDEBUG
+BUILD_CFLAGS        := $(BUILD_CPPFLAGS) -O2 -g -flto=auto -fuse-linker-plugin
+BUILD_CXXFLAGS      := $(BUILD_CFLAGS)
+BUILD_LDFLAGS       := $(BUILD_CFLAGS) -Wl,-z,combreloc -Wl,--hash-style=gnu
+
+# FIXMEEEEEEE ! Do we really need this ???
+# Build host pkg-config default system-wide search path. This is useful to probe
+# for system components we depend on.
+#SYS_PKG_CONFIG_PATH := $(shell pkg-config --variable pc_path pkg-config)
 
 ################################################################################
 # Do not touch these unless you really known what you are doing...
@@ -25,12 +59,17 @@ HARDEN_LDFLAGS  := -pie -Wl,-z,now -Wl,-z,relro -Wl,-z,noexecstack
 
 TOPDIR            := $(CURDIR)
 override OUTDIR   := $(strip $(OUTDIR))
+override PATCHDIR := $(strip $(TOPDIR)/patches)
 override FETCHDIR := $(strip $(FETCHDIR))
 override PREFIX   := $(strip $(PREFIX))
 override DESTDIR  := $(strip $(DESTDIR))
 override DEBDIST  := $(strip $(DEBDIST))
 override DEBORIG  := $(strip $(DEBORIG))
 override DEBMAIL  := $(strip $(DEBMAIL))
+
+# Location where to find various script utilities
+scriptdir := $(TOPDIR)/scripts
+override VERSION  := $(shell $(scriptdir)/localversion.sh)
 
 ifeq ($(strip $(JOBS)),)
 # Compute number of available CPUs.
@@ -55,18 +94,244 @@ endif
 srcdir          := $(outdir)/src
 # Where compile / link happens
 builddir        := $(outdir)/build
-# Install destination base directory
+# Temporary install directory (mainly for uninstall usage)
+installdir      := $(outdir)/install
+# Compiler bootstrapping area base directory
+bstrapdir       := $(outdir)/bstrap
+# Staging install destination base directory
 stagedir        := $(outdir)/stage
+# Final install destination base directory
+finaldir        := $(outdir)/final
 # Pathname to base directory used to build debian package.
 debdir          := $(outdir)/debian
 # Base timestamps directory location
 stampdir        := $(outdir)/stamp
 
-# TODO: make flex depend on bison
-projects := make m4 autoconf automake libtool kconfig-frontends pkg-config \
-            gperf bison flex gcc cmake bmake ncurses python ninja meson
+o_flags     := -O%
+ssp_flags   := -fstack-protector% -fstack-clash-protection
+pie_flags   := -fpie -fPIE -pie
+lto_flags   := -flto% -ffat-lto%
+rpath_flags := -Wl,-rpath%
 
-.NOTPARALLEL:
+#
+# Bootstrapping flags
+#
+
+bstrap_ar           := $(bstrapdir)/bin/ar
+bstrap_nm           := $(bstrapdir)/bin/nm
+bstrap_ranlib       := $(bstrapdir)/bin/ranlib
+bstrap_objcopy      := $(bstrapdir)/bin/objcopy
+bstrap_objdump      := $(bstrapdir)/bin/objdump
+bstrap_readelf      := $(bstrapdir)/bin/readelf
+bstrap_strip        := $(bstrapdir)/bin/strip
+bstrap_as           := $(bstrapdir)/bin/as
+bstrap_cc           := $(bstrapdir)/bin/gcc
+bstrap_cxx          := $(bstrapdir)/bin/g++
+bstrap_ld           := $(bstrapdir)/bin/ld
+bstrap_m4           := $(bstrapdir)/bin/m4
+bstrap_cppflags     := -I$(bstrapdir)/include
+bstrap_cflags       := $(bstrap_cppflags) -O2
+bstrap_cxxflags     := $(bstrap_cflags)
+bstrap_ldflags      := $(bstrap_cflags) -L$(bstrapdir)/lib
+
+_bstrap_lib64_path    := $(bstrapdir)/lib64
+_bstrap_lib64_ldflags := -L$(_bstrap_lib64_path) -Wl,-rpath,$(_bstrap_lib64_path)
+_bstrap_lib_path      := $(bstrapdir)/lib
+_bstrap_lib_ldflags   := -L$(_bstrap_lib_path) -Wl,-rpath,$(_bstrap_lib_path)
+
+define bstrap_lib_ldflags
+$(if $(mach_is_64bits),$(_bstrap_lib64_ldflags)) $(_bstrap_lib_ldflags)
+endef
+
+define bstrap_lib_path
+$(if $(mach_is_64bits),$(_bstrap_lib64_path):)$(_bstrap_lib_path)
+endef
+
+# $(1): list of preprocessor / compile / link flags to exclude
+define bstrap_config_flags
+AR='$(BUILD_AR)' \
+NM='$(BUILD_NM)' \
+RANLIB='$(BUILD_RANLIB)' \
+OBJCOPY='$(BUILD_OBJCOPY)' \
+OBJDUMP='$(BUILD_OBJDUMP)' \
+READELF='$(BUILD_READELF)' \
+STRIP='$(BUILD_STRIP)' \
+AS='$(BUILD_AS)' \
+CC='$(BUILD_CC)' \
+CXX='$(BUILD_CXX)' \
+M4='$(bstrap_m4)' \
+CPPFLAGS='$(call xclude_flags,$(1),$(bstrap_cppflags))' \
+CFLAGS='$(call xclude_flags,$(1),$(bstrap_cflags))' \
+CXXFLAGS='$(call xclude_flags,$(1),$(bstrap_cxxflags))' \
+LDFLAGS='$(call xclude_flags,$(1),$(bstrap_ldflags))'
+endef
+
+#
+# Staging flags
+#
+
+_stage_lib64_path     := $(stagedir)/lib64
+_stage_lib64_ldflags  := -L$(_stage_lib64_path) -Wl,-rpath,$(_stage_lib64_path)
+_stage_lib_path       := $(stagedir)/lib
+_stage_lib_ldflags    := -L$(_stage_lib_path) -Wl,-rpath,$(_stage_lib_path)
+
+define stage_lib_ldflags
+$(if $(mach_is_64bits),$(_stage_lib64_ldflags)) $(_stage_lib_ldflags)
+endef
+
+define stage_lib_path
+$(if $(mach_is_64bits),$(_stage_lib64_path):)$(_stage_lib_path)
+endef
+
+stage_ar              := $(stagedir)/bin/ar
+stage_nm              := $(stagedir)/bin/nm
+stage_ranlib          := $(stagedir)/bin/ranlib
+stage_objcopy         := $(stagedir)/bin/objcopy
+stage_objdump         := $(stagedir)/bin/objdump
+stage_readelf         := $(stagedir)/bin/readelf
+stage_strip           := $(stagedir)/bin/strip
+stage_pkg-config      := $(stagedir)/bin/pkg-config
+stage_as              := $(stagedir)/bin/as
+stage_cc              := $(stagedir)/bin/gcc
+stage_cxx             := $(stagedir)/bin/g++
+stage_ld              := $(stagedir)/bin/ld
+stage_m4              := $(stagedir)/bin/m4
+stage_perl            := $(stagedir)/bin/perl
+stage_tclsh           := $(stagedir)/bin/tclsh
+stage_expect          := $(stagedir)/bin/expect
+stage_runtest         := $(stagedir)/bin/runtest
+stage_python          := $(stagedir)/bin/python
+stage_xgettext        := $(stagedir)/bin/xgettext
+stage_msgfmt          := $(stagedir)/bin/msgfmt
+stage_gmsgfmt         := $(stagedir)/bin/msgfmt
+stage_msgmerge        := $(stagedir)/bin/msgmerge
+stage_makeinfo        := $(stagedir)/bin/makeinfo
+stage_bison           := $(stagedir)/bin/bison
+stage_yacc            := $(stagedir)/bin/bison -y
+stage_flex            := $(stagedir)/bin/flex
+stage_gperf           := $(stagedir)/bin/gperf
+stage_help2man        := $(stagedir)/bin/help2man
+stage_pod2man         := $(stagedir)/bin/pod2man
+stage_libtool         := $(stagedir)/bin/libtool
+stage_chrpath         := $(stagedir)/bin/chrpath
+stage_ninja           := $(stagedir)/bin/ninja
+stage_meson           := $(stagedir)/bin/meson
+stage_cppflags        := -I$(stagedir)/include $(BUILD_CPPFLAGS)
+stage_cflags          := -I$(stagedir)/include $(BUILD_CFLAGS)
+stage_cxxflags        := -I$(stagedir)/include $(BUILD_CXXFLAGS)
+stage_ldflags          = $(BUILD_LDFLAGS) $(stage_lib_ldflags)
+
+# $(1): list of preprocessor / compile / link flags to exclude
+define stage_config_flags
+AR='$(stage_ar)' \
+NM='$(stage_nm)' \
+RANLIB='$(stage_ranlib)' \
+OBJCOPY='$(stage_objcopy)' \
+OBJDUMP='$(stage_objdump)' \
+READELF='$(stage_readelf)' \
+STRIP='$(stage_strip)' \
+PKG_CONFIG='$(stage_pkg-config)' \
+AS='$(stage_as)' \
+CC='$(stage_cc)' \
+CXX='$(stage_cxx)' \
+M4='$(stage_m4)' \
+PERL='$(stage_perl)' \
+TCLSH_PROG='$(stage_tclsh)' \
+TCLSH_CMD='$(stage_tclsh)' \
+EXPECT='$(stage_expect)' \
+RUNTEST='$(stage_runtest)' \
+PYTHON='$(stage_python)' \
+XGETTEXT=':' \
+MSGFMT=':' \
+GMSGFMT=':' \
+MSGFMT=':' \
+MAKEINFO='true' \
+BISON='$(stage_bison)' \
+YACC='$(stage_yacc)' \
+FLEX='$(stage_flex)' \
+LEX='$(stage_flex)' \
+GPERF='$(stage_gperf)' \
+HELP2MAN='true' \
+POD2MAN=':' \
+NINJA='$(stage_ninja)' \
+MESON='$(stage_meson)' \
+CPPFLAGS='$(call xclude_flags,$(1),$(stage_cppflags))' \
+CFLAGS='$(call xclude_flags,$(1),$(stage_cflags))' \
+CXXFLAGS='$(call xclude_flags,$(1),$(stage_cxxflags))' \
+LDFLAGS='$(call xclude_flags,$(1),$(stage_ldflags))'
+endef
+
+#
+# Final flags
+#
+
+_final_lib64_ldflags := -L$(finaldir)$(PREFIX)/lib64 \
+                        -L$(finaldir)$(PREFIX)/lib \
+                        -L$(_stage_lib64_path) \
+                        -L$(_stage_lib_path) \
+                        -Wl,-rpath,$(PREFIX)/lib \
+                        -Wl,-rpath,$(PREFIX)/lib64
+_final_lib_ldflags   := -L$(finaldir)$(PREFIX)/lib \
+                        -L$(_stage_lib_path) \
+                        -Wl,-rpath,$(PREFIX)/lib
+
+define final_lib_ldflags
+$(if $(mach_is_64bits),$(_final_lib64_ldflags),$(_final_lib_ldflags))
+endef
+
+final_lib_path       := $(PREFIX)/lib:$(PREFIX)/lib64
+
+final_cppflags       := -I$(finaldir)$(PREFIX)/include \
+                        -I$(stagedir)/include \
+                        $(BUILD_CPPFLAGS)
+final_cflags         := -I$(finaldir)$(PREFIX)/include \
+                        -I$(stagedir)/include \
+                        $(BUILD_CFLAGS)
+final_cxxflags       := -I$(finaldir)$(PREFIX)/include \
+                        -I$(stagedir)/include \
+                        $(BUILD_CXXFLAGS)
+final_ldflags         = $(BUILD_LDFLAGS) $(final_lib_ldflags)
+
+# $(1): list of preprocessor / compile / link flags to exclude
+define final_config_flags
+AR='$(stage_ar)' \
+NM='$(stage_nm)' \
+RANLIB='$(stage_ranlib)' \
+OBJCOPY='$(stage_objcopy)' \
+OBJDUMP='$(stage_objdump)' \
+READELF='$(stage_readelf)' \
+STRIP='$(stage_strip)' \
+PKG_CONFIG='$(stage_pkg-config)' \
+AS='$(stage_as)' \
+CC='$(stage_cc)' \
+CXX='$(stage_cxx)' \
+M4='$(stage_m4)' \
+PERL='$(stage_perl)' \
+TCLSH_PROG='$(stage_tclsh)' \
+TCLSH_CMD='$(stage_tclsh)' \
+EXPECT='$(stage_expect)' \
+RUNTEST='$(stage_runtest)' \
+PYTHON='$(stage_python)' \
+XGETTEXT='$(stage_xgettext)' \
+MSGFMT='$(stage_msgfmt)' \
+GMSGFMT='$(stage_gmsgfmt)' \
+MSGFMT='$(stage_msgmerge)' \
+MAKEINFO='$(stage_makeinfo)' \
+BISON='$(stage_bison)' \
+YACC='$(stage_yacc)' \
+FLEX='$(stage_flex)' \
+LEX='$(stage_flex)' \
+HELP2MAN='$(stage_help2man)' \
+POD2MAN='$(stage_pod2man)' \
+LIBTOOL='$(stage_libtool)' \
+PATH="$(stagedir)/bin:$(PATH)" \
+CPPFLAGS='$(call xclude_flags,$(1),$(final_cppflags))' \
+CFLAGS='$(call xclude_flags,$(1),$(final_cflags))' \
+CXXFLAGS='$(call xclude_flags,$(1),$(final_cxxflags))' \
+LDFLAGS='$(call xclude_flags,$(1),$(final_ldflags))'
+endef
+
+module_mkfiles  := $(wildcard modules/*.mk)
 
 include helpers.mk
 
@@ -74,234 +339,114 @@ ifeq ($(DEBDIST),)
 
 MAKEFLAGS += --jobs $(JOBS)
 
-.PHONY: setup
-setup: setup-pkgs setup-sigs
-.PHONY: setup-pkgs
-setup-pkgs:
-	$(call setup_pkgs_cmds)
-.PHONY: setup-sigs
-setup-sigs:
-	$(call setup_sigs_cmds)
+include rules.mk
+include $(module_mkfiles)
 
-define make_cmd
-	+$(MAKE) --directory="$(1)" \
-	         $(2) \
-	         TOPDIR="$(TOPDIR)" \
-	         OUTDIR="$(OUTDIR)" \
-	         FETCHDIR="$(FETCHDIR)" \
-	         SRCDIR="$(srcdir)/$(1)" \
-	         BUILDDIR="$(builddir)/$(1)" \
-	         STAGEDIR="$(stagedir)" \
-	         STAMPDIR="$(stampdir)/$(1)" \
-	         PREFIX="$(PREFIX)" \
-	         MACHINE_CFLAGS="$(MACHINE_CFLAGS)" \
-	         MACHINE_LDFLAGS="$(MACHINE_LDFLAGS)" \
-	         OPTIM_CFLAGS="$(OPTIM_CFLAGS)" \
-	         OPTIM_LDFLAGS="$(OPTIM_LDFLAGS)" \
-	         HARDEN_CFLAGS="$(HARDEN_CFLAGS)" \
-	         HARDEN_LDFLAGS="$(HARDEN_LDFLAGS)"
-endef
+.PHONY: bstrap
+bstrap: $(bstrap_targets)
+	$(call rmrf,$(bstrapdir)/share/doc)
+	$(call rmrf,$(bstrapdir)/share/info)
+	$(call rmrf,$(bstrapdir)/share/man)
+	$(scriptdir)/strip.sh $(bstrapdir)
 
-.PHONY: all
-all: $(projects)
+.PHONY: clobber-bstrap
+clobber-bstrap:
+	$(foreach d,$(wildcard $(stampdir)/bstrap-*),$(call rmrf,$(d))$(newline))
+	$(foreach d,$(wildcard $(builddir)/bstrap-*),$(call rmrf,$(d))$(newline))
+	$(foreach d,$(wildcard $(installdir)/bstrap-*),$(call rmrf,$(d))$(newline))
+	$(call rmrf,$(bstrapdir))
 
-.PHONY: fetch
-fetch: $(addprefix $(OUTDIR)/stamp/,$(addsuffix /fetched,$(projects)))
-$(addprefix $(OUTDIR)/stamp/,$(addsuffix /fetched,$(projects))):
-	$(call make_cmd,$(patsubst $(OUTDIR)/stamp/%/fetched,%,$(@)),fetch)
-.PHONY: $(addprefix fetch-,$(projects))
-$(addprefix fetch-,$(projects)):
-	$(call rmf,$(OUTDIR)/stamp/$(subst fetch-,,$(@))/fetched)
-	$(call make_cmd,$(subst fetch-,,$(@)),fetch)
+.PHONY: list-bstrap-modules
+list-bstrap-modules:
+	@$(foreach t,$(sort $(bstrap_targets)),echo $(t);)
 
-.PHONY: xtract
-xtract: $(addprefix $(stampdir)/,$(addsuffix /xtracted,$(projects)))
-$(addprefix $(stampdir)/,$(addsuffix /xtracted,$(projects))):
-	$(call make_cmd,$(patsubst $(stampdir)/%/xtracted,%,$(@)),xtract)
-.PHONY: $(addprefix xtract-,$(projects))
-$(addprefix xtract-,$(projects)):
-	$(call rmf,$(stampdir)/$(subst xtract-,,$(@))/xtracted)
-	$(call make_cmd,$(subst xtract-,,$(@)),xtract)
+.PHONY: stage
+stage: $(stage_targets)
+	$(call rmrf,$(stagedir)/share/doc)
+	$(call rmrf,$(stagedir)/share/gtk-doc)
+	$(call rmrf,$(stagedir)/share/info)
+	$(call rmrf,$(stagedir)/share/man)
+	$(scriptdir)/strip.sh $(stagedir)
 
-.PHONY: config
-config: $(addprefix $(stampdir)/,$(addsuffix /configured,$(projects)))
-$(addprefix $(stampdir)/,$(addsuffix /configured,$(projects))):
-	$(call make_cmd,$(patsubst $(stampdir)/%/configured,%,$(@)),config)
-.PHONY: $(addprefix config-,$(projects))
-$(addprefix config-,$(projects)):
-	$(call rmf,$(stampdir)/$(subst config-,,$(@))/configured)
-	$(call make_cmd,$(subst config-,,$(@)),config)
-
-.PHONY: clobber
-clobber:
-	$(call rmrf,$(outdir))
-$(addprefix clobber-,$(projects)): clobber-%:
-	$(call make_cmd,$(subst clobber-,,$(@)),clobber)
-
-.PHONY: build
-build: $(addprefix $(stampdir)/,$(addsuffix /built,$(projects)))
-$(addprefix $(stampdir)/,$(addsuffix /built,$(projects))):
-	$(call make_cmd,$(patsubst $(stampdir)/%/built,%,$(@)),build)
-.PHONY: $(addprefix build-,$(projects))
-$(addprefix build-,$(projects)):
-	$(call rmf,$(stampdir)/$(subst build-,,$(@))/built)
-	$(call make_cmd,$(subst build-,,$(@)),build)
-
-.PHONY: clean
-clean: $(addprefix clean-,$(projects))
-$(addprefix clean-,$(projects)): clean-%:
-	$(call make_cmd,$(subst clean-,,$(@)),clean)
-
-.PHONY: install
-install: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects)))
-$(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))):
-	$(call make_cmd,$(patsubst $(stampdir)/%/installed,%,$(@)),install)
-.PHONY: $(addprefix install-,$(projects))
-$(addprefix install-,$(projects)):
-	$(call rmf,$(stampdir)/$(subst install-,,$(@))/installed)
-	$(call make_cmd,$(subst install-,,$(@)),install)
-
-.PHONY: $(projects)
-$(projects): %: $(stampdir)/%/installed
-
-.PHONY: uninstall
-uninstall:
-	find $(stampdir) -maxdepth 2 -name installed -delete
+.PHONY: clobber-stage
+clobber-stage:
+	$(foreach d,$(wildcard $(stampdir)/stage-*),$(call rmrf,$(d))$(newline))
+	$(foreach d,$(wildcard $(builddir)/stage-*),$(call rmrf,$(d))$(newline))
+	$(foreach d,$(wildcard $(installdir)/stage-*),$(call rmrf,$(d))$(newline))
 	$(call rmrf,$(stagedir))
-$(addprefix uninstall-,$(projects)): uninstall-%:
-	$(call make_cmd,$(subst uninstall-,,$(@)),uninstall)
 
-.PHONY: mproper
-mrproper: uninstall
-	$(call rmrf,$(OUTDIR))
+.PHONY: list-stage-modules
+list-stage-modules:
+	@$(foreach t,$(sort $(stage_targets)),echo $(t);)
 
-.PHONY: deploy
-deploy: $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects)))
-	$(call mirror_cmd,$(stagedir)$(PREFIX),$(DESTDIR)$(PREFIX))
-	$(call strip_cmd,$(DESTDIR)$(PREFIX))
+.PHONY: final
+final: $(final_targets)
+	$(scriptdir)/strip.sh $(finaldir)
 
-version    := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
-debarch    := $(shell dpkg --print-architecture)
-debbindeps := $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
-debfile    := $(outdir)/htchain_$(version)_$(debarch).deb
+.PHONY: clobber-final
+clobber-final:
+	$(foreach d,$(wildcard $(stampdir)/final-*),$(call rmrf,$(d))$(newline))
+	$(foreach d,$(wildcard $(builddir)/final-*),$(call rmrf,$(d))$(newline))
+	$(foreach d,$(wildcard $(installdir)/final-*),$(call rmrf,$(d))$(newline))
+	$(call rmrf,$(finaldir))
 
-.PHONY: debian
-debian: $(debfile)
-$(debfile): $(addprefix $(stampdir)/,$(addsuffix /installed,$(projects))) \
-            $(TOPDIR)/debian/control.in \
-            Makefile
-	$(call rmrf,$(debdir))
-	$(MKDIR) --parents --mode=755 $(debdir)$(PREFIX)
-	$(call _mirror_cmd,$(stagedir)$(PREFIX),$(debdir)$(PREFIX))
-	$(call strip_cmd,$(debdir)$(PREFIX))
-	$(MKDIR) --mode=755 $(debdir)/DEBIAN
-	umask=0022 && \
-	sed --expression='s/@@DEBVERS@@/$(version)/g' \
-	    --expression='s/@@DEBDIST@@/$(debdist)/g' \
-	    --expression='s/@@DEBORIG@@/$(DEBORIG)/g' \
-	    --expression='s/@@DEBARCH@@/$(debarch)/g' \
-	    --expression='s/@@DEBMAIL@@/$(DEBMAIL)/g' \
-	    --expression='s/@@DEBBINDEPS@@/$(debbindeps)/g' \
-	    $(TOPDIR)/debian/control.in > $(debdir)/DEBIAN/control
-	fakeroot dpkg-deb --build "$(debdir)" "$(outdir)"
+.PHONY: list-final-modules
+list-final-modules:
+	@$(foreach t,$(sort $(final_targets)),echo $(t);)
 
-else  #!ifeq ($(DEBDIST),)
+.PHONY: list-all-modules
+list-all-modules:
+	@$(foreach t,$(sort $(all_targets)),echo $(t);)
 
+include doc.mk
+
+else  # !($(DEBDIST),)
+
+# Docker, since version 20.03, basically defines that unprivileged ports start
+# at 0 instead of 1024 so that even when the net_bind_service capability is
+# dropped, network services may bind to conventional privileged ports.
+# This is why the --sysctl option is given (running sysctl from within the
+# container will fail since disallowed by Docker).
+#
+# This is required to ensure that TCL testsuite completes properly. Otherwise,
+# some socket related tests (socket_inet and co.) would complain with the
+# following error message:
+#     `htons problem, should be disallowed, are you running as SU?'
 define dock_run_cmd
-	docker run \
-	       --rm=true \
-	       --volume $(TOPDIR):$(TOPDIR):ro \
-	       --volume $(OUTDIR):$(OUTDIR):rw \
-	       --tty=true \
-	       --interactive=true \
-	       --env="HTCHAIN_UID=$$(id -u)" \
-	       --env="HTCHAIN_USER=$$(id -un)" \
-	       --env="HTCHAIN_GID=$$(id -g)" \
-	       --env="HTCHAIN_GROUP=$$(id -gn)" \
-	       --env="HTCHAIN_HOME=$(HOME)" \
-	       --entrypoint="$(TOPDIR)/scripts/dock_start.sh" \
-	       "htchain:$(strip $(1))" \
-	       make --directory="$(TOPDIR)" \
-	            $(2) \
-	            JOBS="$(JOBS)" \
-	            OUTDIR="$(OUTDIR)" \
-	            FETCHDIR="$(FETCHDIR)" \
-	            PREFIX="$(PREFIX)" \
-	            DESTDIR="$(DESTDIR)" \
-	            DEBDIST= \
-	            DEBORIG="$(DEBORIG)" \
-	            DEBMAIL="$(DEBMAIL)"
+docker run \
+       --rm=true \
+       --sysctl="net.ipv4.ip_unprivileged_port_start=1024" \
+       --volume $(HOME):$(HOME):ro \
+       --volume $(TOPDIR):$(TOPDIR):ro \
+       --volume $(OUTDIR):$(OUTDIR):rw \
+       --tty=true \
+       --interactive=true \
+       --env="HTCHAIN_UID=$$(id -u)" \
+       --env="HTCHAIN_USER=$$(id -un)" \
+       --env="HTCHAIN_GID=$$(id -g)" \
+       --env="HTCHAIN_GROUP=$$(id -gn)" \
+       --env="HTCHAIN_HOME=$(HOME)" \
+       --entrypoint='$(TOPDIR)/scripts/dock_start.sh' \
+       "htchain:$(strip $(1))" \
+       $(2)
 endef
 
-.PHONY: all
-all: $(projects)
-
-.PHONY: fetch
-fetch: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),fetch)
-.PHONY: $(addprefix fetch-,$(projects))
-$(addprefix fetch-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: xtract
-xtract: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),xtract)
-.PHONY: $(addprefix xtract-,$(projects))
-$(addprefix xtract-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: config
-config: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),config)
-.PHONY: $(addprefix config-,$(projects))
-$(addprefix config-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: clobber
-clobber:
-	$(call rmrf,$(OUTDIR)/$(DEBDIST))
-.PHONY: $(addprefix clobber-,$(projects))
-$(addprefix clobber-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: build
-build: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),build)
-.PHONY: $(addprefix build-,$(projects))
-$(addprefix build-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: clean
-clean: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),clean)
-.PHONY: $(addprefix clean-,$(projects))
-$(addprefix clean-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: install
-install: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),install)
-.PHONY: $(addprefix install-,$(projects))
-$(addprefix install-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: uninstall
-uninstall: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),uninstall)
-.PHONY: $(addprefix uninstall-,$(projects))
-$(addprefix uninstall-,$(projects)): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),$(@))
-
-.PHONY: $(projects)
-$(projects): %: install-%
-
-.PHONY: deploy
-deploy: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),deploy)
-
-.PHONY: debian
-debian: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
-	$(call dock_run_cmd,$(DEBDIST),debian)
+define dock_run_make
+$(call dock_run_cmd,\
+       $(1),\
+       make $(filter --silent --no-print-directory,$(MAKEFLAGS)) \
+            --directory="$(TOPDIR)" \
+            $(2) \
+            JOBS="$(JOBS)" \
+            OUTDIR="$(OUTDIR)" \
+            FETCHDIR="$(FETCHDIR)" \
+            PREFIX="$(PREFIX)" \
+            DESTDIR="$(DESTDIR)" \
+            DEBDIST= \
+            DEBORIG="$(DEBORIG)" \
+            DEBMAIL="$(DEBMAIL)" \
+            V=$(V))
+endef
 
 $(OUTDIR)/$(DEBDIST)/stamp/docker-ready: $(OUTDIR)/$(DEBDIST)/build/Dockerfile \
                                          | $(OUTDIR)/$(DEBDIST)/stamp
@@ -321,4 +466,14 @@ $(OUTDIR)/$(DEBDIST)/build/Dockerfile: $(TOPDIR)/Dockerfile.in \
 $(OUTDIR)/$(DEBDIST)/build $(OUTDIR)/$(DEBDIST)/stamp:
 	$(call mkdir,$(@))
 
-endif #ifeq ($(DEBDIST),)
+.PHONY: shell
+shell: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST))
+
+_goals := $(filter-out $(OUTDIR)% $(TOPDIR)% shell,$(MAKECMDGOALS))
+
+.PHONY: $(_goals)
+$(_goals): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_make,$(DEBDIST),$(@))
+
+endif # ($(DEBDIST),)

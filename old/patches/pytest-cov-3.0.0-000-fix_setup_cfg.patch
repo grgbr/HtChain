@@ -1,0 +1,11 @@
+--- a/setup.cfg	2021-10-04 03:48:46.417629200 +0200
++++ b/setup.cfg	2023-01-06 12:46:50.183694584 +0100
+@@ -7,7 +7,7 @@
+ python_files = test_*.py
+ addopts = 
+ 	-ra
+-	--strict
++	--strict-markers
+ 	-p pytester
+ 
+ [tool:isort]

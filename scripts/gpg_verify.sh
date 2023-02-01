@@ -6,6 +6,7 @@
 # packages.
 # Uses MIT key server instead.
 GPG_KEY_SERVER="--keyserver hkps://pgp.mit.edu"
+#GPG_KEY_SERVER="--keyserver hkps://keys.openpgp.org"
 
 log()
 {
@@ -95,7 +96,7 @@ if [ $# -eq 2 ]; then
 else
 	data_file="$1"
 fi
-if [ ! -f "$data_file" ]; then
+if [ ! -r "$data_file" ]; then
 	log "Invalid data file: '$data_file': No such file."
 	exit 1
 fi

@@ -1,0 +1,95 @@
+# Python install make target relies upon ensurepip which does not properly
+# handle --root destination directory based installation.
+# We may end up in the situation where Python modules don't get installed if
+# they are already deployed into final prefix'ed destination.
+#
+# This patch is a dirty hack to enforce installation of Python modules at pip
+# bootstrapping time.
+#
+# See issue https://bugs.python.org/issue31916
+# and https://github.com/pypa/pip/issues/3063
+--- a/Lib/ensurepip/__init__.py	2022-05-10 18:02:50.339538516 +0200
++++ b/Lib/ensurepip/__init__.py	2022-05-10 17:46:48.078121896 +0200
+@@ -180,7 +180,7 @@
+             additional_paths.append(filename)
+ 
+         # Construct the arguments to be passed to the pip command
+-        args = ["install", "--no-cache-dir", "--no-index", "--find-links", tmpdir]
++        args = ["install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links", tmpdir]
+         if root:
+             args += ["--root", root]
+         if upgrade:
+--- a/Lib/test/test_ensurepip.py	2022-07-02 16:26:42.348766776 +0200
++++ b/Lib/test/test_ensurepip.py	2022-07-02 16:25:41.653453180 +0200
+@@ -91,7 +91,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "setuptools", "pip",
+             ],
+             unittest.mock.ANY,
+@@ -105,7 +105,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "--root", "/foo/bar/",
+                 "setuptools", "pip",
+             ],
+@@ -117,7 +117,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "--user", "setuptools", "pip",
+             ],
+             unittest.mock.ANY,
+@@ -128,7 +128,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "--upgrade", "setuptools", "pip",
+             ],
+             unittest.mock.ANY,
+@@ -139,7 +139,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "-v", "setuptools", "pip",
+             ],
+             unittest.mock.ANY,
+@@ -150,7 +150,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "-vv", "setuptools", "pip",
+             ],
+             unittest.mock.ANY,
+@@ -161,7 +161,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "-vvv", "setuptools", "pip",
+             ],
+             unittest.mock.ANY,
+@@ -311,7 +311,7 @@
+ 
+         self.run_pip.assert_called_once_with(
+             [
+-                "install", "--no-cache-dir", "--no-index", "--find-links",
++                "install", "--ignore-installed", "--no-deps", "--no-cache-dir", "--no-index", "--find-links",
+                 unittest.mock.ANY, "setuptools", "pip",
+             ],
+             unittest.mock.ANY,

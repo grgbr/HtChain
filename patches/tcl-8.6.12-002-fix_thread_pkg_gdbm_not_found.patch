@@ -1,0 +1,24 @@
+--- a/pkgs/thread2.8.7/aclocal.m4	2022-08-05 14:13:59.984209220 +0200
++++ b/pkgs/thread2.8.7/aclocal.m4	2022-08-05 14:43:17.665268260 +0200
+@@ -28,14 +28,19 @@
+ 
+     AC_CACHE_VAL(ac_cv_c_gdbm,[
+     if test x"${with_gdbm}" != x -a "${with_gdbm}" != "yes"; then
++        ac_cv_c_gdbm=`(cd ${with_gdbm}; pwd)`
+         if test -f "${with_gdbm}/gdbm.h" -a x"`ls ${with_gdbm}/libgdbm* 2>/dev/null`" != x; then
+-            ac_cv_c_gdbm=`(cd ${with_gdbm}; pwd)`
+             gincdir=$ac_cv_c_gdbm
+             glibdir=$ac_cv_c_gdbm
+             AC_MSG_RESULT([found in $glibdir])
+         else
+-            AC_MSG_ERROR([${with_gdbm} directory doesn't contain gdbm library])
++            gincdir=$ac_cv_c_gdbm/include
++            glibdir=$ac_cv_c_gdbm/lib
++            AC_MSG_RESULT([found in $with_gdbm])
+         fi
++        AC_DEFINE(HAVE_GDBM)
++        GDBM_CFLAGS="-I\"$gincdir\""
++        GDBM_LIBS="-L\"$glibdir\" -lgdbm"
+     fi
+     ])
+     if test x"${gincdir}" = x -o x"${glibdir}" = x; then

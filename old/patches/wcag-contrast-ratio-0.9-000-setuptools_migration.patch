@@ -1,0 +1,8 @@
+--- a/setup.py	2015-07-30 22:25:27.000000000 +0200
++++ b/setup.py	2022-09-03 12:04:21.495156152 +0200
+@@ -1,4 +1,4 @@
+-from distutils.core import setup
++from setuptools import setup
+ 
+ import codecs
+ import os.path

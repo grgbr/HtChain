@@ -1,0 +1,25 @@
+From: Charlie Smotherman <cjsmo@cableone.net>
+Date: Thu, 8 Oct 2015 10:01:57 -0700
+Subject: Don't install manpage with setup.py.
+
+Use debhelper to install manpage so we can use update-alternatives to
+manage the manpages.
+
+Last-Update: 2013-03-04
+---
+ setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index a2091c0..a710b30 100644
+--- a/setup.py
++++ b/setup.py
+@@ -106,7 +106,7 @@ setup(
+     license = 'GNU LGPL',
+     keywords = 'test unittest doctest automatic discovery',
+     url = 'http://readthedocs.org/docs/nose/',
+-    data_files = [('man/man1', ['nosetests.1'])],
++    #data_files = [('man/man1', ['nosetests.1'])],
+     package_data = {'': ['*.txt',
+                          'examples/*.py',
+                          'examples/*/*.py']},

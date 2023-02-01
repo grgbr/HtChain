@@ -1,0 +1,11 @@
+# Use xpatch instead of regexpatch package as not reliable onto Debian bullseye
+--- a/doc/manual.sty	2023-01-25 23:51:04.960133742 +0100
++++ b/doc/manual.sty	2023-01-25 23:51:11.176061837 +0100
+@@ -45,6 +45,6 @@
+   \markright{\thesection\ #1}%
+ }
+ %
+-\usepackage{regexpatch}
++\usepackage{xpatch}
+ \xpatchcmd{\part}{plain}{empty}{}{}
+ 

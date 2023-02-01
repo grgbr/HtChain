@@ -1,0 +1,83 @@
+#From 8e53ffed592551a2b726b4feb9fa24e1389d75d2 Mon Sep 17 00:00:00 2001
+#From: Gavin Smith <gavinsmith0123@gmail.com>
+#Date: Mon, 5 Jul 2021 22:59:48 +0100
+#Subject: Find working locale for gettext
+#
+#* tp/Texinfo/Report.pm (gdt): If we couldn't set the locale, then
+#run "locale -a" and try the locales named one by one.  This should
+#allow the test_scripts/layout_formatting_fr_icons.sh test to
+#pass on more systems.
+#---
+# ChangeLog            |  9 +++++++++
+# tp/Texinfo/Report.pm | 35 +++++++++++++++++++++++++----------
+# 2 files changed, 34 insertions(+), 10 deletions(-)
+#
+diff --git a/ChangeLog b/ChangeLog
+index 1b3037d..ec54af3 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -1,5 +1,14 @@
+ 2021-07-03  Gavin Smith  <gavinsmith0123@gmail.com>
+ 
++	Find working locale for gettext
++
++	* tp/Texinfo/Report.pm (gdt): If we couldn't set the locale, then
++	run "locale -a" and try the locales named one by one.  This should
++	allow the test_scripts/layout_formatting_fr_icons.sh test to
++	pass on more systems.
++
++2021-07-03  Gavin Smith  <gavinsmith0123@gmail.com>
++
+ 	6.8
+ 	
+ 	* tp/Texinfo/Convert/HTML.pm: unconditionally reference MathJax
+diff --git a/tp/Texinfo/Report.pm b/tp/Texinfo/Report.pm
+index d72b5ba..a6bc5e7 100644
+--- a/tp/Texinfo/Report.pm
++++ b/tp/Texinfo/Report.pm
+@@ -244,17 +244,32 @@ sub gdt($$;$$)
+   my $saved_LC_ALL = POSIX::setlocale(LC_ALL);
+   my $saved_LANGUAGE = $ENV{'LANGUAGE'};
+ 
+-  # The following is necessary when the locale is "C" (as is the case
+-  # when the tests are run), due to the fix for
+-  #   https://rt.cpan.org/Public/Bug/Display.html?id=81315
+-  # Translation is not done if LC_MESSAGES is "C" or "POSIX".
+-  # This may not work if a locale named here doesn't exist on the system.
+-  # Set LC_ALL rather than LC_MESSAGES as LC_MESSAGES may not be supported
+-  # on Perl for MS-Windows.
+-  for my $try ('en_US.UTF-8', 'en_US') {
+-    my $locale = POSIX::setlocale(LC_ALL, $try);
+-    last if $locale;
++  # We need to set LC_MESSAGES to a valid locale other than "C" or "POSIX"
++  # for translation via LANGUAGES to work.  (The locale is "C" if the
++  # tests are being run.)
++  #   Set LC_ALL rather than LC_MESSAGES for on Perl for MS-Windows.
++
++  my $locale;
++  our $working_locale;
++  if ($working_locale) {
++    $locale = POSIX::setlocale(LC_ALL, $working_locale);
+   }
++  if (!$locale) {
++    $locale = POSIX::setlocale(LC_ALL, "en_US.UTF-8");
++  }
++  if (!$locale) {
++    $locale = POSIX::setlocale(LC_ALL, "en_US")
++  }
++  if (!$locale) {
++    my @locales = split("\n", `locale -a`);
++    for my $try (@locales) {
++      next if $try eq 'C' or $try eq 'POSIX';
++      $locale = POSIX::setlocale(LC_ALL, $try);
++      last if $locale;
++    }
++  }
++  $working_locale = $locale;
++
+ 
+   Locale::Messages::textdomain($strings_textdomain);
+ 
+-- 
+cgit v1.1
+

@@ -1,0 +1,17 @@
+# Silent setup.cfg pep8ignore option related warning since pytest-pep8 is not
+# built (no more maintained since 2014)
+--- six.orig/setup.cfg	2022-12-07 18:39:48.979720181 +0100
++++ six/setup.cfg	2022-12-07 18:40:03.623515131 +0100
+@@ -10,9 +10,9 @@
+ 
+ [tool:pytest]
+ minversion = 2.2.0
+-pep8ignore = 
+-	documentation/*.py ALL
+-	test_six.py ALL
++#pep8ignore = 
++#	documentation/*.py ALL
++#	test_six.py ALL
+ flakes-ignore = 
+ 	documentation/*.py ALL
+ 	test_six.py ALL

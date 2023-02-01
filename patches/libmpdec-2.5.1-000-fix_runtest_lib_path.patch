@@ -1,0 +1,26 @@
+--- a/tests/runshort.sh	2022-08-11 18:10:16.330894385 +0200
++++ b/tests/runshort.sh	2022-08-11 18:10:29.818752250 +0200
+@@ -44,8 +44,8 @@
+ printf "#                         libmpdec: shared library\n"
+ printf "# ========================================================================\n\n"
+ 
+-LD_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec"
+-LD_32_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec"
++LD_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec:$LD_LIBRARY_PATH"
++LD_32_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec:$LD_LIBRARY_PATH"
+ export LD_LIBRARY_PATH
+ export LD_32_LIBRARY_PATH
+ 
+--- a/tests++/runshort.sh	2022-08-11 17:39:48.335989052 +0200
++++ b/tests++/runshort.sh	2022-08-11 17:40:03.587873554 +0200
+@@ -61,8 +61,8 @@
+ printf "#                        libmpdec++: shared library\n"
+ printf "# ========================================================================\n\n"
+ 
+-LD_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec:$PORTABLE_PWD/../libmpdec++"
+-LD_32_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec:$PORTABLE_PWD/../libmpdec++"
++LD_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec:$PORTABLE_PWD/../libmpdec++:$LD_LIBRARY_PATH"
++LD_32_LIBRARY_PATH="$PORTABLE_PWD/../libmpdec:$PORTABLE_PWD/../libmpdec++:$LD_LIBRARY_PATH"
+ export LD_LIBRARY_PATH
+ export LD_32_LIBRARY_PATH
+ 

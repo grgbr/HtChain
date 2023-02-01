@@ -1,0 +1,28 @@
+--- a/setup.cfg	2016-04-13 22:51:43.000000000 +0200
++++ b/setup.cfg	2023-01-05 18:31:03.849193549 +0100
+@@ -8,7 +8,7 @@
+ max-line-length = 140
+ exclude = tests/*,*/migrations/*,*/south_migrations/*
+ 
+-[pytest]
++[tool:pytest]
+ norecursedirs = 
+ 	.git
+ 	.tox
+@@ -23,7 +23,7 @@
+ 	tests.py
+ addopts = 
+ 	-rxEfsw
+-	--strict
++	--strict-markers
+ 	--ignore=docs/conf.py
+ 	--ignore=setup.py
+ 	--ignore=ci
+@@ -31,7 +31,6 @@
+ 	--doctest-modules
+ 	--doctest-glob=\*.rst
+ 	--tb=short
+-	--benchmark-disable
+ 
+ [isort]
+ force_single_line = True

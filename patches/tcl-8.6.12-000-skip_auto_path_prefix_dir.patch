@@ -1,0 +1,14 @@
+--- a/library/init.tcl	2022-08-01 21:18:03.863265321 +0200
++++ b/library/init.tcl	2022-08-01 21:18:12.735162766 +0200
+@@ -57,11 +57,6 @@
+ 		lappend ::auto_path $Dir
+ 	    }
+ 	}
+-	set Dir [file join [file dirname [file dirname \
+-		[info nameofexecutable]]] lib]
+-	if {$Dir ni $::auto_path} {
+-	    lappend ::auto_path $Dir
+-	}
+ 	if {[info exists ::tcl_pkgPath]} { catch {
+ 	    foreach Dir $::tcl_pkgPath {
+ 		if {$Dir ni $::auto_path} {

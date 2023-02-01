@@ -1,0 +1,10 @@
+--- a/setup.cfg	2014-12-19 14:48:48.000000000 +0100
++++ b/setup.cfg	2023-01-05 18:10:20.415657371 +0100
+@@ -1,6 +1,5 @@
+-[pytest]
++[tool:pytest]
+ minversion = 2.6
+-strict = true
+ norecursedirs = .* build dist test_data *.egg
+ 
+ [wheel]

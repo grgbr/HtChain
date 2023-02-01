@@ -1,0 +1,71 @@
+--- b/tests/fCmd.test	2022-08-03 11:45:43.530979631 +0200
++++ a/tests/fCmd.test	2022-08-03 13:17:31.991911983 +0200
+@@ -434,10 +434,10 @@
+     file delete ~_totally_bogus_user
+ } -returnCodes error -result {user "_totally_bogus_user" doesn't exist}
+ test fCmd-5.7 {TclFileDeleteCmd: Tcl_TranslateFileName succeeds} -setup {
++    catch {file delete tf1}
+-    catch {file delete ~/tf1}
+ } -constraints {notRoot} -body {
++    createfile tf1
++    file delete tf1
+-    createfile ~/tf1
+-    file delete ~/tf1
+ } -result {}
+ test fCmd-5.8 {TclFileDeleteCmd: file doesn't exist: lstat(name) != 0} -setup {
+     cleanup
+@@ -637,37 +637,39 @@
+ test fCmd-6.24 {CopyRenameOneFile: error uses original name} -setup {
+     cleanup
+ } -constraints {unix notRoot} -body {
++    file mkdir ./td1/td2
++    set td1name [file join [file dirname .] [file tail .] td1]
+-    file mkdir ~/td1/td2
+-    set td1name [file join [file dirname ~] [file tail ~] td1]
+     file attributes $td1name -permissions 0o000
++    file copy ./td1 td1.copy
+-    file copy ~/td1 td1
+ } -returnCodes error -cleanup {
+     file attributes $td1name -permissions 0o755
++    file delete -force ./td1
++    file delete -force td1.copy
++} -result {error copying "./td1": permission denied}
+-    file delete -force ~/td1
+-} -result {error copying "~/td1": permission denied}
+ test fCmd-6.25 {CopyRenameOneFile: error uses original name} -setup {
+     cleanup
+ } -constraints {unix notRoot} -body {
+     file mkdir td2
++    file mkdir ./td1
++    set td1name [file join [file dirname .] [file tail .] td1]
+-    file mkdir ~/td1
+-    set td1name [file join [file dirname ~] [file tail ~] td1]
+     file attributes $td1name -permissions 0o000
++    file copy td2 ./td1
+-    file copy td2 ~/td1
+ } -returnCodes error -cleanup {
+     file attributes $td1name -permissions 0o755
++    file delete -force ./td1
++} -result {error copying "td2" to "./td1/td2": permission denied}
+-    file delete -force ~/td1
+-} -result {error copying "td2" to "~/td1/td2": permission denied}
+ test fCmd-6.26 {CopyRenameOneFile: doesn't use original name} -setup {
+     cleanup
+ } -constraints {unix notRoot} -body {
++    file mkdir ./td1/td2
++    set td2name [file join [file dirname .] [file tail .] td1 td2]
+-    file mkdir ~/td1/td2
+-    set td2name [file join [file dirname ~] [file tail ~] td1 td2]
+     file attributes $td2name -permissions 0o000
++    file copy ./td1 td1.copy
+-    file copy ~/td1 td1
+ } -returnCodes error -cleanup {
+     file attributes $td2name -permissions 0o755
++    file delete -force ./td1
++    file delete -force td1.copy
++} -result "error copying \"./td1\" to \"td1.copy\": \"[file join ./td1 td2]\": permission denied"
+-    file delete -force ~/td1
+-} -result "error copying \"~/td1\" to \"td1\": \"[file join $::env(HOME) td1 td2]\": permission denied"
+ test fCmd-6.27 {CopyRenameOneFile: TclpCopyDirectory failed} -setup {
+     cleanup $tmpspace
+ } -constraints {notRoot xdev} -returnCodes error -body {

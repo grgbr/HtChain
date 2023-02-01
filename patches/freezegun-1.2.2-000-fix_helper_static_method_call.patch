@@ -1,0 +1,11 @@
+--- a/tests/test_datetimes.py	2022-03-18 10:05:17.000000000 +0100
++++ b/tests/test_datetimes.py	2023-01-04 18:01:00.491378737 +0100
+@@ -450,7 +450,7 @@
+         return datetime.date.today()
+ 
+     def test_class_decorator_respects_staticmethod(self):
+-        assert self.helper() == datetime.date(2012, 1, 14)
++        assert Tester.helper() == datetime.date(2012, 1, 14)
+ 
+ 
+ @freeze_time("Jan 14th, 2012")

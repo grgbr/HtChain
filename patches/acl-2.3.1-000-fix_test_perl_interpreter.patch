@@ -1,0 +1,10 @@
+# Enhance test runner wrapper so that needed perl interpreter may be selected
+# according to a PERL environment variable.
+--- a/test/runwrapper	2022-07-23 17:54:19.829679467 +0200
++++ b/test/runwrapper	2022-07-23 18:09:20.847678096 +0200
+@@ -4,4 +4,4 @@
+ 	export LD_PRELOAD="$PWD/.libs/libtestlookup.so"
+ fi
+ 
+-"${srcdir:-${PWD}}"/test/run "$@"
++exec ${PERL:-perl} -w -U -- "${srcdir:-${PWD}}"/test/run "$@"

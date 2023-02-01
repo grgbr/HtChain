@@ -1,0 +1,10 @@
+--- a/pytest.ini	2016-05-22 03:09:33.000000000 +0200
++++ b/pytest.ini	2023-01-13 15:10:13.288512067 +0100
+@@ -1,6 +1,6 @@
+ [pytest]
+ # Output fails, errors, xpass, and warnings; ignore doctest; make warnings errors
+-addopts = -rfEXw -p no:doctest --strict
++addopts = -rfEXw -p no:doctest --strict-markers
+ 
+ # Make xpass results be considered fail
+ xfail_strict = true
