@@ -106,12 +106,6 @@ stampdir        := $(outdir)/stamp
 scriptdir       := $(TOPDIR)/scripts
 # HtChain version
 version         := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
-# Debian package architecture field
-debarch         := $(shell dpkg --print-architecture)
-# Debian package depends field
-debbindeps      := $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
-# Debian file path
-debfile         := $(OUTDIR)/htchain_$(version)_$(debarch).deb
 
 o_flags     := -O%
 ssp_flags   := -fstack-protector% -fstack-clash-protection
@@ -406,6 +400,13 @@ list:
 .PHONY: all
 all: final
 
+# Debian package architecture field
+debarch    := $(shell dpkg --print-architecture)
+# Debian package depends field
+debbindeps := $(subst $(space),$(comma)$(space),$(strip $(DEBBINDEPS)))
+# Debian file path
+debfile    := $(OUTDIR)/htchain_$(version)_$(debarch).deb
+
 .PHONY: debian
 debian: $(debfile)
 $(debfile): $(final_targets) \
@@ -414,6 +415,7 @@ $(debfile): $(final_targets) \
 	$(call rmrf,$(debdir))
 	$(MKDIR) --parents --mode=755 $(debdir)
 	$(call mirror_cmd,$(finaldir),$(debdir))
+	$(Q)find $(debdir)$(PREFIX) -name "*.la" -delete
 	$(scriptdir)/strip.sh $(debdir)$(PREFIX)
 	$(MKDIR) --mode=755 $(debdir)/DEBIAN
 	umask=0022 && \
