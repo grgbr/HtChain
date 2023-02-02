@@ -406,10 +406,6 @@ list:
 .PHONY: all
 all: final
 
-.PHONY: clobber
-clobber:
-	$(call rmrf,$(outdir))
-
 .PHONY: debian
 debian: $(debfile)
 $(debfile): $(final_targets) \
