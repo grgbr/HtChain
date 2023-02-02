@@ -96,7 +96,7 @@ $(call gen_dir_rules,stage-help2man)
 help2man_final_config_args := --enable-nls \
                               $(final_config_flags)
 
-$(call gen_deps,final-help2man,stage-perl)
+$(call gen_deps,final-help2man,stage-perl stage-cpan-gettext)
 
 config_final-help2man       = $(call help2man_config_cmds,\
                                      final-help2man,\
