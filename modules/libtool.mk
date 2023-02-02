@@ -43,15 +43,6 @@ define libtool_clean_cmds
 endef
 
 # $(1): targets base name / module name
-# $(2): optional install destination directory
-define libtool_install_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) \
-         install \
-         $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
-         $(verbose)
-endef
-
-# $(1): targets base name / module name
 # $(2): build / install prefix
 # $(3): optional install destination directory
 define libtool_uninstall_cmds
@@ -86,14 +77,22 @@ config_stage-libtool    = $(call libtool_config_cmds,\
                                  stage-libtool,\
                                  $(stagedir),\
                                  $(libtool_stage_config_args))
+
 define build_stage-libtool
 +$(MAKE) --directory $(builddir)/stage-libtool \
          all \
          M4="$(stage_m4)" \
          $(verbose)
 endef
+
 clean_stage-libtool     = $(call libtool_clean_cmds,stage-libtool)
-install_stage-libtool   = $(call libtool_install_cmds,stage-libtool)
+
+define install_stage-libtool
++$(MAKE) --directory $(builddir)/stage-libtool \
+         install \
+         $(verbose)
+endef
+
 uninstall_stage-libtool = $(call libtool_uninstall_cmds,\
                                  stage-libtool,\
                                  $(stagedir))
@@ -136,8 +135,17 @@ sed -i \
     -e 's;LTCFLAGS=.*;LTCFLAGS="-g -O2";' \
     $(builddir)/final-libtool/libtool
 endef
+
 clean_final-libtool     = $(call libtool_clean_cmds,final-libtool)
-install_final-libtool   = $(call libtool_install_cmds,final-libtool,$(finaldir))
+
+define install_final-libtool
++$(MAKE) --directory $(builddir)/final-libtool \
+         install \
+         LIBTOOL='$(stage_libtool)' \
+         DESTDIR='$(finaldir)' \
+         $(verbose)
+endef
+
 uninstall_final-libtool = $(call libtool_uninstall_cmds,\
                                  final-libtool,\
                                  $(PREFIX),\
