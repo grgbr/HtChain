@@ -147,8 +147,7 @@ bzip2_stage_shlib_flags := \
 	CFLAGS='$(stage_cflags) -fPIC $(bzip2_intern_cflags)' \
 	LD_LIBRARY_PATH='$(bstrap_lib_path)'
 
-$(call gen_deps,stage-bzip2,bstrap-gcc)
-$(call gen_check_deps,stage-bzip2,stage-gcc)
+$(call gen_deps,stage-bzip2,stage-gcc)
 
 config_stage-bzip2     = $(call bzip2_config_cmds,stage-zlib)
 build_stage-bzip2      = $(call bzip2_build_cmds,stage-zlib,\
@@ -196,6 +195,8 @@ bzip2_final_shlib_flags := \
 	CC='$(stage_cc) $(final_ldflags)' \
 	CFLAGS='$(final_cflags) -fPIC $(bzip2_intern_cflags)' \
 	LD_LIBRARY_PATH='$(stage_lib_path)'
+
+$(call gen_deps,final-bzip2,stage-gcc)
 
 config_final-bzip2     = $(call bzip2_config_cmds,final-zlib)
 build_final-bzip2      = $(call bzip2_build_cmds,final-zlib,\

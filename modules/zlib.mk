@@ -161,6 +161,8 @@ zlib_final_config_env  := AR='$(stage_ar)' \
                           CFLAGS='$(zlib_final_cflags)' \
                           LDFLAGS='$(zlib_final_ldflags)'
 
+$(call gen_deps,final-zlib,stage-gcc)
+
 config_final-zlib       = $(call zlib_config_cmds,final-zlib,\
                                                   $(PREFIX),\
                                                   $(zlib_final_config_env),\
