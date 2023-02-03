@@ -3,13 +3,29 @@
 ################################################################################
 
 automake_dist_url  := https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.xz
-automake_sig_url   := $(automake_dist_url).sig
+automake_dist_sum  := 3084ae543aa3fb5a05104ffb2e66cfa9a53080f2343c44809707fd648516869511500dba50dae67ff10f92a1bf3b5a92b2a0fa01cda30adb69b9da03994d9d88
 automake_dist_name := $(notdir $(automake_dist_url))
+automake_vers      := $(patsubst automake-%.tar.xz,%,$(automake_dist_name))
+automake_brief     := Tool for generating GNU Standards-compliant Makefiles
+automake_home      := https://www.gnu.org/software/automake/
+
+define automake_desc
+Automake is a tool for automatically generating :file:`Makefile.in` from
+files called :file:`Makefile.am`.
+
+The goal of Automake is to remove the burden of Makefile maintenance from the
+back of the individual GNU maintainer (and put it on the back of the Automake
+maintainer).
+
+The :file:`Makefile.am` is basically a series of ``make`` macro definitions
+(with rules being thrown in occasionally). The generated :file:`Makefile.in`
+are compliant with the GNU Makefile standards.
+endef
 
 define fetch_automake_dist
-$(call download_verify_detach,$(automake_dist_url), \
-                              $(automake_sig_url), \
-                              $(FETCHDIR)/$(automake_dist_name))
+$(call download_csum,$(automake_dist_url),\
+                     $(FETCHDIR)/$(automake_dist_name),\
+                     $(automake_dist_sum))
 endef
 $(call gen_fetch_rules,automake,automake_dist_name,fetch_automake_dist)
 

@@ -45,6 +45,27 @@ $(scriptdir)/gpg_verify.sh --homedir "$(FETCHDIR)/.gnupg" \
                            '$(strip $(2))'
 endef
 
+define download_csum
+if [ ! -r "$(strip $(2))" ]; then \
+	if ! msg=$$($(CURL) --silent \
+	                    --show-error \
+	                    --stderr - \
+	                    --location '$(strip $(1))' \
+	                    --output '$(strip $(2).tmp)'); then \
+		echo "download: $(notdir $(strip $(2))): $$msg" >&2; \
+		exit 1; \
+	fi; \
+	if ! echo '$(strip $(3)) $(strip $(2)).tmp' | \
+	     sha512sum --check --strict --status -; then \
+		echo 'download: $(notdir $(strip $(2))): checksum mismatch' >&2; \
+		exit 1; \
+	else \
+		$(call mv,$(strip $(2)).tmp,$(strip $(2))); \
+		$(SYNC) --file-system '$(strip $(2))'; \
+	fi; \
+fi
+endef
+
 define mkdir
 $(MKDIR) --parents "$(strip $(1))"
 endef

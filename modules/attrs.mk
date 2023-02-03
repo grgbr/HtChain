@@ -2,21 +2,31 @@
 # from fetching loads of dependencies.
 
 attrs_dist_url  := https://files.pythonhosted.org/packages/21/31/3f468da74c7de4fcf9b25591e682856389b3400b4b62f201e65f15ea3e07/attrs-22.2.0.tar.gz
-attrs_dist_sum  := c9227bfc2f01993c03f68db37d1d15c9690188323c067c641f1a35ca58185f99
+attrs_dist_sum  := a7707fb11e21cddd2b25c94c9859dc8306745f0256237493a4ad818ffaf005d1c1e84d55d07fce14eaea18fde4994363227286df2751523e1fe4ef6623562a20
 attrs_dist_name := $(notdir $(attrs_dist_url))
+attrs_vers      := $(patsubst attrs-%.tar.gz,%,$(attrs_dist_name))
+attrs_brief     := Python attributes without boilerplate
+attrs_home      := https://www.attrs.org/
 
-define fetch_attrs_dist
-$(call _download,$(attrs_dist_url),$(FETCHDIR)/$(attrs_dist_name).tmp)
-cat $(FETCHDIR)/$(attrs_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(attrs_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(attrs_dist_name).tmp,\
-          $(FETCHDIR)/$(attrs_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(attrs_dist_name)'
+define attrs_desc
+attrs is Python package with class decorators that ease the chores of
+implementing the most common attribute-related object protocols.
+
+You just specify the attributes to work with and attrs gives you:
+
+* a nice human-readable ``__repr__``,
+* a complete set of comparison methods,
+* an initializer,
+* and much more
+
+without writing dull boilerplate code again and again.
 endef
 
-# As fetch_attrs_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(attrs_dist_name): SHELL:=/bin/bash
+define fetch_attrs_dist
+$(call download_csum,$(attrs_dist_url),\
+                     $(FETCHDIR)/$(attrs_dist_name),\
+                     $(attrs_dist_sum))
+endef
 $(call gen_fetch_rules,attrs,attrs_dist_name,fetch_attrs_dist)
 
 define xtract_attrs

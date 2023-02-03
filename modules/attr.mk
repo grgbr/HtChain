@@ -3,13 +3,25 @@
 ################################################################################
 
 attr_dist_url  := http://download.savannah.nongnu.org/releases/attr/attr-2.5.1.tar.xz
-attr_sig_url   := $(attr_dist_url).sig
+attr_dist_sum  := 9e5555260189bb6ef2440c76700ebb813ff70582eb63d446823874977307d13dfa3a347dfae619f8866943dfa4b24ccf67dadd7e3ea2637239fdb219be5d2932
 attr_dist_name := $(notdir $(attr_dist_url))
+attr_vers      := $(patsubst attr-%.tar.xz,%,$(attr_dist_name))
+attr_brief     := POSIX filesystem extended attributes manipulation
+attr_home      := https://savannah.nongnu.org/projects/attr/
+
+define attr_desc
+This package provides a set of tools for manipulating extended attributes on
+filesystem objects, in particular :manpage:`getfattr(1)` and
+:manpage:`setfattr(1)`.
+
+An :manpage:`attr(1)` command is also provided which is largely compatible with
+the SGI IRIX tool of the same name.
+endef
 
 define fetch_attr_dist
-$(call download_verify_detach,$(attr_dist_url),\
-                              $(attr_sig_url),\
-                              $(FETCHDIR)/$(attr_dist_name))
+$(call download_csum,$(attr_dist_url),\
+                     $(FETCHDIR)/$(attr_dist_name),\
+                     $(attr_dist_sum))
 endef
 $(call gen_fetch_rules,attr,attr_dist_name,fetch_attr_dist)
 

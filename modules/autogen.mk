@@ -1,11 +1,32 @@
+################################################################################
+# autogen modules
+################################################################################
+
 autogen_dist_url  := https://ftp.gnu.org/gnu/autogen/rel5.18.16/autogen-5.18.16.tar.xz
-autogen_sig_url   := $(autogen_dist_url).sig
+autogen_dist_sum  := 5f12c982dbe27873f5649a96049bf019ff183c90cc0c8a9196556b0ca02e72940cd422f6d6601f68cc7d8763b1124f2765c3b1a6335fc92ba07f84b03d2a53a1
 autogen_dist_name := $(notdir $(autogen_dist_url))
+autogen_vers      := $(patsubst autogen-%.tar.xz,%,$(autogen_dist_name))
+autogen_brief     := Automated text file generator
+autogen_home      := https://www.gnu.org/software/autogen/
+
+define autogen_desc
+AutoGen is a tool designed for generating program files that contain repetitive
+text with varied substitutions. This is especially valuable if there are several
+blocks of such text that must be kept synchronized.
+
+Included with AutoGen is a tool that virtually eliminates the hassle of
+processing options, keeping usage text up to date and so on. This tool allows
+you to specify several program attributes, innumerable options and option
+attributes, then it produces all the code necessary to parse and handle the
+command line and initialization file options.
+
+This package also ships with libopts library.
+endef
 
 define fetch_autogen_dist
-$(call download_verify_detach,$(autogen_dist_url), \
-                              $(autogen_sig_url), \
-                              $(FETCHDIR)/$(autogen_dist_name))
+$(call download_csum,$(autogen_dist_url),\
+                     $(FETCHDIR)/$(autogen_dist_name),\
+                     $(autogen_dist_sum))
 endef
 $(call gen_fetch_rules,autogen,autogen_dist_name,fetch_autogen_dist)
 

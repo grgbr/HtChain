@@ -3,7 +3,7 @@
 ################################################################################
 
 acl_dist_url  := http://download.savannah.nongnu.org/releases/acl/acl-2.3.1.tar.xz
-acl_sig_url   := $(acl_dist_url).sig
+acl_dist_sum  := 7d02f05d17305f8587ab485395b00c7fdb8e44c1906d0d04b70a43a3020803e8b2b8c707abb6147f794867dfa87bd51769c2d3e11a3db55ecbd2006a6e6231dc
 acl_dist_name := $(notdir $(acl_dist_url))
 acl_vers      := $(patsubst acl-%.tar.xz,%,$(acl_dist_name))
 acl_brief     := POSIX Access Control Lists manipulation
@@ -18,9 +18,9 @@ access control lists as wel as the chacl IRIX compatible utility.
 endef
 
 define fetch_acl_dist
-$(call download_verify_detach,$(acl_dist_url),\
-                              $(acl_sig_url),\
-                              $(FETCHDIR)/$(acl_dist_name))
+$(call download_csum,$(acl_dist_url),\
+                     $(FETCHDIR)/$(acl_dist_name),\
+                     $(acl_dist_sum))
 endef
 $(call gen_fetch_rules,acl,acl_dist_name,fetch_acl_dist)
 

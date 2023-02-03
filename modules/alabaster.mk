@@ -2,33 +2,26 @@
 # test...
 
 alabaster_dist_url  := https://files.pythonhosted.org/packages/cc/b4/ed8dcb0d67d5cfb7f83c4d5463a7614cb1d078ad7ae890c9143edebbf072/alabaster-0.7.12.tar.gz
-alabaster_dist_sum  := a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02
+alabaster_dist_sum  := e3bfd0c92ce01f08d5e6d9dc1ef0967ca1f54827e08756f4a0ba7be8d3b8bec7f2e53a169b831ff5ce2d2548f7f52c6e518bcc513e49bb3e4c38274293aebbac
 alabaster_dist_name := $(notdir $(alabaster_dist_url))
 alabaster_vers      := $(patsubst alabaster-%.tar.gz,%,$(alabaster_dist_name))
-alabaster_brief     := Theme for the Sphinx documentation system
-alabaster_home      := https://alabaster.readthedocs.io
+alabaster_brief     := Theme for the Sphinx_ documentation system
+alabaster_home      := https://alabaster.readthedocs.io/
 
 define alabaster_desc
-This is a configurable sidebar-enabled theme for the Sphinx documentation
+This is a configurable sidebar-enabled theme for the Sphinx_ documentation
 system.
 
-This theme is a modified "Kr" Sphinx theme from @kennethreitz (especially as
+This theme is a modified "Kr" Sphinx_ theme from @kennethreitz (especially as
 used in his Requests project), which was itself originally based on
 @mitsuhiko\'s theme used for Flask & related projects.
 endef
 
 define fetch_alabaster_dist
-$(call _download,$(alabaster_dist_url),$(FETCHDIR)/$(alabaster_dist_name).tmp)
-cat $(FETCHDIR)/$(alabaster_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(alabaster_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(alabaster_dist_name).tmp,\
-          $(FETCHDIR)/$(alabaster_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(alabaster_dist_name)'
+$(call download_csum,$(alabaster_dist_url),\
+                     $(FETCHDIR)/$(alabaster_dist_name),\
+                     $(alabaster_dist_sum))
 endef
-
-# As fetch_alabaster_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(alabaster_dist_name): SHELL:=/bin/bash
 $(call gen_fetch_rules,alabaster,alabaster_dist_name,fetch_alabaster_dist)
 
 define xtract_alabaster

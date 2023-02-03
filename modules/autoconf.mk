@@ -1,18 +1,23 @@
 ################################################################################
 # autoconf modules
-#
-# TODO:
-# * also depends on perl
 ################################################################################
 
 autoconf_dist_url  := https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz
-autoconf_sig_url   := $(autoconf_dist_url).sig
+autoconf_dist_sum  := 73d32b4adcbe24e3bafa9f43f59ed3b6efbd3de0f194e5ec90375f35da1199c583f5d3e89139b7edbad35171403709270e339ffa56a2ecb9b3123e9285021ff0
 autoconf_dist_name := $(notdir $(autoconf_dist_url))
+autoconf_vers      := $(patsubst autoconf-%.tar.xz,%,$(autoconf_dist_name))
+autoconf_brief     := Automatic configure script builder
+autoconf_home      := https://www.gnu.org/software/autoconf/
+
+define autoconf_desc
+The standard for FSF source packages. This is only useful if you write your own
+programs or if you extensively modify other people\'s programs.
+endef
 
 define fetch_autoconf_dist
-$(call download_verify_detach,$(autoconf_dist_url), \
-                              $(autoconf_sig_url), \
-                              $(FETCHDIR)/$(autoconf_dist_name))
+$(call download_csum,$(autoconf_dist_url),\
+                     $(FETCHDIR)/$(autoconf_dist_name),\
+                     $(autoconf_dist_sum))
 endef
 $(call gen_fetch_rules,autoconf,autoconf_dist_name,fetch_autoconf_dist)
 
