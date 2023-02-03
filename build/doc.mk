@@ -4,11 +4,11 @@ SPHINXOPTS   := -a -j 1 \
 sphinx_build := $(stagedir)/bin/sphinx-build
 
 .PHONY: build-html
-build-html: stage-sphinx-rtd-theme stage-texinfo \
-            | $(OUTDIR)/stamp/doc/html-built
+build-html: $(OUTDIR)/stamp/doc/html-built
 
 .PHONY: $(OUTDIR)/stamp/doc/html-built
-$(OUTDIR)/stamp/doc/html-built: $(OUTDIR)/doc/generated/packages.rst \
+$(OUTDIR)/stamp/doc/html-built: stage-sphinx-rtd-theme stage-texinfo \
+                                $(OUTDIR)/doc/generated/packages.rst \
                                 | $(OUTDIR)/stamp/doc $(OUTDIR)/doc/src
 	$(call log,html,building)
 	$(Q)$(call mirror_cmd,$(CURDIR)/doc,$(OUTDIR)/doc/src)
@@ -51,7 +51,7 @@ endef
 # A target that generates final modules informations formatted for inclusion
 # inside the reStructuredText csv-table found into doc/user.rst file.
 $(OUTDIR)/doc/generated/packages.rst: SHELL := bash
-$(OUTDIR)/doc/generated/packages.rst: doc.mk \
+$(OUTDIR)/doc/generated/packages.rst: build/doc.mk \
                                       $(module_mkfiles) \
                                       | $(OUTDIR)/doc/generated
 	$(Q)echo 'Packages' > $(@)
