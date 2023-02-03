@@ -1,8 +1,32 @@
+################################################################################
+# Boehm-Demers-Weiser garbage collector modules
+################################################################################
+
 bdw-gc_dist_url  := https://www.hboehm.info/gc/gc_source/gc-8.2.2.tar.gz
-bdw-gc_dist_name := $(notdir bdw-$(bdw-gc_dist_url))
+bdw-gc_dist_sum  := 4a7b26789ce22ab72bfaadf3029362c5fe26737df1e856e43db7d9b24ee8acf625e35d596bb3f698f91d6a5ddfb6c45a952a1dbd18d47359569696a544c9c248
+bdw-gc_dist_name := $(subst gc-,bdw-gc-,$(notdir $(bdw-gc_dist_url)))
+bdw-gc_vers      := $(patsubst bdw-gc-%.tar.gz,%,$(bdw-gc_dist_name))
+bdw-gc_brief     := Conservative garbage collector for C/C++
+bdw-gc_home      := https://www.hboehm.info/gc/
+
+define bdw-gc_desc
+Boehm-Demers-Weiser\'s GC is a garbage collecting storage allocator that is
+intended to be used as a plug-in replacement for C\'s ``malloc()`` or C++\'s
+``new()``.
+
+It allows you to allocate memory basically as you normally would without
+explicitly deallocating memory that is no longer useful. The collector
+automatically recycles memory when it determines that it can no longer be used.
+
+This version of the collector is thread safe, has C++ support and uses the
+defaults for everything else. However, it does not work as a drop-in
+:manpage:`malloc(3)` replacement.
+endef
 
 define fetch_bdw-gc_dist
-$(call download,$(bdw-gc_dist_url),$(FETCHDIR)/$(bdw-gc_dist_name))
+$(call download_csum,$(bdw-gc_dist_url),\
+                     $(FETCHDIR)/$(bdw-gc_dist_name),\
+                     $(bdw-gc_dist_sum))
 endef
 $(call gen_fetch_rules,bdw-gc,bdw-gc_dist_name,fetch_bdw-gc_dist)
 

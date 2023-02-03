@@ -3,13 +3,22 @@
 ################################################################################
 
 binutils_dist_url  := https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.lz
-binutils_sig_url   := $(binutils_dist_url).sig
+binutils_dist_sum  := 99f879815e58994d2ca0fd9635ca613348828b4810787789ada70e79da2687f5418d92e26b7ebfa2c6f0304b6450181164c416b1cfd909ad039138edbf6060bf
 binutils_dist_name := $(notdir $(binutils_dist_url))
+binutils_vers      := $(patsubst binutils-%.tar.lz,%,$(binutils_dist_name))
+binutils_brief     := GNU assembler, linker and binary utilities
+binutils_home      := https://www.gnu.org/software/binutils/
+
+define binutils_desc
+The programs in this package are used to assemble, link and manipulate binary
+and object files. They may be used in conjunction with a compiler and various
+libraries to build programs.
+endef
 
 define fetch_binutils_dist
-$(call download_verify_detach,$(binutils_dist_url), \
-                              $(binutils_sig_url), \
-                              $(FETCHDIR)/$(binutils_dist_name))
+$(call download_csum,$(binutils_dist_url),\
+                     $(FETCHDIR)/$(binutils_dist_name),\
+                     $(binutils_dist_sum))
 endef
 $(call gen_fetch_rules,binutils,binutils_dist_name,fetch_binutils_dist)
 
