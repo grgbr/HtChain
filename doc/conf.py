@@ -54,6 +54,10 @@ exclude_patterns = []
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
+# -- Setup base URL for manpage role -------------------------------------------
+# see https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-manpage
+manpages_url = "https://man7.org/linux/man-pages/man{section}/{page}.{section}.html"
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
