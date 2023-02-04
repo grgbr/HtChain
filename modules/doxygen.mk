@@ -1,19 +1,28 @@
-doxygen_dist_url  := https://www.doxygen.nl/files/doxygen-1.9.6.src.tar.gz
-doxygen_dist_sum  := 5f7ab15c8298d013c5ef205a4febc7b4
-doxygen_dist_name := $(notdir $(doxygen_dist_url))
+################################################################################
+# Doxygen modules
+################################################################################
 
-define fetch_doxygen_dist
-$(call _download,$(doxygen_dist_url),$(FETCHDIR)/$(doxygen_dist_name).tmp)
-cat $(FETCHDIR)/$(doxygen_dist_name).tmp | \
-	md5sum --check --status <(echo "$(doxygen_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(doxygen_dist_name).tmp,\
-          $(FETCHDIR)/$(doxygen_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(doxygen_dist_name)'
+doxygen_dist_url  := https://www.doxygen.nl/files/doxygen-1.9.6.src.tar.gz
+doxygen_dist_sum  := f8b0d19d33fa8a5bb92b38f1c775bd3cde7f024566cf93ed61ab0cafe86643971c04b7f2492364767b3e6ce5b518bad5e0321c82f0a72875ccf936ea7d3595b2
+doxygen_dist_name := $(subst .src,,$(notdir $(doxygen_dist_url)))
+doxygen_vers      := $(patsubst doxygen-%.tar.gz,%,$(doxygen_dist_name))
+doxygen_brief     := Documentation system for programming languages
+doxygen_home      := https://www.doxygen.nl/
+
+define doxygen_desc
+Doxygen is a documentation system for C, C++, Java, Objective-C, Python, IDL and
+to some extent PHP, C#, and D. It can generate an on-line class browser (in
+HTML) and/or an off-line reference manual (in LaTeX) from a set of documented
+source files. There is also support for generating man pages and for converting
+the generated output into Postscript, hyperlinked PDF or compressed HTML. The
+documentation is extracted directly from the sources.
 endef
 
-# As fetch_doxygen_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(doxygen_dist_name): SHELL:=/bin/bash
+define fetch_doxygen_dist
+$(call download_csum,$(doxygen_dist_url),\
+                     $(FETCHDIR)/$(doxygen_dist_name),\
+                     $(doxygen_dist_sum))
+endef
 $(call gen_fetch_rules,doxygen,doxygen_dist_name,fetch_doxygen_dist)
 
 define xtract_doxygen

@@ -3,13 +3,27 @@
 ################################################################################
 
 dejagnu_dist_url  := https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.3.tar.gz
-dejagnu_sig_url   := $(dejagnu_dist_url).sig
+dejagnu_dist_sum  := 1a737132bd912cb527e7f2fcbe70ffff8ccc8604a0ffdecff87ba2a16aeeefd800f5792aeffdbe79be6daa35cedb1c60e41002ca4aabb5370a460028191b76c4
 dejagnu_dist_name := $(notdir $(dejagnu_dist_url))
+dejagnu_vers      := $(patsubst dejagnu-%.tar.gz,%,$(dejagnu_dist_name))
+dejagnu_brief     := Framework for running test suites on software tools
+dejagnu_home      := https://www.gnu.org/s/dejagnu/
+
+define dejagnu_desc
+DejaGnu is a framework for testing other programs. Its purpose is to provide a
+single front end for all tests.
+
+DejaGnu provides a layer of abstraction which allows you to write tests that are
+portable to any host or target where a program must be tested. All tests have
+the same output format.
+
+DejaGnu is written in expect_, which in turn uses Tcl_.
+endef
 
 define fetch_dejagnu_dist
-$(call download_verify_detach,$(dejagnu_dist_url), \
-                              $(dejagnu_sig_url), \
-                              $(FETCHDIR)/$(dejagnu_dist_name))
+$(call download_csum,$(dejagnu_dist_url),\
+                     $(FETCHDIR)/$(dejagnu_dist_name),\
+                     $(dejagnu_dist_sum))
 endef
 $(call gen_fetch_rules,dejagnu,dejagnu_dist_name,fetch_dejagnu_dist)
 

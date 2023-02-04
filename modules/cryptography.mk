@@ -1,23 +1,39 @@
+################################################################################
+# Cryptography Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 cryptography_dist_url  := https://files.pythonhosted.org/packages/12/e3/c46c274cf466b24e5d44df5d5cd31a31ff23e57f074a2bb30931a8c9b01a/cryptography-39.0.0.tar.gz
-cryptography_dist_sum  := f964c7dcf7802d133e8dbd1565914fa0194f9d683d82411989889ecd701e8adf
+cryptography_dist_sum  := bac0268ca0b6a12adc2d2a1f4ec047aad0643afa021d43574f189187a6a6802bc79e9329afd77a950b158040c85137da4cdee1973f4bb89815ad2203fa969393
 cryptography_dist_name := $(notdir $(cryptography_dist_url))
+cryptography_vers      := $(patsubst cryptography-%.tar.gz,%,$(cryptography_dist_name))
+cryptography_brief     := Python_ library exposing cryptographic recipes and primitives
+cryptography_home      := https://github.com/pyca/cryptography
 
-define fetch_cryptography_dist
-$(call _download,$(cryptography_dist_url),\
-                 $(FETCHDIR)/$(cryptography_dist_name).tmp)
-cat $(FETCHDIR)/$(cryptography_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(cryptography_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(cryptography_dist_name).tmp,\
-          $(FETCHDIR)/$(cryptography_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(cryptography_dist_name)'
+define cryptography_desc
+The cryptography library is designed to be a "one-stop-shop" for all your
+cryptographic needs in Python_.
+
+As an alternative to the libraries that came before it, cryptography tries to
+address some of the issues with those libraries:
+
+* lack of PyPy and Python 3 support ;
+* lack of maintenance ;
+* use of poor implementations of algorithms (i.e. ones with known side-channel
+  attacks) ;
+* lack of high level, "Cryptography for humans", APIs ;
+* absence of algorithms such as AES-GCM ;
+* poor introspectability, and thus poor testability ;
+* extremely error prone APIs, and bad defaults.
 endef
 
-# As fetch_cryptography_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(cryptography_dist_name): SHELL:=/bin/bash
+define fetch_cryptography_dist
+$(call download_csum,$(cryptography_dist_url),\
+                     $(FETCHDIR)/$(cryptography_dist_name),\
+                     $(cryptography_dist_sum))
+endef
 $(call gen_fetch_rules,cryptography,\
                        cryptography_dist_name,\
                        fetch_cryptography_dist)

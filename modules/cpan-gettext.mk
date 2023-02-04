@@ -1,10 +1,32 @@
+################################################################################
+# CPAN gettext modules
+################################################################################
+
 cpan-gettext_dist_url  := https://cpan.metacpan.org/authors/id/P/PV/PVANDRY/gettext-1.07.tar.gz
-cpan-gettext_dist_name := $(notdir $(cpan-gettext_dist_url))
+cpan-gettext_dist_sum  := d3716a597d586ee2ff29472ca7b13aaf67770299de31e5f12abafebc879bbe4a1e1dbc0025cf4f3dc29992955f26cffc3be387d974c3911af095d5b49e67a1c6
+cpan-gettext_dist_name := cpan-$(notdir $(cpan-gettext_dist_url))
+cpan-gettext_vers      := $(patsubst cpan-gettext-%.tar.gz,%,$(cpan-gettext_dist_name))
+cpan-gettext_brief     := Perl_ module using libc functions for internationalization
+cpan-gettext_home      := https://metacpan.org/release/gettext
+
+define cpan-gettext_desc
+The ``Locale::gettext`` module permits access from Perl_ to the ``gettext()``
+family of functions for retrieving message strings from databases constructed to
+internationalize software.
+
+It provides ``gettext()``, ``dgettext()``, ``dcgettext()``, ``textdomain()``,
+``bindtextdomain()``, ``bind_textdomain_codeset()``, ``ngettext()``,
+``dcngettext()`` and ``dngettext()``.
+endef
 
 define fetch_cpan-gettext_dist
-$(call download,$(cpan-gettext_dist_url),$(FETCHDIR)/$(cpan-gettext_dist_name))
+$(call download_csum,$(cpan-gettext_dist_url),\
+                     $(FETCHDIR)/$(cpan-gettext_dist_name),\
+                     $(cpan-gettext_dist_sum))
 endef
-$(call gen_fetch_rules,cpan-gettext,cpan-gettext_dist_name,fetch_cpan-gettext_dist)
+$(call gen_fetch_rules,cpan-gettext,\
+                       cpan-gettext_dist_name,\
+                       fetch_cpan-gettext_dist)
 
 define xtract_cpan-gettext
 $(call rmrf,$(srcdir)/cpan-gettext)

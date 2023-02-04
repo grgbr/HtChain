@@ -1,19 +1,33 @@
-cython_dist_url  := https://files.pythonhosted.org/packages/dc/f6/e8e302f9942cbebede88b1a0c33d0be3a738c3ac37abae87254d58ffc51c/Cython-0.29.33.tar.gz
-cython_dist_sum  := 5040764c4a4d2ce964a395da24f0d1ae58144995dab92c6b96f44c3f4d72286a
-cython_dist_name := $(notdir $(cython_dist_url))
+################################################################################
+# cython modules
+################################################################################
 
-define fetch_cython_dist
-$(call _download,$(cython_dist_url),$(FETCHDIR)/$(cython_dist_name).tmp)
-cat $(FETCHDIR)/$(cython_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(cython_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(cython_dist_name).tmp,\
-          $(FETCHDIR)/$(cython_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(cython_dist_name)'
+cython_dist_url  := https://files.pythonhosted.org/packages/dc/f6/e8e302f9942cbebede88b1a0c33d0be3a738c3ac37abae87254d58ffc51c/Cython-0.29.33.tar.gz
+cython_dist_sum  := 09be78a5d85756045b1216f8113c66935e203a0000bba3e3167aebf341e11b5644232891bd7f66c907f5e97286d319cf60fff413213dcf4c3ea96bf3acf0a121
+cython_dist_name := $(subst C,c,$(notdir $(cython_dist_url)))
+cython_vers      := $(patsubst cython-%.tar.gz,%,$(cython_dist_name))
+cython_brief     := C-Extensions for Python_
+cython_home      := https://cython.org/
+
+define cython_desc
+Cython is a language that makes writing C extensions for the Python_ language as
+easy as Python_ itself. Cython is based on the well-known Pyrex, but supports
+more cutting edge functionality and optimizations.
+
+The Cython language is very close to the Python_ language, but Cython
+additionally supports calling C functions and declaring C types on variables and
+class attributes. This allows the compiler to generate very efficient C code
+from Cython code.
+
+This makes Cython the ideal language for wrapping external C libraries, and for
+fast C modules that speed up the execution of Python_ code.
 endef
 
-# As fetch_cython_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(cython_dist_name): SHELL:=/bin/bash
+define fetch_cython_dist
+$(call download_csum,$(cython_dist_url),\
+                     $(FETCHDIR)/$(cython_dist_name),\
+                     $(cython_dist_sum))
+endef
 $(call gen_fetch_rules,cython,cython_dist_name,fetch_cython_dist)
 
 define xtract_cython

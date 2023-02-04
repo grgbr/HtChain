@@ -1,11 +1,29 @@
+################################################################################
+# curl modules
+################################################################################
+
 curl_dist_url  := https://curl.se/download/curl-7.84.0.tar.xz
-curl_sig_url   := $(curl_dist_url).asc
+curl_dist_sum  := 86231866a35593a1637fbc0c6af3b6761bdfd99fb35580cc52970c36f19604f93dce59fea67a1d5bb4b455f719307599c7916c77d14f2b661f6bf7fb1ca716ce
 curl_dist_name := $(notdir $(curl_dist_url))
+curl_vers      := $(patsubst curl-%.tar.xz,%,$(curl_dist_name))
+curl_brief     := Command line tool for transferring data with URL syntax
+curl_home      := https://curl.se/
+
+define curl_desc
+Command line tool for transferring data with URL syntax supporting DICT, FILE,
+FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP,
+RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP.
+
+curl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP form
+based upload, proxies, cookies, user+password authentication (Basic, Digest,
+NTLM, Negotiate, kerberos...), file transfer resume, proxy tunneling and a
+busload of other useful tricks.
+endef
 
 define fetch_curl_dist
-$(call download_verify_detach,$(curl_dist_url), \
-                              $(curl_sig_url), \
-                              $(FETCHDIR)/$(curl_dist_name))
+$(call download_csum,$(curl_dist_url),\
+                     $(FETCHDIR)/$(curl_dist_name),\
+                     $(curl_dist_sum))
 endef
 $(call gen_fetch_rules,curl,curl_dist_name,fetch_curl_dist)
 

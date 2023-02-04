@@ -1,22 +1,29 @@
+################################################################################
+# editables modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 editables_dist_url  := https://files.pythonhosted.org/packages/01/b0/a2a87db4b6cb8e7d57004b6836faa634e0747e3e39ded126cdbe5a33ba36/editables-0.3.tar.gz
-editables_dist_sum  := 167524e377358ed1f1374e61c268f0d7a4bf7dbd046c656f7b410cde16161b1a
+editables_dist_sum  := 4bdd1f43100cb1f9d46135f422ebe512d6fd61b47ab30c7a2ddb34515f3032cf1a6a28900c866b1b4b7b1bb267aadbe93efe2f41163a82666251b9e9f5cb1210
 editables_dist_name := $(notdir $(editables_dist_url))
+editables_vers      := $(patsubst editables-%.tar.gz,%,$(editables_dist_name))
+editables_brief     := A Python_ library for creating editable `wheels<wheel>`_
+editables_home      := https://github.com/pfmoore/editables
 
-define fetch_editables_dist
-$(call _download,$(editables_dist_url),$(FETCHDIR)/$(editables_dist_name).tmp)
-cat $(FETCHDIR)/$(editables_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(editables_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(editables_dist_name).tmp,\
-          $(FETCHDIR)/$(editables_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(editables_dist_name)'
+define editables_desc
+This library supports the building of `wheels<wheel>`_ which, when installed,
+will expose packages in a local directory on ``sys.path`` in "editable mode". In
+other words, changes to the package source will be reflected in the package
+visible to Python_, without needing a reinstall.
 endef
 
-# As fetch_editables_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(editables_dist_name): SHELL:=/bin/bash
+define fetch_editables_dist
+$(call download_csum,$(editables_dist_url),\
+                     $(FETCHDIR)/$(editables_dist_name),\
+                     $(editables_dist_sum))
+endef
 $(call gen_fetch_rules,editables,editables_dist_name,fetch_editables_dist)
 
 define xtract_editables

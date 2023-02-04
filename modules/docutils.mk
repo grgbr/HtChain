@@ -1,19 +1,30 @@
-docutils_dist_url  := https://files.pythonhosted.org/packages/6b/5c/330ea8d383eb2ce973df34d1239b3b21e91cd8c865d21ff82902d952f91f/docutils-0.19.tar.gz
-docutils_dist_sum  := 33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6
-docutils_dist_name := $(notdir $(docutils_dist_url))
+################################################################################
+# docutils Python modules
+################################################################################
 
-define fetch_docutils_dist
-$(call _download,$(docutils_dist_url),$(FETCHDIR)/$(docutils_dist_name).tmp)
-cat $(FETCHDIR)/$(docutils_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(docutils_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(docutils_dist_name).tmp,\
-          $(FETCHDIR)/$(docutils_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(docutils_dist_name)'
+docutils_dist_url  := https://files.pythonhosted.org/packages/6b/5c/330ea8d383eb2ce973df34d1239b3b21e91cd8c865d21ff82902d952f91f/docutils-0.19.tar.gz
+docutils_dist_sum  := fb904a899f2b6f3c07c5079577bd7c52a3182cb85f6a4149391e523498df15bfa317f0c04095b890beeb3f89c2b444875a2a609d880ac4d7fbc3125e46b37ea5
+docutils_dist_name := $(notdir $(docutils_dist_url))
+docutils_vers      := $(patsubst docutils-%.tar.gz,%,$(docutils_dist_name))
+docutils_brief     := Python_ text processing system for reStructuredText
+docutils_home      := https://docutils.sourceforge.io/
+
+define docutils_desc
+reStructuredText is an easy-to-read, what-you-see-is-what-you-get plaintext
+markup syntax and parser system. It is useful for in-line program documentation
+(such as Python_ docstrings), for quickly creating simple web pages, and for
+standalone documents.
+
+The purpose of the Docutils project is to create a set of tools for processing
+reStructuredText documentation into useful formats, such as HTML, LaTeX, ODT or
+Unix manpages.
 endef
 
-# As fetch_docutils_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(docutils_dist_name): SHELL:=/bin/bash
+define fetch_docutils_dist
+$(call download_csum,$(docutils_dist_url),\
+                     $(FETCHDIR)/$(docutils_dist_name),\
+                     $(docutils_dist_sum))
+endef
 $(call gen_fetch_rules,docutils,docutils_dist_name,fetch_docutils_dist)
 
 define xtract_docutils
