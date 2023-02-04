@@ -11,20 +11,18 @@ pkgvers       := $(PKGNAME) $(version)
 pkgurl        := $(PREFIX)/share/doc/$(PKGNAME)/README.Bugs
 
 .PHONY: setup
-setup: setup-pkgs setup-sigs
+setup: setup-sigs
+
+.PHONY: setup-sigs
+setup-sigs: | $(OUTDIR)/stamp/pkgs-setup $(FETCHDIR)
+	$(call setup_sigs_cmds)
+
 .PHONY: setup-pkgs
 setup-pkgs:
 	$(call setup_pkgs_cmds)
-.PHONY: setup-sigs
-setup-sigs:
-	$(call setup_sigs_cmds)
 
 $(OUTDIR)/stamp/pkgs-setup: | $(OUTDIR)/stamp
 	$(call setup_pkgs_cmds)
-	$(call touch,$(@))
-
-$(OUTDIR)/stamp/sigs-setup: | $(OUTDIR)/stamp/pkgs-setup $(FETCHDIR)
-	$(call setup_sigs_cmds)
 	$(call touch,$(@))
 
 .PHONY: fetch
@@ -99,7 +97,7 @@ endef
 define fetch_rules
 .PHONY: fetch-$(strip $(1))
 fetch-$(strip $(1)): $(FETCHDIR)/$($(strip $(2)))
-$(FETCHDIR)/$($(strip $(2))): | $(OUTDIR)/stamp/sigs-setup $(FETCHDIR)
+$(FETCHDIR)/$($(strip $(2))): | $(OUTDIR)/stamp/pkgs-setup $(FETCHDIR)
 	$$(call log,$(1),fetching)
 	$$($(strip $(3)))
 	@touch $$(@)
@@ -272,5 +270,5 @@ define gen_dir_rules
 $(eval $(call dir_rules,$(1)))
 endef
 
-$(finaldir) $(stagedir):
+$(finaldir) $(stagedir) $(OUTDIR)/stamp $(FETCHDIR):
 	@$(call mkdir,$(@))

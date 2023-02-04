@@ -1,17 +1,7 @@
 #!/bin/bash -e
 
-# Default keys.openpgp.org server strip UIDs unless the owner of the
-# corresponding email address has allowed them to be published.
-# This prevents us from importing multiple public keys used to sign software
-# packages.
-# Uses MIT key server instead.
-GPG_KEY_SERVER="--keyserver hkps://pgp.mit.edu"
-#GPG_KEY_SERVER="--keyserver hkps://keys.openpgp.org"
-
-log()
-{
-	printf "$(basename $0): $1\n" >&2
-}
+scriptdir=$(dirname $(type -p $0))
+. $scriptdir/gpg_common.sh
 
 # Show help
 usage() {

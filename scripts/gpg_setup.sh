@@ -8,14 +8,6 @@ GNU_KEYRING_URL="https://ftp.gnu.org/gnu/gnu-keyring.gpg"
 # See https://www.python.org/downloads/, section 'OpenPGP Public Keys'.
 PYTHON_SRC_KEY_URL="https://keybase.io/pablogsal/pgp_keys.asc"
 
-# Default keys.openpgp.org server strip UIDs unless the owner of the
-# corresponding email address has allowed them to be published.
-# This prevents us from importing multiple public keys used to sign software
-# packages.
-# Uses MIT key server instead.
-GPG_KEY_SERVER="--keyserver hkps://pgp.mit.edu"
-#GPG_KEY_SERVER="--keyserver hkps://keys.openpgp.org"
-
 # Karel Zak GPG public key for util-linux source releases
 # (fingerprint E4B71D5EEC39C284)
 # For more infos about kernel developpers GPG key ring, see
@@ -27,10 +19,8 @@ UTIL_LINUX_SRC_KEY_URL="https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/p
 # https://daniel.haxx.se/address.html
 CURL_SRC_KEY_URL="https://daniel.haxx.se/mykey.asc"
 
-log()
-{
-	printf "$(basename $0): $1\n" >&2
-}
+scriptdir=$(dirname $(type -p $0))
+. $scriptdir/gpg_common.sh
 
 gpg_fetch_import_key()
 {
@@ -156,7 +146,7 @@ if ! gpg_fetch_import_key "Curl source releases GPG public key" \
 fi
 
 log "Refreshing GNU public GPG keyring..."
-if ! $gpg_cmd --refresh-keys; then
+if ! $gpg_cmd $GPG_KEY_SERVER --refresh-keys; then
 	log "Failed to refresh GNU public GPG keyring."
 	exit 1
 fi
