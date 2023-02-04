@@ -1,17 +1,26 @@
+################################################################################
+# lzo modules
+################################################################################
+
 lzo_dist_url  := http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz
-lzo_dist_sum  := 4924676a9bae5db58ef129dc1cebce3baa3c4b5d
+lzo_dist_sum  := a3dae5e4a6b93b1f5bf7435e8ab114a9be57252e9efc5dd444947d7a2d031b0819f34bcaeb35f60b5629a01b1238d738735a64db8f672be9690d3c80094511a4
 lzo_dist_name := $(notdir $(lzo_dist_url))
+lzo_vers      := $(patsubst lzo-%.tar.gz,%,$(lzo_dist_name))
+lzo_brief     := LZO data compression library
+lzo_home      := https://www.oberhumer.com/opensource/lzo/
+
+define lzo_desc
+LZO is a portable, lossless data compression library.  It offers pretty fast
+compression and very fast decompression.  Decompression requires no memory. In
+addition there are slower compression levels achieving a quite competitive
+compression ratio while still decompressing at this very high speed.
+endef
 
 define fetch_lzo_dist
-$(call _download,$(lzo_dist_url),$(FETCHDIR)/$(lzo_dist_name).tmp)
-cat $(FETCHDIR)/$(lzo_dist_name).tmp | \
-	sha1sum --check --status <(echo "$(lzo_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(lzo_dist_name).tmp,\
-          $(FETCHDIR)/$(lzo_dist_name))
+$(call download_csum,$(lzo_dist_url),\
+                     $(FETCHDIR)/$(lzo_dist_name),\
+                     $(lzo_dist_sum))
 endef
-# As fetch_lzo_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(lzo_dist_name): SHELL:=/bin/bash
 $(call gen_fetch_rules,lzo,lzo_dist_name,fetch_lzo_dist)
 
 define xtract_lzo

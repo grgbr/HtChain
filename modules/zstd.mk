@@ -3,13 +3,21 @@
 ################################################################################
 
 zstd_dist_url  := https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
-zstd_sig_url   := $(zstd_dist_url).sig
+zstd_dist_sum  := 96dbd2eb6623e3564a0fd36489b61bc3cb27758a584fdc9f064f3985d2e8b5605d7022890d00a6d15464d3cd0707d7e75d8cf6210323782d0af406b90a6d6784
 zstd_dist_name := $(notdir $(zstd_dist_url))
+zstd_vers      := $(patsubst zstd-%.tar.gz,%,$(zstd_dist_name))
+zstd_brief     := Fast lossless compression algorithm
+zstd_home      := https://github.com/facebook/zstd
+
+define zstd_desc
+Zstd, short for Zstandard, is a fast lossless compression algorithm, targeting
+real-time compression scenarios at zlib-level compression ratio.
+endef
 
 define fetch_zstd_dist
-$(call download_verify_detach,$(zstd_dist_url), \
-                              $(zstd_sig_url), \
-                              $(FETCHDIR)/$(zstd_dist_name))
+$(call download_csum,$(zstd_dist_url),\
+                     $(FETCHDIR)/$(zstd_dist_name),\
+                     $(zstd_dist_sum))
 endef
 $(call gen_fetch_rules,zstd,zstd_dist_name,fetch_zstd_dist)
 

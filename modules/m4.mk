@@ -3,13 +3,24 @@
 ################################################################################
 
 m4_dist_url  := https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz
-m4_sig_url   := $(m4_dist_url).sig
+m4_dist_sum  := 47f595845c89709727bda0b3fc78e3188ef78ec818965b395532e7041cabe9e49677ee4aca3d042930095a7f8df81de3da1026b23b6897be471f6cf13ddd512b
 m4_dist_name := $(notdir $(m4_dist_url))
+m4_vers      := $(patsubst m4-%.tar.xz,%,$(m4_dist_name))
+m4_brief     := Macro processing language
+m4_home      := https://www.gnu.org/software/m4/
+
+define m4_desc
+GNU ``m4`` is an implementation of the traditional UNIX macro processor. It is
+mostly SVR4 compatible, although it has some extensions (for example, handling
+more than 9 positional parameters to macros). ``m4`` also has builtin functions
+for including files, running shell commands, doing arithmetic, etc.  Autoconf
+needs GNU ``m4`` for generating ``configure`` scripts, but not for running them.
+endef
 
 define fetch_m4_dist
-$(call download_verify_detach,$(m4_dist_url), \
-                              $(m4_sig_url), \
-                              $(FETCHDIR)/$(m4_dist_name))
+$(call download_csum,$(m4_dist_url),\
+                     $(FETCHDIR)/$(m4_dist_name),\
+                     $(m4_dist_sum))
 endef
 $(call gen_fetch_rules,m4,m4_dist_name,fetch_m4_dist)
 

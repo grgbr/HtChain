@@ -1,11 +1,38 @@
+################################################################################
+# xz-utils modules
+################################################################################
+
 xz-utils_dist_url  := https://tukaani.org/xz/xz-5.2.5.tar.xz
-xz-utils_sig_url   := $(xz-utils_dist_url).sig
-xz-utils_dist_name := $(notdir $(xz-utils_dist_url))
+xz-utils_dist_sum  := 59266068a51cb616eb31b67cd8f07ffeb2288d1391c61665ae2ec6814465afac80fec69248f6a2f2db45b44475af001296a99af6a32287226a9c41419173ccbb
+xz-utils_dist_name := $(subst xz-,xz-utils-,$(notdir $(xz-utils_dist_url)))
+xz-utils_vers      := $(patsubst xz-utils-%.tar.xz,%,$(xz-utils_dist_name))
+xz-utils_brief     := XZ-format compression library
+xz-utils_home      := https://tukaani.org/xz/
+
+define xz-utils_desc
+XZ is the successor to the Lempel-Ziv/Markov-chain Algorithm compression format,
+which provides memory-hungry but powerful compression (often better than bzip2)
+and fast, easy decompression.
+
+This package provides the command line tools for working with XZ compression,
+including ``xz``, ``unxz``, ``xzcat``, ``xzgrep``, and so on. They can also
+handle the older LZMA format, and if invoked via appropriate symlinks will
+emulate the behavior of the commands in the lzma package.
+
+The XZ format is similar to the older LZMA format but includes some improvements
+for general use:
+
+* ``file`` magic for detecting XZ files;
+* crc64 data integrity check;
+* limited random-access reading support;
+* improved support for multithreading;
+* support for flushing the encoder.
+endef
 
 define fetch_xz-utils_dist
-$(call download_verify_detach,$(xz-utils_dist_url), \
-                              $(xz-utils_sig_url), \
-                              $(FETCHDIR)/$(xz-utils_dist_name))
+$(call download_csum,$(xz-utils_dist_url),\
+                     $(FETCHDIR)/$(xz-utils_dist_name),\
+                     $(xz-utils_dist_sum))
 endef
 $(call gen_fetch_rules,xz-utils,xz-utils_dist_name,fetch_xz-utils_dist)
 

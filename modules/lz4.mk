@@ -3,10 +3,23 @@
 ################################################################################
 
 lz4_dist_url  := https://github.com/lz4/lz4/archive/refs/tags/v1.9.3.tar.gz
-lz4_dist_name := $(patsubst v%,%,$(notdir $(lz4_dist_url)))
+lz4_dist_sum  := c246b0bda881ee9399fa1be490fa39f43b291bb1d9db72dba8a85db1a50aad416a97e9b300eee3d2a4203c2bd88bda2762e81bc229c3aa409ad217eb306a454c
+lz4_vers      := $(patsubst v%.tar.gz,%,$(notdir $(lz4_dist_url)))
+lz4_dist_name := lz4-$(lz4_vers).tar.gz
+lz4_brief     := Fast LZ compression algorithm library
+lz4_home      := https://github.com/lz4/
+
+define lz4_desc
+LZ4 is a very fast lossless compression algorithm, providing compression speed
+at 400 MB/s per core, scalable with multi-cores CPU. It also features an
+extremely fast decoder, with speed in multiple GB/s per core, typically reaching
+RAM speed limits on multi-core systems.
+endef
 
 define fetch_lz4_dist
-$(call download,$(lz4_dist_url),$(FETCHDIR)/$(lz4_dist_name))
+$(call download_csum,$(lz4_dist_url),\
+                     $(FETCHDIR)/$(lz4_dist_name),\
+                     $(lz4_dist_sum))
 endef
 $(call gen_fetch_rules,lz4,lz4_dist_name,fetch_lz4_dist)
 

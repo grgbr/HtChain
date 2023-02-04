@@ -1,23 +1,32 @@
-# TODO:
-# * remove -I/usr/include/jsoncpp from CXXFLAGS (once jsoncpp support enabled) !
-# * fix failed test !!
+################################################################################
+# isl modules
+################################################################################
+
 cmake_dist_url  := https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1.tar.gz
-cmake_hash_url  := https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-SHA-256.txt
-cmake_sig_url   := https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-SHA-256.txt.asc
+cmake_dist_sum  := 94893f888c0cbfc58e54a0bd65d6c0697fe4a0e95c678b7cb35e7dc8854d57eb360bfc952750f97983348817f847f6df85903f21a5857b1a3880b2a7eb6cc029
 cmake_dist_name := $(notdir $(cmake_dist_url))
+cmake_vers      := $(patsubst cmake-%.tar.gz,%,$(cmake_dist_name))
+cmake_brief     := Cross-platform, open-source make system
+cmake_home      := https://cmake.org/
+
+define cmake_desc
+CMake is used to control the software compilation process using simple platform
+and compiler independent configuration files. CMake generates native makefiles
+and workspaces that can be used in the compiler environment of your choice.
+CMake is quite sophisticated: it is possible to support complex environments
+requiring system configuration, pre-processor generation, code generation, and
+template instantiation.
+
+CMake was developed by Kitware as part of the NLM Insight Segmentation and
+Registration Toolkit project. The ASCI VIEWS project also provided support in
+the context of their parallel computation environment. Other sponsors include
+the Insight, VTK, and VXL open source software communities.
+endef
 
 define fetch_cmake_dist
-$(call download,$(cmake_dist_url),$(FETCHDIR)/$(cmake_dist_name).down)
-$(call download,$(cmake_hash_url),$(FETCHDIR)/$(notdir $(cmake_hash_url)))
-$(call download,$(cmake_sig_url),$(FETCHDIR)/$(notdir $(cmake_sig_url)))
-sed --silent \
-    's#$(notdir $(cmake_dist_url))#$(cmake_dist_name).down#p' \
-    '$(FETCHDIR)/$(notdir $(cmake_hash_url))' | \
-sha256sum --check --status
-$(call gpg_verify_detach,$(FETCHDIR)/$(notdir $(cmake_sig_url)), \
-                         $(FETCHDIR)/$(notdir $(cmake_hash_url)))
-$(call mv,$(cmake_dist_name).down,$(cmake_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(cmake_dist_name)'
+$(call download_csum,$(cmake_dist_url),\
+                     $(FETCHDIR)/$(cmake_dist_name),\
+                     $(cmake_dist_sum))
 endef
 $(call gen_fetch_rules,cmake,cmake_dist_name,fetch_cmake_dist)
 
