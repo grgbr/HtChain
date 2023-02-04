@@ -224,7 +224,7 @@ tcl_final_config_args := $(tcl_common_args) \
                          --enable-langinfo \
                          $(final_config_flags)
 
-$(call gen_deps,final-tcl,stage-pkg-config stage-gdbm)
+$(call gen_deps,final-tcl,stage-pkg-config stage-gdbm stage-autoconf)
 $(call gen_check_deps,final-tcl,stage-sqlite)
 
 config_final-tcl    = $(call tcl_config_cmds,final-tcl,\
