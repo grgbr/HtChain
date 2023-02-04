@@ -1,22 +1,31 @@
+################################################################################
+# cffi modules
+################################################################################
+
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
 
 cffi_dist_url  := https://files.pythonhosted.org/packages/2b/a8/050ab4f0c3d4c1b8aaa805f70e26e84d0e27004907c5b8ecc1d31815f92a/cffi-1.15.1.tar.gz
-cffi_dist_sum  := d400bfb9a37b1351253cb402671cea7e89bdecc294e8016a707f6d1d8ac934f9
+cffi_dist_sum  := e99cafcb029076abc29e435b490fa0573ee2856f4051b7ca8a5b38cd125d56dd9dae8b189f59ceb3d728a675da8ee83239e09e19f8b0feeddea4b186ab5173a5
 cffi_dist_name := $(notdir $(cffi_dist_url))
+cffi_vers      := $(patsubst cffi-%.tar.gz,%,$(cffi_dist_name))
+cffi_brief     := Foreign Function Interface for Python_ calling C code
+cffi_home      := http://cffi.readthedocs.org/
 
-define fetch_cffi_dist
-$(call _download,$(cffi_dist_url),$(FETCHDIR)/$(cffi_dist_name).tmp)
-cat $(FETCHDIR)/$(cffi_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(cffi_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(cffi_dist_name).tmp,\
-          $(FETCHDIR)/$(cffi_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(cffi_dist_name)'
+define cffi_desc
+Convenient and reliable way of calling C code from Python_.
+
+The aim of this project is to provide a convenient and reliable way of calling C
+code from Python_. It keeps Python logic in Python_, and minimises the C
+required. It is able to work at either the C API or ABI level, unlike most other
+approaches, that only support the ABI level.
 endef
 
-# As fetch_cffi_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(cffi_dist_name): SHELL:=/bin/bash
+define fetch_cffi_dist
+$(call download_csum,$(cffi_dist_url),\
+                     $(FETCHDIR)/$(cffi_dist_name),\
+                     $(cffi_dist_sum))
+endef
 $(call gen_fetch_rules,cffi,cffi_dist_name,fetch_cffi_dist)
 
 define xtract_cffi

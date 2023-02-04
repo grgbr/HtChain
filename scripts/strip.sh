@@ -77,6 +77,6 @@ find "$dir" -type f | while read f; do
 		strip --strip-all "$f";;
 	"application/x-sharedlib; charset=binary")
 		echo "STRIP $f" >&2
-		strip --strip-unneeded "$f";;
+		strip --strip-unneeded "$f" || true;;
 	esac
 done
