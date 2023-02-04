@@ -3,13 +3,26 @@
 ################################################################################
 
 mpc_dist_url  := https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
-mpc_sig_url   := $(mpc_dist_url).sig
+mpc_dist_sum  := 3279f813ab37f47fdcc800e4ac5f306417d07f539593ca715876e43e04896e1d5bceccfb288ef2908a3f24b760747d0dbd0392a24b9b341bc3e12082e5c836ee
 mpc_dist_name := $(notdir $(mpc_dist_url))
+mpc_vers      := $(patsubst mpc-%.tar.gz,%,$(mpc_dist_name))
+mpc_brief     := Multiple precision complex floating-point library
+mpc_home      := https://www.multiprecision.org/mpc/
+
+define mpc_desc
+MPC is a portable library written in C for arbitrary precision arithmetic on
+complex numbers providing correct rounding. For the time being, it contains all
+arithmetic operations over complex numbers, the exponential and the logarithm
+functions, the trigonometric and hyperbolic functions.
+
+Ultimately, it should implement a multiprecision equivalent of the ISO C99
+standard.
+endef
 
 define fetch_mpc_dist
-$(call download_verify_detach,$(mpc_dist_url), \
-                              $(mpc_sig_url), \
-                              $(FETCHDIR)/$(mpc_dist_name))
+$(call download_csum,$(mpc_dist_url),\
+                     $(FETCHDIR)/$(mpc_dist_name),\
+                     $(mpc_dist_sum))
 endef
 $(call gen_fetch_rules,mpc,mpc_dist_name,fetch_mpc_dist)
 

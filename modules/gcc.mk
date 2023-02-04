@@ -3,13 +3,29 @@
 ################################################################################
 
 gcc_dist_url  := https://ftp.gnu.org/gnu/gcc/gcc-12.1.0/gcc-12.1.0.tar.xz
-gcc_sig_url   := $(gcc_dist_url).sig
+gcc_dist_sum  := 2121d295292814a6761edf1fba08c5f633ebe16f52b80e7b73a91050e71e1d2ed98bf17eebad263e191879561c02b48906c53faa4c4670c486a26fc75df23900
 gcc_dist_name := $(notdir $(gcc_dist_url))
+gcc_vers      := $(patsubst gcc-%.tar.xz,%,$(gcc_dist_name))
+gcc_brief     := GNU compiler collection
+gcc_home      := https://gcc.gnu.org/
+
+define gcc_desc
+The GNU Compiler Collection includes front ends for C, C++, Objective-C,
+Fortran, Ada, Go, and D, as well as libraries for these languages
+(libstdc++,...). GCC was originally written as the compiler for the GNU
+operating system. The GNU system was developed to be 100% free software, free in
+the sense that it respects the user\'s freedom.
+
+We strive to provide regular, high quality releases, which we want to work well
+on a variety of native and cross targets (including GNU/Linux), and encourage
+everyone to contribute changes or help testing GCC. Our sources are readily and
+freely available via Git and weekly snapshots.
+endef
 
 define fetch_gcc_dist
-$(call download_verify_detach,$(gcc_dist_url), \
-                              $(gcc_sig_url), \
-                              $(FETCHDIR)/$(gcc_dist_name))
+$(call download_csum,$(gcc_dist_url),\
+                     $(FETCHDIR)/$(gcc_dist_name),\
+                     $(gcc_dist_sum))
 endef
 $(call gen_fetch_rules,gcc,gcc_dist_name,fetch_gcc_dist)
 

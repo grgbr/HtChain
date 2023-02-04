@@ -3,10 +3,25 @@
 ################################################################################
 
 isl_dist_url  := https://libisl.sourceforge.io/isl-0.25.tar.xz
+isl_dist_sum  := 81ac6b404a71e146bb705efe647ecf3bee19c3254f534cb44228cec13ffc7a33d7d58b980106dbb120ffdc557403d966619e219328edd0a4b3cbc4ac66acb255
 isl_dist_name := $(notdir $(isl_dist_url))
+isl_vers      := $(patsubst isl-%.tar.xz,%,$(isl_dist_name))
+isl_brief     := Manipulating sets and relations of integer points bounded by linear constraints
+isl_home      := http://isl.gforge.inria.fr/
+
+define isl_desc
+isl is a library for manipulating sets and relations of integer points bounded
+by linear constraints. Supported operations on sets include intersection, union,
+set difference, emptiness check, convex hull, (integer) affine hull, integer
+projection, and computing the lexicographic minimum using parametric integer
+programming. It also includes an ILP solver based on generalized basis
+reduction.
+endef
 
 define fetch_isl_dist
-$(call download,$(isl_dist_url),$(FETCHDIR)/$(isl_dist_name))
+$(call download_csum,$(isl_dist_url),\
+                     $(FETCHDIR)/$(isl_dist_name),\
+                     $(isl_dist_sum))
 endef
 $(call gen_fetch_rules,isl,isl_dist_name,fetch_isl_dist)
 

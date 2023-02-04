@@ -2,14 +2,24 @@
 # mpfr modules
 ################################################################################
 
-mpfr_dist_url  := https://www.mpfr.org/mpfr-current/mpfr-4.1.0.tar.xz
-mpfr_sig_url   := $(mpfr_dist_url).asc
+mpfr_dist_url  := https://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
+mpfr_dist_sum  := 1bd1c349741a6529dfa53af4f0da8d49254b164ece8a46928cdb13a99460285622d57fe6f68cef19c6727b3f9daa25ddb3d7d65c201c8f387e421c7f7bee6273
 mpfr_dist_name := $(notdir $(mpfr_dist_url))
+mpfr_vers      := $(patsubst mpfr-%.tar.xz,%,$(mpfr_dist_name))
+mpfr_brief     := Multiple precision floating-point computation
+mpfr_home      := https://www.mpfr.org/
+
+define mpfr_desc
+MPFR provides a library for multiple-precision floating-point computation with
+correct rounding. The computation is both efficient and has a well-defined
+semantics. It copies the good ideas from the ANSI/IEEE-754 standard for
+double-precision floating-point arithmetic (53-bit mantissa).
+endef
 
 define fetch_mpfr_dist
-$(call download_verify_detach,$(mpfr_dist_url), \
-                              $(mpfr_sig_url), \
-                              $(FETCHDIR)/$(mpfr_dist_name))
+$(call download_csum,$(mpfr_dist_url),\
+                     $(FETCHDIR)/$(mpfr_dist_name),\
+                     $(mpfr_dist_sum))
 endef
 $(call gen_fetch_rules,mpfr,mpfr_dist_name,fetch_mpfr_dist)
 

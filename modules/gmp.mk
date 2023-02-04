@@ -3,13 +3,24 @@
 ################################################################################
 
 gmp_dist_url  := https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz
-gmp_sig_url   := $(gmp_dist_url).sig
+gmp_dist_sum  := 40e1c80d1a2eda0ea190ba2a27e7bfe718ee1fc685082b4f2251f108ffbec94272199b35cf6df217c9f6f10ac4132eaf3c5014a9e25db0592b94f7f1ddd4994f
 gmp_dist_name := $(notdir $(gmp_dist_url))
+gmp_vers      := $(patsubst gmp-%.tar.lz,%,$(gmp_dist_name))
+gmp_brief     := Multiprecision arithmetic library
+gmp_home      := http://gmplib.org/
+
+define gmp_desc
+GNU MP is a programmer\'s library for arbitrary precision arithmetic (ie, a
+bignum package).  It can operate on signed integer, rational, and floating point
+numeric types.
+
+It has a rich set of functions, and the functions have a regular interface.
+endef
 
 define fetch_gmp_dist
-$(call download_verify_detach,$(gmp_dist_url), \
-                              $(gmp_sig_url), \
-                              $(FETCHDIR)/$(gmp_dist_name))
+$(call download_csum,$(gmp_dist_url),\
+                     $(FETCHDIR)/$(gmp_dist_name),\
+                     $(gmp_dist_sum))
 endef
 $(call gen_fetch_rules,gmp,gmp_dist_name,fetch_gmp_dist)
 
