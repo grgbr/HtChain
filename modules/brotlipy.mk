@@ -1,22 +1,29 @@
+################################################################################
+# brotlipy modules
+################################################################################
+
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
 
 brotlipy_dist_url  := https://files.pythonhosted.org/packages/d9/91/bc79b88590e4f662bd40a55a2b6beb0f15da4726732efec5aa5a3763d856/brotlipy-0.7.0.tar.gz
-brotlipy_dist_sum  := 36def0b859beaf21910157b4c33eb3b06d8ce459c942102f16988cca6ea164df
+brotlipy_dist_sum  := 2a01e5b2d217043f13316afc4f54569c5dff76d31c296d4be563a5851195380ab80a33a3035ca95effdebffb45806fb9a431a181bba6f9af205b7f5576937268
 brotlipy_dist_name := $(notdir $(brotlipy_dist_url))
+brotlipy_vers      := $(patsubst brotlipy-%.tar.gz,%,$(brotlipy_dist_name))
+brotlipy_brief     := Python_ bindings for the reference Brotli encoder/decoder
+brotlipy_home      := https://github.com/python-hyper/brotlipy/
 
-define fetch_brotlipy_dist
-$(call _download,$(brotlipy_dist_url),$(FETCHDIR)/$(brotlipy_dist_name).tmp)
-cat $(FETCHDIR)/$(brotlipy_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(brotlipy_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(brotlipy_dist_name).tmp,\
-          $(FETCHDIR)/$(brotlipy_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(brotlipy_dist_name)'
+define brotlipy_desc
+Brotlipy is a collection of CFFI_ based Python_ bindings to the Brotli
+compression reference implementation as written by Google. This enables Python_
+software to easily and quickly work with the Brotli compression algorithm,
+regardless of what interpreter is being used.
 endef
 
-# As fetch_brotlipy_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(brotlipy_dist_name): SHELL:=/bin/bash
+define fetch_brotlipy_dist
+$(call download_csum,$(brotlipy_dist_url),\
+                     $(FETCHDIR)/$(brotlipy_dist_name),\
+                     $(brotlipy_dist_sum))
+endef
 $(call gen_fetch_rules,brotlipy,brotlipy_dist_name,fetch_brotlipy_dist)
 
 define xtract_brotlipy

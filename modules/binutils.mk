@@ -97,8 +97,6 @@ binutils_x86_64_args := --enable-x86-relax-relocations \
                         --enable-64-bit-bfd
 
 binutils_common_args := --enable-silent-rules \
-                        --enable-static \
-                        --enable-shared \
                         --enable-plugins \
                         --enable-checking \
                         --disable-multilib \

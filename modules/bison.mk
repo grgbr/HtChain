@@ -1,11 +1,31 @@
+################################################################################
+# bison modules
+################################################################################
+
 bison_dist_url  := https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.lz
-bison_sig_url   := $(bison_dist_url).sig
+bison_dist_sum  := b04fca1b6dc211e9c2882848957369291b1af35601990b5459f06df962c2a92a870727ea8f62384e0bd56f7f3bda01d7ce38da4d43b4c49d4fbbd8ab0713c675
 bison_dist_name := $(notdir $(bison_dist_url))
+bison_vers      := $(patsubst bison-%.tar.lz,%,$(bison_dist_name))
+bison_brief     := YACC-compatible parser generator
+bison_home      := https://www.gnu.org/software/bison/
+
+define bison_desc
+Bison is a general-purpose parser generator that converts a grammar description
+for an LALR(1) context-free grammar into a C program to parse that grammar. Once
+you are proficient with Bison, you may use it to develop a wide range of
+language parsers, from those used in simple desk calculators to complex
+programming languages.
+
+Bison is upward compatible with :manpage:`yacc(1p)`: all properly-written
+:manpage:`yacc(1p)` grammars ought to work with Bison with no change. Anyone
+familiar with :manpage:`yacc(1p)` should be able to use Bison with little
+trouble.
+endef
 
 define fetch_bison_dist
-$(call download_verify_detach,$(bison_dist_url), \
-                              $(bison_sig_url), \
-                              $(FETCHDIR)/$(bison_dist_name))
+$(call download_csum,$(bison_dist_url),\
+                     $(FETCHDIR)/$(bison_dist_name),\
+                     $(bison_dist_sum))
 endef
 $(call gen_fetch_rules,bison,bison_dist_name,fetch_bison_dist)
 

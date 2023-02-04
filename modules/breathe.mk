@@ -1,11 +1,25 @@
+################################################################################
+# breathe modules
+################################################################################
+
 breathe_dist_url  := https://github.com/breathe-doc/breathe/archive/refs/tags/v4.34.0.tar.gz
-breathe_sig_url   := https://github.com/breathe-doc/breathe/releases/download/v4.34.0/breathe-4.34.0.tar.gz.sig
-breathe_dist_name := $(patsubst v%,breathe-,$(notdir $(breathe_dist_url)))
+breathe_dist_sum  := 7f3134575f1b8c4d7c96ebc735e33f656b5c6046de3fa2aee95d5e895fb33f0a83fb4b1c64dd69b9deca20b785868b42d6b1d5e39741500ff5f9d82bf3f130b4
+breathe_dist_name := $(patsubst v%,breathe-%,$(notdir $(breathe_dist_url)))
+breathe_vers      := $(patsubst breathe-%.tar.gz,%,$(breathe_dist_name))
+breathe_brief     := Sphinx_ autodox support for languages with doxygen support
+breathe_home      := https://github.com/michaeljones/breathe
+
+define breathe_desc
+Breathe provides a bridge between the Sphinx_ and doxygen_ documentation
+systems. It enables Sphinx_ to generate autodoc for languages other than Python_
+with the help of doxygen_. It also allows one to embed reStructuredText in
+doxygen markup.
+endef
 
 define fetch_breathe_dist
-$(call download_verify_detach,$(breathe_dist_url), \
-                              $(breathe_sig_url), \
-                              $(FETCHDIR)/$(breathe_dist_name))
+$(call download_csum,$(breathe_dist_url),\
+                     $(FETCHDIR)/$(breathe_dist_name),\
+                     $(breathe_dist_sum))
 endef
 $(call gen_fetch_rules,breathe,breathe_dist_name,fetch_breathe_dist)
 

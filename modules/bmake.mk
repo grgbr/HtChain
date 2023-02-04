@@ -1,11 +1,27 @@
+################################################################################
+# BSD make modules
+################################################################################
+
 bmake_dist_url  := https://www.crufty.net/ftp/pub/sjg/bmake-20220418.tar.gz
-bmake_sig_url   := $(bmake_dist_url).sig
+bmake_dist_sum  := 89fa5cb6e35ee1cd6a32acf291bda33b3a7272c4ef25d38412b8caa7e092210c8fa04a11d19d3c19b7e60dee2cf0a5049cf393be6e25b6e28bab2eea50e03204
 bmake_dist_name := $(notdir $(bmake_dist_url))
+bmake_vers      := $(patsubst bmake-%.tar.gz,%,$(bmake_dist_name))
+bmake_brief     := NetBSD make
+bmake_home      := http://www.crufty.net/help/sjg/bmake.html
+
+define bmake_desc
+``bmake`` is a program designed to simplify the maintenance of other programs.
+Its input is a list of specifications as to the files upon which programs and
+other files depend. ``mkdep``, a program to construct Makefile dependency lists,
+is also included.
+
+``bmake`` is a port of the NetBSD make tool.
+endef
 
 define fetch_bmake_dist
-$(call download_verify_detach,$(bmake_dist_url), \
-                              $(bmake_sig_url), \
-                              $(FETCHDIR)/$(bmake_dist_name))
+$(call download_csum,$(bmake_dist_url),\
+                     $(FETCHDIR)/$(bmake_dist_name),\
+                     $(bmake_dist_sum))
 endef
 $(call gen_fetch_rules,bmake,bmake_dist_name,fetch_bmake_dist)
 

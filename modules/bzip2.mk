@@ -3,19 +3,28 @@
 ################################################################################
 
 bzip2_dist_url   := https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
-bzip2_sig_url    := $(bzip2_dist_url).sig
-bzip2_dist_name  := $(notdir $(bzip2_dist_url))
+bzip2_dist_sum  := 083f5e675d73f3233c7930ebe20425a533feedeaaa9d8cc86831312a6581cefbe6ed0d08d2fa89be81082f2a5abdabca8b3c080bf97218a1bd59dc118a30b9f3
+bzip2_dist_name := $(notdir $(bzip2_dist_url))
+bzip2_vers      := $(patsubst bzip2-%.tar.gz,%,$(bzip2_dist_name))
+bzip2_brief     := High-quality block-sorting file compressor
+bzip2_home      := https://sourceware.org/bzip2/
 
-bzip2_vers       := $(shell echo '$(bzip2_dist_name)' | \
-                            sed --silent 's/bzip2-\([0-9.]\+\)\.tar\..*/\1/p')
-_bzip2_vers_toks := $(subst .,$(space),$(bzip2_vers))
-bzip2_vers_maj   := $(word 1,$(_bzip2_vers_toks))
-bzip2_vers_min   := $(word 2,$(_bzip2_vers_toks))
+define bzip2_desc
+bzip2 is a freely available, patent free, data compressor.
+
+bzip2 compresses files using the Burrows-Wheeler block-sorting text compression
+algorithm, and Huffman coding.  Compression is generally considerably better
+than that achieved by more conventional LZ77/LZ78-based compressors, and
+approaches the performance of the PPM family of statistical compressors.
+
+The archive file format of bzip2 (.bz2) is incompatible with that of its
+predecessor, bzip (.bz).
+endef
 
 define fetch_bzip2_dist
-$(call download_verify_detach,$(bzip2_dist_url), \
-                              $(bzip2_sig_url), \
-                              $(FETCHDIR)/$(bzip2_dist_name))
+$(call download_csum,$(bzip2_dist_url),\
+                     $(FETCHDIR)/$(bzip2_dist_name),\
+                     $(bzip2_dist_sum))
 endef
 $(call gen_fetch_rules,bzip2,bzip2_dist_name,fetch_bzip2_dist)
 
