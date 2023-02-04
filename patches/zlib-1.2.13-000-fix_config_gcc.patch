@@ -1,0 +1,11 @@
+--- a/configure.orig	2022-10-10 20:11:12.000000000 +0200
++++ b/configure	2023-02-04 17:38:39.616741470 +0100
+@@ -445,6 +445,8 @@
+     echo 'No shared library support; try without defining CC and CFLAGS' | tee -a configure.log
+     shared=0;
+   fi
++else
++    cc=${CC}
+ fi
+ if test $shared -eq 0; then
+   LDSHARED="$CC"

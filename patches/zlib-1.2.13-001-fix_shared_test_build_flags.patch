@@ -1,15 +1,6 @@
---- a/Makefile.in	2022-06-23 19:14:12.131360138 +0200
-+++ b/Makefile.in	2022-06-23 19:15:36.402449156 +0200
-@@ -26,7 +26,7 @@
- 
- SFLAGS=-O
- LDFLAGS=
--TEST_LDFLAGS=-L. libz.a
-+TEST_LDFLAGS=
- LDSHARED=$(CC)
- CPP=$(CC) -E
- 
-@@ -286,22 +286,22 @@
+--- a/Makefile.in.orig	2023-02-04 17:38:39.656740966 +0100
++++ b/Makefile.in	2023-02-04 17:46:46.754972430 +0100
+@@ -282,22 +282,22 @@
  	-@rmdir objs
  
  example$(EXE): example.o $(STATICLIB)
@@ -21,11 +12,11 @@
 +	$(CC) $(CFLAGS) -o $@ minigzip.o $(TEST_LDFLAGS) -L. libz.a
  
  examplesh$(EXE): example.o $(SHAREDLIBV)
--	$(CC) $(CFLAGS) -o $@ example.o -L. $(SHAREDLIBV)
+-	$(CC) $(CFLAGS) -o $@ example.o $(LDFLAGS) -L. $(SHAREDLIBV)
 +	$(CC) $(CFLAGS) -o $@ example.o $(TEST_LDFLAGS) -L. $(SHAREDLIBV)
  
  minigzipsh$(EXE): minigzip.o $(SHAREDLIBV)
--	$(CC) $(CFLAGS) -o $@ minigzip.o -L. $(SHAREDLIBV)
+-	$(CC) $(CFLAGS) -o $@ minigzip.o $(LDFLAGS) -L. $(SHAREDLIBV)
 +	$(CC) $(CFLAGS) -o $@ minigzip.o $(TEST_LDFLAGS) -L. $(SHAREDLIBV)
  
  example64$(EXE): example64.o $(STATICLIB)

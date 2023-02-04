@@ -5,14 +5,22 @@
 #       gvmat64.S
 ################################################################################
 
-zlib_dist_url  := https://zlib.net/zlib-1.2.12.tar.xz
-zlib_sig_url   := $(zlib_dist_url).asc
+zlib_dist_url  := https://zlib.net/zlib-1.2.13.tar.xz
+zlib_dist_sum  := 9e7ac71a1824855ae526506883e439456b74ac0b811d54e94f6908249ba8719bec4c8d7672903c5280658b26cb6b5e93ecaaafe5cdc2980c760fa196773f0725
 zlib_dist_name := $(notdir $(zlib_dist_url))
+zlib_vers      := $(patsubst zlib-%.tar.xz,%,$(zlib_dist_name))
+zlib_brief     := ZLib compression library
+zlib_home      := http://zlib.net/
+
+define zlib_desc
+Zlib is a library implementing the deflate compression method found in ``gzip``
+and ``PKZIP``.
+endef
 
 define fetch_zlib_dist
-$(call download_verify_detach,$(zlib_dist_url), \
-                              $(zlib_sig_url), \
-                              $(FETCHDIR)/$(zlib_dist_name))
+$(call download_csum,$(zlib_dist_url),\
+                     $(FETCHDIR)/$(zlib_dist_name),\
+                     $(zlib_dist_sum))
 endef
 $(call gen_fetch_rules,zlib,zlib_dist_name,fetch_zlib_dist)
 
@@ -20,9 +28,9 @@ define xtract_zlib
 $(call rmrf,$(srcdir)/zlib)
 $(call untar,$(srcdir)/zlib,$(FETCHDIR)/$(zlib_dist_name),--strip-components=1)
 cd $(srcdir)/zlib && \
-patch -p1 < $(PATCHDIR)/zlib-1.2.12-000-fix_config_gcc.patch
+patch -p1 < $(PATCHDIR)/zlib-1.2.13-000-fix_config_gcc.patch
 cd $(srcdir)/zlib && \
-patch -p1 < $(PATCHDIR)/zlib-1.2.12-001-fix_shared_test_build_flags.patch
+patch -p1 < $(PATCHDIR)/zlib-1.2.13-001-fix_shared_test_build_flags.patch
 endef
 $(call gen_xtract_rules,zlib,xtract_zlib)
 
