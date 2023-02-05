@@ -7,7 +7,7 @@ flit_core_dist_sum  := 914804e3f2040762381afe039272d9d6fdbcd3f3cf8b9eea854f2f1d9
 flit_core_dist_name := $(notdir $(flit_core_dist_url))
 flit_core_vers      := $(patsubst flit_core-%.tar.gz,%,$(flit_core_dist_name))
 flit_core_brief     := Simple way to put Python_ packages and modules on `PyPI <https://pypi.org/>`_ (PEP 517)
-flit_core_home      := https://flit.pypa.io/en/latest/
+flit_core_home      := https://flit.pypa.io/
 
 define flit_core_desc
 Flit is a easy way to put Python_ packages and modules on `PyPI

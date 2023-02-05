@@ -1,11 +1,26 @@
+################################################################################
+# guile modules
+################################################################################
+
 guile_dist_url  := https://ftp.gnu.org/gnu/guile/guile-3.0.9.tar.xz
-guile_sig_url   := $(guile_dist_url).sig
+guile_dist_sum  := a1e47a60a654f26edc57b3a34d943e15a055fc85c3cc764e912be23a80d56534b16f3512d7c7bc426f24a0cac1fcc9556802ac248f10c1fbdde51cd1e24afaf2
 guile_dist_name := $(notdir $(guile_dist_url))
+guile_vers      := $(patsubst guile-%.tar.xz,%,$(guile_dist_name))
+guile_brief     := GNU extension language and Scheme interpreter
+guile_home      := http://www.gnu.org/software/guile/
+
+define guile_desc
+Guile is a Scheme implementation designed for real world programming, providing
+a rich Unix interface, a module system, an interpreter, and many extension
+languages. Guile can be used as a standard ``#!`` style interpreter, via
+``#!/usr/bin/guile``, or as an extension language for other applications via
+libguile.
+endef
 
 define fetch_guile_dist
-$(call download_verify_detach,$(guile_dist_url), \
-                              $(guile_sig_url), \
-                              $(FETCHDIR)/$(guile_dist_name))
+$(call download_csum,$(guile_dist_url),\
+                     $(FETCHDIR)/$(guile_dist_name),\
+                     $(guile_dist_sum))
 endef
 $(call gen_fetch_rules,guile,guile_dist_name,fetch_guile_dist)
 

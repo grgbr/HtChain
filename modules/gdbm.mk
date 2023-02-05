@@ -3,13 +3,25 @@
 ################################################################################
 
 gdbm_dist_url  := https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz
-gdbm_sig_url   := $(gdbm_dist_url).sig
+gdbm_dist_sum  := 918080cb0225b221c11eb7339634a95e00c526072395f7a3d46ccf42ef020dea7c4c5bec34aff2c4f16033e1fff6583252b7e978f68b8d7f8736b0e025838e10
 gdbm_dist_name := $(notdir $(gdbm_dist_url))
+gdbm_vers      := $(patsubst gdbm-%.tar.gz,%,$(gdbm_dist_name))
+gdbm_brief     := GNU dbm database routines
+gdbm_home      := https://gnu.org/software/gdbm
+
+define gdbm_desc
+GNU dbm is a library of database functions that use extendible hashing and works
+similarly to the standard UNIX *dbm* functions.
+
+The basic use of gdbm is to store key/data pairs in a data file, thus providing
+a persistent version of the dictionary Abstract Data Type (hash to perl_
+programmers).
+endef
 
 define fetch_gdbm_dist
-$(call download_verify_detach,$(gdbm_dist_url), \
-                              $(gdbm_sig_url), \
-                              $(FETCHDIR)/$(gdbm_dist_name))
+$(call download_csum,$(gdbm_dist_url),\
+                     $(FETCHDIR)/$(gdbm_dist_name),\
+                     $(gdbm_dist_sum))
 endef
 $(call gen_fetch_rules,gdbm,gdbm_dist_name,fetch_gdbm_dist)
 

@@ -1,22 +1,28 @@
+################################################################################
+# html5lib Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 html5lib_dist_url  := https://files.pythonhosted.org/packages/ac/b6/b55c3f49042f1df3dcd422b7f224f939892ee94f22abcf503a9b7339eaf2/html5lib-1.1.tar.gz
-html5lib_dist_sum  := b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f
+html5lib_dist_sum  := af7c29591007fded99be6c38e3d0ae5a4ac32d71d26046a615918ae732cb1c1ecbf754f47ceca1a53726c3843f3ecea7af87a7362281b45ff3af495815818626
 html5lib_dist_name := $(notdir $(html5lib_dist_url))
+html5lib_vers      := $(patsubst html5lib-%.tar.gz,%,$(html5lib_dist_name))
+html5lib_brief     := HTML parser/tokenizer based on the WHATWG HTML5 specification
+html5lib_home      := https://github.com/html5lib/html5lib-python
 
-define fetch_html5lib_dist
-$(call _download,$(html5lib_dist_url),$(FETCHDIR)/$(html5lib_dist_name).tmp)
-cat $(FETCHDIR)/$(html5lib_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(html5lib_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(html5lib_dist_name).tmp,\
-          $(FETCHDIR)/$(html5lib_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(html5lib_dist_name)'
+define html5lib_desc
+html5lib is a pure Python_ library for parsing HTML. It is designed to conform
+to the HTML 5 specification, which has formalized the error handling algorithms
+of popular web browsers.
 endef
 
-# As fetch_html5lib_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(html5lib_dist_name): SHELL:=/bin/bash
+define fetch_html5lib_dist
+$(call download_csum,$(html5lib_dist_url),\
+                     $(FETCHDIR)/$(html5lib_dist_name),\
+                     $(html5lib_dist_sum))
+endef
 $(call gen_fetch_rules,html5lib,html5lib_dist_name,fetch_html5lib_dist)
 
 define xtract_html5lib

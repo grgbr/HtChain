@@ -1,11 +1,26 @@
+################################################################################
+# gperf modules
+################################################################################
+
 gperf_dist_url  := https://ftp.gnu.org/gnu/gperf/gperf-3.1.tar.gz
-gperf_sig_url   := $(gperf_dist_url).sig
+gperf_dist_sum  := 855ebce5ff36753238a44f14c95be7afdc3990b085960345ca2caf1a2db884f7db74d406ce9eec2f4a52abb8a063d4ed000a36b317c9a353ef4e25e2cca9a3f4
 gperf_dist_name := $(notdir $(gperf_dist_url))
+gperf_vers      := $(patsubst gperf-%.tar.gz,%,$(gperf_dist_name))
+gperf_brief     := Perfect hash function generator
+gperf_home      := http://www.gnu.org/software/gperf/
+
+define gperf_desc
+gperf is a program that generates perfect hash functions for sets of key words.
+
+A perfect hash function is simply: a hash function and a data structure that
+allows recognition of a key word in a set of words using exactly 1 probe into
+the data structure.
+endef
 
 define fetch_gperf_dist
-$(call download_verify_detach,$(gperf_dist_url), \
-                              $(gperf_sig_url), \
-                              $(FETCHDIR)/$(gperf_dist_name))
+$(call download_csum,$(gperf_dist_url),\
+                     $(FETCHDIR)/$(gperf_dist_name),\
+                     $(gperf_dist_sum))
 endef
 $(call gen_fetch_rules,gperf,gperf_dist_name,fetch_gperf_dist)
 

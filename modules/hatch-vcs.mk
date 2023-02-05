@@ -1,22 +1,29 @@
+################################################################################
+# hatch-vcs Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 hatch-vcs_dist_url  := https://files.pythonhosted.org/packages/04/33/b68d68e532392d938472d16a03e4ce0ccd749ea31b42d18f8baa6547cbfd/hatch_vcs-0.3.0.tar.gz
-hatch-vcs_dist_sum  := cec5107cfce482c67f8bc96f18bbc320c9aa0d068180e14ad317bbee5a153fee
+hatch-vcs_dist_sum  := 06a80e90b45b1316b42845808d04d00d00356f42d32f02d934db0aa9df05efa2f692413709e0dd5465f447829f2f5410110fbbeb826bafdea1f1014e3096e056
 hatch-vcs_dist_name := $(notdir $(hatch-vcs_dist_url))
+hatch-vcs_vers      := $(patsubst hatch-vcs-%.tar.xz,%,$(hatch-vcs_dist_name))
+hatch-vcs_brief     := `Hatch <https://hatch.pypa.io/>`_ plugin for versioning from VCS
+hatch-vcs_home      := https://github.com/ofek/hatch-vcs
 
-define fetch_hatch-vcs_dist
-$(call _download,$(hatch-vcs_dist_url),$(FETCHDIR)/$(hatch-vcs_dist_name).tmp)
-cat $(FETCHDIR)/$(hatch-vcs_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(hatch-vcs_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(hatch-vcs_dist_name).tmp,\
-          $(FETCHDIR)/$(hatch-vcs_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(hatch-vcs_dist_name)'
+define hatch-vcs_desc
+This provides a plugin for `Hatch <https://hatch.pypa.io/>`_ that uses
+your preferred version control system (like Git) to determine project versions.
+
+It may be required to build a Python_ module from source.
 endef
 
-# As fetch_hatch-vcs_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(hatch-vcs_dist_name): SHELL:=/bin/bash
+define fetch_hatch-vcs_dist
+$(call download_csum,$(hatch-vcs_dist_url),\
+                     $(FETCHDIR)/$(hatch-vcs_dist_name),\
+                     $(hatch-vcs_dist_sum))
+endef
 $(call gen_fetch_rules,hatch-vcs,hatch-vcs_dist_name,fetch_hatch-vcs_dist)
 
 define xtract_hatch-vcs

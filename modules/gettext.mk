@@ -6,13 +6,21 @@
 ################################################################################
 
 gettext_dist_url  := https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz
-gettext_sig_url   := $(gettext_dist_url).sig
+gettext_dist_sum  := f7e2968651879f8444d43a176a149db9f9411f4a03132a7f3b37c2ed97e3978ae6888169c995c1953cb78943b6e3573811abcbb8661b6631edbbe067b2699ddf
 gettext_dist_name := $(notdir $(gettext_dist_url))
+gettext_vers      := $(patsubst gettext-%.tar.xz,%,$(gettext_dist_name))
+gettext_brief     := GNU Internationalization utilities
+gettext_home      := https://www.gnu.org/software/gettext/
+
+define gettext_desc
+Interesting for authors or maintainers of other packages or programs which they
+want to see internationalized.
+endef
 
 define fetch_gettext_dist
-$(call download_verify_detach,$(gettext_dist_url), \
-                              $(gettext_sig_url), \
-                              $(FETCHDIR)/$(gettext_dist_name))
+$(call download_csum,$(gettext_dist_url),\
+                     $(FETCHDIR)/$(gettext_dist_name),\
+                     $(gettext_dist_sum))
 endef
 $(call gen_fetch_rules,gettext,gettext_dist_name,fetch_gettext_dist)
 

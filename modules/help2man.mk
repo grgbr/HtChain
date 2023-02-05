@@ -1,11 +1,27 @@
+################################################################################
+# help2man modules
+################################################################################
+
 help2man_dist_url  := https://ftp.gnu.org/gnu/help2man/help2man-1.49.2.tar.xz
-help2man_sig_url   := $(help2man_dist_url).sig
+help2man_dist_sum  := cb8f9f923263d7160a27a7924ae559aba93d7258167888eb9e0e3e97a2014297b8d739b2bb7869acbf586354d099bd91d85f8208b901bce5ba0c5ad4b6abd6d5
 help2man_dist_name := $(notdir $(help2man_dist_url))
+help2man_vers      := $(patsubst help2man-%.tar.xz,%,$(help2man_dist_name))
+help2man_brief     := Automatic manpage generator
+help2man_home      := https://www.gnu.org/software/help2man/
+
+define help2man_desc
+Program to create simple man pages from the --help and --version output of other
+programs.
+
+ Since most GNU documentation is now in ``info`` format, this provides a way to
+generate a placeholder man page pointing to that resource while still providing
+some useful information.
+endef
 
 define fetch_help2man_dist
-$(call download_verify_detach,$(help2man_dist_url), \
-                              $(help2man_sig_url), \
-                              $(FETCHDIR)/$(help2man_dist_name))
+$(call download_csum,$(help2man_dist_url),\
+                     $(FETCHDIR)/$(help2man_dist_name),\
+                     $(help2man_dist_sum))
 endef
 $(call gen_fetch_rules,help2man,help2man_dist_name,fetch_help2man_dist)
 
