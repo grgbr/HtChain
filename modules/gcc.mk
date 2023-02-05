@@ -76,6 +76,7 @@ endef
 define gcc_install_plugins_cmds
 gcc_uplet=$$($(gcc_uplet_cmd)); \
 gcc_vers=$$($(gcc_vers_cmd)); \
+$(call mkdir,$(strip $(3))$(strip $(2))/lib/bfd-plugins); \
 $(call slink,\
        ../../libexec/gcc/$$gcc_uplet/$$gcc_vers/liblto_plugin.so,\
        $(strip $(3))$(strip $(2))/lib/bfd-plugins/liblto_plugin.so); \
