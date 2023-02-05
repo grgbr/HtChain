@@ -10,7 +10,7 @@ execnet_dist_sum  := d425e7b6f3708efecb5dfa2c36a837cb55f2c32cf2ec0c1dc11cd1ca6ea
 execnet_dist_name := $(notdir $(execnet_dist_url))
 execnet_vers      := $(patsubst execnet-%.tar.gz,%,$(execnet_dist_name))
 execnet_brief     := Rapid multi-Python deployment
-execnet_home      := https://execnet.readthedocs.io/en/latest/
+execnet_home      := https://execnet.readthedocs.io/
 
 define execnet_desc
 execnet provides carefully tested means to ad-hoc interact with Python_
