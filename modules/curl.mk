@@ -108,6 +108,8 @@ curl_common_config_args := \
 	--without-libidn2 \
 	--without-libgsasl \
 	--without-libpsl \
+	--without-nghttp2 \
+	--without-nghttp3 \
 	--disable-ldap \
 	--enable-http \
 	--enable-hsts \
