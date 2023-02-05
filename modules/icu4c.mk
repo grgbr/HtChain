@@ -3,13 +3,22 @@
 ################################################################################
 
 icu4c_dist_url  := https://github.com/unicode-org/icu4c/releases/download/release-71-1/icu4c-71_1-src.tgz
-icu4c_sig_url   := $(icu4c_dist_url).asc
-icu4c_dist_name := $(notdir $(icu4c_dist_url))
+icu4c_dist_sum  := 1fd2a20aef48369d1f06e2bb74584877b8ad0eb529320b976264ec2db87420bae242715795f372dbc513ea80047bc49077a064e78205cd5e8b33d746fd2a2912
+icu4c_vers      := $(subst _,.,$(patsubst icu4c-%-src.tgz,%,\
+                                          $(notdir $(icu4c_dist_url))))
+icu4c_dist_name := icu4c-$(icu4c_vers).tar.gz
+icu4c_brief     := International Components for Unicode
+icu4c_home      := https://icu.unicode.org/
+
+define icu4c_desc
+ICU is a C++ and C library that provides robust and full-featured Unicode and
+locale support.
+endef
 
 define fetch_icu4c_dist
-$(call download_verify_detach,$(icu4c_dist_url),\
-                              $(icu4c_sig_url),\
-                              $(FETCHDIR)/$(icu4c_dist_name))
+$(call download_csum,$(icu4c_dist_url),\
+                     $(FETCHDIR)/$(icu4c_dist_name),\
+                     $(icu4c_dist_sum))
 endef
 $(call gen_fetch_rules,icu4c,icu4c_dist_name,fetch_icu4c_dist)
 
