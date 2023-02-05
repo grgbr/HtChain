@@ -13,7 +13,7 @@ define help2man_desc
 Program to create simple man pages from the --help and --version output of other
 programs.
 
- Since most GNU documentation is now in ``info`` format, this provides a way to
+Since most GNU documentation is now in ``info`` format, this provides a way to
 generate a placeholder man page pointing to that resource while still providing
 some useful information.
 endef

@@ -64,8 +64,8 @@ $(OUTDIR)/doc/generated/packages.rst: build/doc.mk \
 	$(Q)echo >> $(@)
 	$(Q)$(foreach t,\
 	              $(sort $(subst final-,,$(final_targets))),\
-	              echo '   "$(t)_", "$($(t)_vers)", "$($(t)_brief)"' \
-	              >> $(@);)
+	              echo $$'   "$(t)_", "$($(t)_vers)", "$($(t)_brief)"' \
+	              >> $(@)$(newline))
 	$(foreach t,\
 	          $(sort $(subst final-,,$(final_targets))),\
 	          $(Q)$(call echo_multi_line,$(call pkg_rst_doc,$(t))) \

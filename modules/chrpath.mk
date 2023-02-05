@@ -12,7 +12,7 @@ chrpath_home      := https://alioth.debian.org/projects/chrpath/
 define chrpath_desc
 chrpath allows you to change the rpath (where the application looks for
 libraries) in an application. It does not (yet) allow you to add an rpath if
-there isn't one already.
+there isn\'t one already.
 endef
 
 define fetch_chrpath_dist

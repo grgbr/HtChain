@@ -13,7 +13,7 @@ define elementpath_desc
 The proposal of this package is to provide XPath 1.0 and 2.0 selectors for
 Python_\'s ElementTree XML data structures, both for the standard ElementTree
 library and for the lxml.etree library.For lxml.etree.  This package can be
-useful for providing XPath 2.0 selectors, because lxml.etree already has it's
+useful for providing XPath 2.0 selectors, because lxml.etree already has it\'s
 own implementation of XPath 1.0.
 endef
 
