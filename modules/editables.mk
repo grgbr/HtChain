@@ -9,7 +9,7 @@ editables_dist_url  := https://files.pythonhosted.org/packages/01/b0/a2a87db4b6c
 editables_dist_sum  := 4bdd1f43100cb1f9d46135f422ebe512d6fd61b47ab30c7a2ddb34515f3032cf1a6a28900c866b1b4b7b1bb267aadbe93efe2f41163a82666251b9e9f5cb1210
 editables_dist_name := $(notdir $(editables_dist_url))
 editables_vers      := $(patsubst editables-%.tar.gz,%,$(editables_dist_name))
-editables_brief     := A Python_ library for creating editable `wheels<wheel>`_
+editables_brief     := A Python_ library for creating editable :ref:`Wheels <wheel>`
 editables_home      := https://github.com/pfmoore/editables
 
 define editables_desc

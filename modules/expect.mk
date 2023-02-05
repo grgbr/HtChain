@@ -3,22 +3,29 @@
 ################################################################################
 
 expect_dist_url  := https://sourceforge.net/projects/expect/files/Expect/5.45.4/expect5.45.4.tar.gz/download
-expect_hash_url  := https://sourceforge.net/projects/expect/files/Expect/5.45.4/expect5.45.4.tar.gz.SHA256/download
-expect_dist_name := $(notdir $(patsubst %/download,%,$(expect_dist_url)))
+expect_dist_sum  := a8dc25e8175f67e029e15cbcfca1705165c1c4cb2dd37eaaaebffb61e3ba132d9519cd73ca5add4c3358a2b0b7a91e878279e8d0b72143ff2c287fce07e4659a
+expect_dist_name := $(patsubst expect%,expect-%,\
+                               $(notdir $(subst /download,,$(expect_dist_url))))
+expect_vers      := $(patsubst expect-%.tar.gz,%,$(expect_dist_name))
+expect_brief     := Automates interactive applications
+expect_home      := https://core.tcl.tk/expect/
+
+define expect_desc
+Expect is a tool for automating interactive applications according to a script.
+Following the script, Expect knows what can be expected from a program and what
+the correct response should be. Expect is also useful for testing these same
+applications. And by adding Tk, you can also wrap interactive applications in
+X11 GUIs. An interpreted language provides branching and high-level control
+structures to direct the dialogue. In addition, the user can take control and
+interact directly when desired, afterward returning control to the script.
+endef
 
 define fetch_expect_dist
-$(call _download,$(expect_dist_url),$(FETCHDIR)/$(expect_dist_name).tmp)
-$(call download,$(expect_hash_url),$(FETCHDIR)/$(expect_dist_name).hash)
-sed --silent \
-    's#$(expect_dist_name)#$(FETCHDIR)/$(expect_dist_name).tmp#p' \
-    '$(FETCHDIR)/$(expect_dist_name).hash' | \
-sha256sum --check --status
-$(call mv,$(FETCHDIR)/$(expect_dist_name).tmp,$(FETCHDIR)/$(expect_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(expect_dist_name)'
+$(call download_csum,$(expect_dist_url),\
+                     $(FETCHDIR)/$(expect_dist_name),\
+                     $(expect_dist_sum))
 endef
-$(call gen_fetch_rules,expect,\
-                       expect_dist_name,\
-                       fetch_expect_dist)
+$(call gen_fetch_rules,expect,expect_dist_name,fetch_expect_dist)
 
 define xtract_expect
 $(call rmrf,$(srcdir)/expect)

@@ -1,22 +1,27 @@
+################################################################################
+# flit-scm Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 flit-scm_dist_url  := https://files.pythonhosted.org/packages/e2/99/961b062461652435b6ad9042d2ffdd75e327b36936987c2073aa784334d5/flit_scm-1.7.0.tar.gz
-flit-scm_dist_sum  := 961bd6fb24f31bba75333c234145fff88e6de0a90fc0f7e5e7c79deca69f6bb2
+flit-scm_dist_sum  := feea98fd46a32a5d55d7f64c93aca68ea959b89a49e0e0b59017d8ce0c5c9d1ddcae95c713533dca0f7d39314450f04ae5233111c2460437fdbae40f500c0901
 flit-scm_dist_name := $(notdir $(flit-scm_dist_url))
+flit-scm_vers      := $(patsubst flit_scm-%.tar.gz,%,$(flit-scm_dist_name))
+flit-scm_brief     := Python_ PEP 518 build backend
+flit-scm_home      := https://gitlab.com/WillDaSilva/flit_scm
 
-define fetch_flit-scm_dist
-$(call _download,$(flit-scm_dist_url),$(FETCHDIR)/$(flit-scm_dist_name).tmp)
-cat $(FETCHDIR)/$(flit-scm_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(flit-scm_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(flit-scm_dist_name).tmp,\
-          $(FETCHDIR)/$(flit-scm_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(flit-scm_dist_name)'
+define flit-scm_desc
+A PEP 518 build backend that uses setuptools-scm_ to generate a version file
+from your version control system, then flit_core_ to build the package.
 endef
 
-# As fetch_flit-scm_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(flit-scm_dist_name): SHELL:=/bin/bash
+define fetch_flit-scm_dist
+$(call download_csum,$(flit-scm_dist_url),\
+                     $(FETCHDIR)/$(flit-scm_dist_name),\
+                     $(flit-scm_dist_sum))
+endef
 $(call gen_fetch_rules,flit-scm,flit-scm_dist_name,fetch_flit-scm_dist)
 
 define xtract_flit-scm

@@ -1,19 +1,36 @@
-flit_core_dist_url  := https://files.pythonhosted.org/packages/10/e5/be08751d07b30889af130cec20955c987a74380a10058e6e8856e4010afc/flit_core-3.8.0.tar.gz
-flit_core_dist_sum  := b305b30c99526df5e63d6022dd2310a0a941a187bd3884f4c8ef0418df6c39f3
-flit_core_dist_name := $(notdir $(flit_core_dist_url))
+################################################################################
+# flit_core Python modules
+################################################################################
 
-define fetch_flit_core_dist
-$(call _download,$(flit_core_dist_url),$(FETCHDIR)/$(flit_core_dist_name).tmp)
-cat $(FETCHDIR)/$(flit_core_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(flit_core_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(flit_core_dist_name).tmp,\
-          $(FETCHDIR)/$(flit_core_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(flit_core_dist_name)'
+flit_core_dist_url  := https://files.pythonhosted.org/packages/10/e5/be08751d07b30889af130cec20955c987a74380a10058e6e8856e4010afc/flit_core-3.8.0.tar.gz
+flit_core_dist_sum  := 914804e3f2040762381afe039272d9d6fdbcd3f3cf8b9eea854f2f1d95edcb01718fd6685476bc1cdc251dfc46ef80b40f087df881d8b963dcc3f3332fd32a46
+flit_core_dist_name := $(notdir $(flit_core_dist_url))
+flit_core_vers      := $(patsubst flit_core-%.tar.gz,%,$(flit_core_dist_name))
+flit_core_brief     := Simple way to put Python_ packages and modules on `PyPI <https://pypi.org/>`_ (PEP 517)
+flit_core_home      := https://flit.pypa.io/en/latest/
+
+define flit_core_desc
+Flit is a easy way to put Python_ packages and modules on `PyPI
+<https://pypi.org/>`_. It tries to require less thought about packaging and help
+you avoid common mistakes.
+
+Flit supports PEP 517 Python_ packaging.
+
+Make the easy things easy and the hard things possible is an old motto from the
+Perl_ community. Flit is entirely focused on the easy things part of that, and
+leaves the hard things up to other tools.
+
+Specifically, the easy things are pure Python_ packages with no build steps
+(neither compiling C code, nor bundling Javascript, etc.). The vast majority of
+packages on `PyPI <https://pypi.org/>`_ are like this: plain Python_ code, with
+maybe some static data files like icons included.
 endef
 
-# As fetch_flit_core_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(flit_core_dist_name): SHELL:=/bin/bash
+define fetch_flit_core_dist
+$(call download_csum,$(flit_core_dist_url),\
+                     $(FETCHDIR)/$(flit_core_dist_name),\
+                     $(flit_core_dist_sum))
+endef
 $(call gen_fetch_rules,flit_core,flit_core_dist_name,fetch_flit_core_dist)
 
 define xtract_flit_core

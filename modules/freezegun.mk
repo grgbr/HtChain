@@ -1,22 +1,30 @@
+################################################################################
+# freezegun Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 freezegun_dist_url  := https://files.pythonhosted.org/packages/1d/97/002ac49ec52858538b4aa6f6831f83c2af562c17340bdf6043be695f39ac/freezegun-1.2.2.tar.gz
-freezegun_dist_sum  := cd22d1ba06941384410cd967d8a99d5ae2442f57dfafeff2fda5de8dc5c05446
+freezegun_dist_sum  := c6dc3da66a2d3063f819a104b6bc98eb3d4b772b8edb06bde130a6e355d96e1861e650c44eb691be892223150a652a528fda4237bd77b1bdcee1fcfad74f307c
 freezegun_dist_name := $(notdir $(freezegun_dist_url))
+freezegun_vers      := $(patsubst freezegun-%.tar.gz,%,$(freezegun_dist_name))
+freezegun_brief     := Python_ library to mock the datetime module in unit testing
+freezegun_home      := https://github.com/spulec/freezegun
 
-define fetch_freezegun_dist
-$(call _download,$(freezegun_dist_url),$(FETCHDIR)/$(freezegun_dist_name).tmp)
-cat $(FETCHDIR)/$(freezegun_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(freezegun_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(freezegun_dist_name).tmp,\
-          $(FETCHDIR)/$(freezegun_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(freezegun_dist_name)'
+define freezegun_desc
+FreezeGun allows easy mocking of the datetime module by freezing the return
+value of the methods ``datetime.datetime.now()``,
+``datetime.datetime.utcnow()``, ``datetime.date.today()``, and ``time.time()``
+to a fixed point in time. Use it in unit testing to make the tests deterministic
+and time-independent.
 endef
 
-# As fetch_freezegun_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(freezegun_dist_name): SHELL:=/bin/bash
+define fetch_freezegun_dist
+$(call download_csum,$(freezegun_dist_url),\
+                     $(FETCHDIR)/$(freezegun_dist_name),\
+                     $(freezegun_dist_sum))
+endef
 $(call gen_fetch_rules,freezegun,freezegun_dist_name,fetch_freezegun_dist)
 
 define xtract_freezegun

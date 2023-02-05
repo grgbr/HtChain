@@ -3,13 +3,21 @@
 ################################################################################
 
 expat_dist_url  := https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.bz2
-expat_sig_url   := $(expat_dist_url).asc
+expat_dist_sum  := 46cc9d725f359b77681a2875bfefa15ceee50eb9513f6577607c0c5833dfa4241565c74f26b84b38d802c3cd8c32f00204fd74272bcecbd21229425764eef86c
 expat_dist_name := $(notdir $(expat_dist_url))
+expat_vers      := $(patsubst expat-%.tar.bz2,%,$(expat_dist_name))
+expat_brief     := XML parsing C library
+expat_home      := https://libexpat.github.io/
+
+define expat_desc
+Expat is a stream-oriented XML parser in which an application registers handlers
+for things the parser might find in the XML document (like start tags).
+endef
 
 define fetch_expat_dist
-$(call download_verify_detach,$(expat_dist_url), \
-                              $(expat_sig_url), \
-                              $(FETCHDIR)/$(expat_dist_name))
+$(call download_csum,$(expat_dist_url),\
+                     $(FETCHDIR)/$(expat_dist_name),\
+                     $(expat_dist_sum))
 endef
 $(call gen_fetch_rules,expat,expat_dist_name,fetch_expat_dist)
 

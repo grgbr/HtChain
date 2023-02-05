@@ -1,15 +1,33 @@
+################################################################################
+# flex modules
+#
 # TODO:
-# * depends on bison libiconv gettext automake texinfo
+# * depends on gettext automake texinfo
 # * depends on autoconf / m4 ?
-# * --disable-nls ? (stage vs final)
+################################################################################
+
 flex_dist_url  := https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.lz
-flex_sig_url   := $(flex_dist_url).sig
+flex_dist_sum  := 95173d8a979cc8109ec45b3a35130d5e57af6e43d5f11d5b989e5eab2f520b2bc910b83a92172878d6ffa84acefd62e8c252313741bcf16cb7e1ae0b211e1c85
 flex_dist_name := $(notdir $(flex_dist_url))
+flex_vers      := $(patsubst flex-%.tar.lz,%,$(flex_dist_name))
+flex_brief     := Fast lexical analyzer generator
+flex_home      := https://github.com/westes/flex
+
+define flex_desc
+Flex is a tool for generating scanners: programs which recognized lexical
+patterns in text. It reads the given input files for a description of a scanner
+to generate. The description is in the form of pairs of regular expressions and
+C code, called rules. Flex generates as output a C source file,
+:file:`lex.yy.c`, which defines a routine ``yylex()``.  This file is compiled
+and linked with the ``-lfl`` library to produce an executable. When the
+executable is run, it analyzes its input for occurrences of the regular
+expressions. Whenever it finds one, it executes the corresponding C code.
+endef
 
 define fetch_flex_dist
-$(call download_verify_detach,$(flex_dist_url), \
-                              $(flex_sig_url), \
-                              $(FETCHDIR)/$(flex_dist_name))
+$(call download_csum,$(flex_dist_url),\
+                     $(FETCHDIR)/$(flex_dist_name),\
+                     $(flex_dist_sum))
 endef
 $(call gen_fetch_rules,flex,flex_dist_name,fetch_flex_dist)
 
@@ -70,8 +88,8 @@ define flex_check_cmds
 endef
 
 flex_common_config_args := --enable-silent-rules \
-                            --enable-threads=posix \
-                            --disable-assert
+                           --enable-threads=posix \
+                           --disable-assert
 
 ################################################################################
 # Staging definitions
