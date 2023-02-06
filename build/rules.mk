@@ -6,9 +6,6 @@ bstrap_targets =
 stage_targets  =
 final_targets  =
 all_targets    = $(bstrap_targets) $(stage_targets) $(final_targets)
-version       := 1.0
-pkgvers       := $(PKGNAME) $(version)
-pkgurl        := $(PREFIX)/share/doc/$(PKGNAME)/README.Bugs
 
 .PHONY: setup
 setup: setup-sigs

@@ -62,7 +62,10 @@ endef
 
 # $(1): targets base name / module name
 define gcc_vers_cmd :=
-$(bstrap_cc) --version | awk -F'[ .]' '/^gcc/ { print $$3 }'
+$(bstrap_cc) --version | \
+	sed -n \
+	    -e '1s/.*[[:blank:]]\+\([0-9.]\+\)$$/\1/' \
+	    -e 's/^\([0-9]\+\).*/\1/p'
 endef
 
 # $(1): targets base name / module name
@@ -147,6 +150,7 @@ gcc_common_args        := --enable-silent-rules \
                           --with-linker-hash-style=gnu \
                           --enable-gnu-unique-object \
                           --without-cuda-driver \
+                          --with-pkgversion='$(pkgvers)' \
                           --with-glibc-version='$(libc_vers)' \
                           $(if $(arch_is_x86_64),$(gcc_common_x86_64_args))
 

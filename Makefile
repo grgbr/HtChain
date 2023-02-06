@@ -106,6 +106,9 @@ stampdir        := $(outdir)/stamp
 scriptdir       := $(TOPDIR)/scripts
 # HtChain version
 version         := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
+# HtChain package version string
+pkgvers         := $(PKGNAME) $(version)
+pkgurl          := $(PREFIX)/share/doc/$(PKGNAME)/README.Bugs
 
 o_flags     := -O%
 ssp_flags   := -fstack-protector% -fstack-clash-protection
