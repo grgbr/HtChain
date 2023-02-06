@@ -171,7 +171,8 @@ ncurses_final_config_args := \
 	PKG_CONFIG_LIBDIR='$(PREFIX)/lib/pkgconfig' \
 	$(final_config_flags)
 
-$(call gen_deps,final-ncurses,stage-pkg-config)
+# Requires tic from staging area to build (see ncurses_install_cmds macro)
+$(call gen_deps,final-ncurses,stage-pkg-config stage-ncurses)
 
 config_final-ncurses    = $(call ncurses_config_cmds,\
                                  final-ncurses,\
