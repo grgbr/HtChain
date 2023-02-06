@@ -1,19 +1,30 @@
+################################################################################
+# python modules
+#
 # TODO:
 # * fix failing tests: test_asyncio test_asyncio test_socket
-python_dist_url   := https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz
-python_sig_url    := $(python_dist_url).sig
-python_dist_name  := $(notdir $(python_dist_url))
+################################################################################
 
-python_vers       := $(shell echo '$(python_dist_name)' | \
-                             sed --silent 's/Python-\([0-9.]\+\)\.tar\..*/\1/p')
+python_dist_url   := https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz
+python_dist_sum   := 6c9aeecddc55c7896b2e8527fca131c7b2b6127d56ce1a001ccedfebf590334e0c0bb7c517ed3cf1da3c1910e002552b56aa7e03eeb672f42ff0bd8150799113
+python_dist_name  := $(subst P,p,$(notdir $(python_dist_url)))
+python_vers       := $(patsubst python-%.tar.xz,%,$(python_dist_name))
 _python_vers_toks := $(subst .,$(space),$(python_vers))
 python_vers_maj   := $(word 1,$(_python_vers_toks))
 python_vers_min   := $(word 2,$(_python_vers_toks))
+python_brief      := Interactive high-level object-oriented language
+python_home       := http://www.python.org/
+
+define python_desc
+Python, the high-level, interactive object oriented language, includes an
+extensive class library with lots of goodies for network programming, system
+administration, sounds and graphics.
+endef
 
 define fetch_python_dist
-$(call download_verify_detach,$(python_dist_url), \
-                              $(python_sig_url), \
-                              $(FETCHDIR)/$(python_dist_name))
+$(call download_csum,$(python_dist_url),\
+                     $(FETCHDIR)/$(python_dist_name),\
+                     $(python_dist_sum))
 endef
 $(call gen_fetch_rules,python,python_dist_name,fetch_python_dist)
 
