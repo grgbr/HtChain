@@ -1,20 +1,30 @@
+################################################################################
+# kconfig-frontends modules
+#
 # TODO:
-# * depends on bison flex gperf ncurses gtk3 qt5 L10n
-# * rework configure pkg-config related settings !!
+# * depends on bison L10n
 # * depends on m4 ?
 # * --disable-nls ? (stage vs final)
-# * build with PIE enabled (cannot build with PIE enabled when qt5 built with
-#   -reduce-relocations)
-kconfig-frontends_dist_url  := https://salsa.debian.org/philou/kconfig-frontends/-/archive/debian/4.11.0.1+dfsg-6/kconfig-frontends-debian-4.11.0.1+dfsg-6.tar.bz2
-kconfig-frontends_sig_url   := $(kconfig-frontends_dist_url).sig
-kconfig-frontends_dist_name := $(notdir $(kconfig-frontends_dist_url))
+################################################################################
 
-$(call gen_deps,kconfig-frontends,pkg-config)
+kconfig-frontends_dist_url  := https://salsa.debian.org/philou/kconfig-frontends/-/archive/debian/4.11.0.1+dfsg-6/kconfig-frontends-debian-4.11.0.1+dfsg-6.tar.bz2
+kconfig-frontends_dist_sum  := 14a1651dea1f1ad0ea46c03f40f00a80a3c4e07e0fe6221230d0bb6512c4a5669f3f11938d34f64247e1fb777fdca17b24c131ca1517f1fb452476362ec426ac
+kconfig-frontends_vers      := $(shell echo '$(kconfig-frontends_dist_url)' | \
+                                       sed 's/.*-\([0-9.]\+\)+.*/\1/')
+kconfig-frontends_dist_name := kconfig-frontends-$(kconfig-frontends_vers).tar.bz2
+kconfig-frontends_brief     := Standalone implementation of the Linux Kconfig parser and frontend
+kconfig-frontends_home      := https://salsa.debian.org/philou/kconfig-frontends
+
+define kconfig-frontends_desc
+Kconfig-frontends provides the ``kconfig`` parser, as well as all the frontends
+(dialog, ncurses, Qt and Gtk based) to configure and generate config files and
+config headers for various projects.
+endef
 
 define fetch_kconfig-frontends_dist
-$(call download_verify_detach,$(kconfig-frontends_dist_url), \
-                              $(kconfig-frontends_sig_url), \
-                              $(FETCHDIR)/$(kconfig-frontends_dist_name))
+$(call download_csum,$(kconfig-frontends_dist_url),\
+                     $(FETCHDIR)/$(kconfig-frontends_dist_name),\
+                     $(kconfig-frontends_dist_sum))
 endef
 $(call gen_fetch_rules,kconfig-frontends,\
                        kconfig-frontends_dist_name,\
