@@ -1,22 +1,35 @@
+################################################################################
+# iniconfig Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 iniconfig_dist_url  := https://files.pythonhosted.org/packages/d7/4b/cbd8e699e64a6f16ca3a8220661b5f83792b3017d0f79807cb8708d33913/iniconfig-2.0.0.tar.gz
-iniconfig_dist_sum  := 2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3
+iniconfig_dist_sum  := f0287115595a1ba074c5c77c3f7840efc2fef6c95c5ff3deaaf278c78b328f92187c358d5dd074b62c033db47952d99fc6d5164d4a48c81ba2c53d571eb76090
 iniconfig_dist_name := $(notdir $(iniconfig_dist_url))
+iniconfig_vers      := $(patsubst iniconfig-%.tar.gz,%,$(iniconfig_dist_name))
+iniconfig_brief     := Brain-dead simple parsing of ini files in Python_
+iniconfig_home      := https://github.com/pytest-dev/iniconfig
 
-define fetch_iniconfig_dist
-$(call _download,$(iniconfig_dist_url),$(FETCHDIR)/$(iniconfig_dist_name).tmp)
-cat $(FETCHDIR)/$(iniconfig_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(iniconfig_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(iniconfig_dist_name).tmp,\
-          $(FETCHDIR)/$(iniconfig_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(iniconfig_dist_name)'
+define iniconfig_desc
+iniconfig is a small and simple INI-file parser module having a unique set of
+features:
+
+* tested against Python2.4 across to Python3.2, Jython, PyPy
+* maintains order of sections and entries
+* supports multi-line values with or without line-continuations
+* supports ``#`` comments everywhere
+* raises errors with proper line-numbers
+* no bells and whistles like automatic substitutions
+* iniconfig raises an Error if two sections have the same name.
 endef
 
-# As fetch_iniconfig_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(iniconfig_dist_name): SHELL:=/bin/bash
+define fetch_iniconfig_dist
+$(call download_csum,$(iniconfig_dist_url),\
+                     $(FETCHDIR)/$(iniconfig_dist_name),\
+                     $(iniconfig_dist_sum))
+endef
 $(call gen_fetch_rules,iniconfig,iniconfig_dist_name,fetch_iniconfig_dist)
 
 define xtract_iniconfig

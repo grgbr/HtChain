@@ -1,19 +1,24 @@
-imagesize_dist_url  := https://files.pythonhosted.org/packages/a7/84/62473fb57d61e31fef6e36d64a179c8781605429fd927b5dd608c997be31/imagesize-1.4.1.tar.gz
-imagesize_dist_sum  := 69150444affb9cb0d5cc5a92b3676f0b2fb7cd9ae39e947a5e11a36b4497cd4a
-imagesize_dist_name := $(notdir $(imagesize_dist_url))
+################################################################################
+# idna Python modules
+################################################################################
 
-define fetch_imagesize_dist
-$(call _download,$(imagesize_dist_url),$(FETCHDIR)/$(imagesize_dist_name).tmp)
-cat $(FETCHDIR)/$(imagesize_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(imagesize_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(imagesize_dist_name).tmp,\
-          $(FETCHDIR)/$(imagesize_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(imagesize_dist_name)'
+imagesize_dist_url  := https://files.pythonhosted.org/packages/a7/84/62473fb57d61e31fef6e36d64a179c8781605429fd927b5dd608c997be31/imagesize-1.4.1.tar.gz
+imagesize_dist_sum  := f191d7fe34a01ab21b0f4f6519df8ab2a53c1ca54956f4d825d9cec5bd5f4c569491bdc26cb36fcaad2c453c35e51f69379f091362e206453aaefbda4802daa4
+imagesize_dist_name := $(notdir $(imagesize_dist_url))
+imagesize_vers      := $(patsubst imagesize-%.tar.gz,%,$(imagesize_dist_name))
+imagesize_brief     := Python_ module for getting image size from png/jpeg/jpeg2000/gif file
+imagesize_home      := https://github.com/shibukawa/imagesize_py
+
+define imagesize_desc
+This small module parses image header and returns width and height of the image.
+Supported formats are: PNG/JPEG/JPEG2000/GIF.
 endef
 
-# As fetch_imagesize_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(imagesize_dist_name): SHELL:=/bin/bash
+define fetch_imagesize_dist
+$(call download_csum,$(imagesize_dist_url),\
+                     $(FETCHDIR)/$(imagesize_dist_name),\
+                     $(imagesize_dist_sum))
+endef
 $(call gen_fetch_rules,imagesize,imagesize_dist_name,fetch_imagesize_dist)
 
 define xtract_imagesize

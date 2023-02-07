@@ -1,23 +1,41 @@
-jinja2_dist_url  := https://files.pythonhosted.org/packages/7a/ff/75c28576a1d900e87eb6335b063fab47a8ef3c8b4d88524c4bf78f670cce/Jinja2-3.1.2.tar.gz
-jinja2_dist_sum  := 31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852
-jinja2_dist_name := $(notdir $(jinja2_dist_url))
+################################################################################
+# Jinja2 Python modules
+################################################################################
 
-define fetch_jinja2_dist
-$(call _download,$(jinja2_dist_url),\
-                 $(FETCHDIR)/$(jinja2_dist_name).tmp)
-cat $(FETCHDIR)/$(jinja2_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(jinja2_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(jinja2_dist_name).tmp,\
-          $(FETCHDIR)/$(jinja2_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(jinja2_dist_name)'
+jinja2_dist_url  := https://files.pythonhosted.org/packages/7a/ff/75c28576a1d900e87eb6335b063fab47a8ef3c8b4d88524c4bf78f670cce/Jinja2-3.1.2.tar.gz
+jinja2_dist_sum  := 5dfe122c1beef5305b34d25f22f96607bd3a6cba098b03091850ea36fefe62b645a7218d7584b35bea252393ac922c9bb3654a9e90f23bcfb273e811fcf2f2c1
+jinja2_dist_name := $(subst J,j,$(notdir $(jinja2_dist_url)))
+jinja2_vers      := $(patsubst jinja2-%.tar.gz,%,$(jinja2_dist_name))
+jinja2_brief     := Small but fast and easy to use stand-alone template engine
+jinja2_home      := https://palletsprojects.com/p/jinja/
+
+define jinja2_desc
+Jinja2 is a template engine written in pure Python_. It provides a Django
+inspired non-XML syntax but supports inline expressions and an optional
+sandboxed environment.
+
+The key-features are:
+
+* Configurable syntax. If you are generating LaTeX or other formats with
+  Jinja2 you can change the delimiters to something that integrates better
+  into the LaTeX markup.
+* Fast. While performance is not the primarily target of Jinja2 it\'s
+  surprisingly fast. The overhead compared to regular Python_ code was reduced
+  to the very minimum.
+* Easy to debug. Jinja2 integrates directly into the Python_ traceback system
+  which allows you to debug Jinja2 templates with regular Python_ debugging
+  helpers.
+* Secure. It\'s possible to evaluate untrusted template code if the optional
+  sandbox is enabled. This allows Jinja2 to be used as templating language
+  for applications where users may modify the template design.
 endef
 
-# As fetch_jinja2_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(jinja2_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,jinja2,\
-                       jinja2_dist_name,\
-                       fetch_jinja2_dist)
+define fetch_jinja2_dist
+$(call download_csum,$(jinja2_dist_url),\
+                     $(FETCHDIR)/$(jinja2_dist_name),\
+                     $(jinja2_dist_sum))
+endef
+$(call gen_fetch_rules,jinja2,jinja2_dist_name,fetch_jinja2_dist)
 
 define xtract_jinja2
 $(call rmrf,$(srcdir)/jinja2)

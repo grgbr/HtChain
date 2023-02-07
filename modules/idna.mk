@@ -1,19 +1,30 @@
-idna_dist_url  := https://files.pythonhosted.org/packages/8b/e1/43beb3d38dba6cb420cefa297822eac205a277ab43e5ba5d5c46faf96438/idna-3.4.tar.gz
-idna_dist_sum  := 814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4
-idna_dist_name := $(notdir $(idna_dist_url))
+################################################################################
+# idna Python modules
+################################################################################
 
-define fetch_idna_dist
-$(call _download,$(idna_dist_url),$(FETCHDIR)/$(idna_dist_name).tmp)
-cat $(FETCHDIR)/$(idna_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(idna_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(idna_dist_name).tmp,\
-          $(FETCHDIR)/$(idna_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(idna_dist_name)'
+idna_dist_url  := https://files.pythonhosted.org/packages/8b/e1/43beb3d38dba6cb420cefa297822eac205a277ab43e5ba5d5c46faf96438/idna-3.4.tar.gz
+idna_dist_sum  := 4060a9304c9bac04efdd0b97ec8f5aeb7e17417e767bf51c5dfc26605edad25ab67456cf6f6a3c5a9f32b8247e46f6343edfd8a6ffbcd6d1075c71e66d089d6a
+idna_dist_name := $(notdir $(idna_dist_url))
+idna_vers      := $(patsubst idna-%.tar.gz,%,$(idna_dist_name))
+idna_brief     := Python_ IDNA2008 (RFC 5891) handling
+idna_home      := https://github.com/kjd/idna
+
+define idna_desc
+A library to support the Internationalised Domain Names in Applications (IDNA)
+protocol as specified in RFC 5891. This version of the protocol is often
+referred to as “IDNA2008” and can produce different results from the earlier
+standard from 2003.
+
+The library is also intended to act as a suitable drop-in replacement for the
+“encodings.idna” module that comes with the Python_ standard library but
+currently only supports the older 2003 specification.
 endef
 
-# As fetch_idna_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(idna_dist_name): SHELL:=/bin/bash
+define fetch_idna_dist
+$(call download_csum,$(idna_dist_url),\
+                     $(FETCHDIR)/$(idna_dist_name),\
+                     $(idna_dist_sum))
+endef
 $(call gen_fetch_rules,idna,idna_dist_name,fetch_idna_dist)
 
 define xtract_idna
