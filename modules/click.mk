@@ -44,6 +44,6 @@ $(call gen_dir_rules,click)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-click,stage-python)
+$(call gen_deps,stage-click,stage-wheel)
 
 $(call gen_python_module_rules,stage-click,click,$(stagedir))

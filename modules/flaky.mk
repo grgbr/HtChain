@@ -42,6 +42,6 @@ $(call gen_dir_rules,flaky)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-flaky,stage-python)
+$(call gen_deps,stage-flaky,stage-wheel)
 
 $(call gen_python_module_rules,stage-flaky,flaky,$(stagedir))

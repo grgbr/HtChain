@@ -45,6 +45,6 @@ $(call gen_dir_rules,itsdangerous)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-itsdangerous,stage-python)
+$(call gen_deps,stage-itsdangerous,stage-wheel)
 
 $(call gen_python_module_rules,stage-itsdangerous,itsdangerous,$(stagedir))

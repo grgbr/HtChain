@@ -36,14 +36,6 @@ $(call gen_dir_rules,pretend)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-pretend,stage-python)
+$(call gen_deps,stage-pretend,stage-wheel)
 
 $(call gen_python_module_rules,stage-pretend,pretend,$(stagedir))
-
-################################################################################
-# Final definitions
-################################################################################
-
-$(call gen_deps,final-pretend,stage-python)
-
-$(call gen_python_module_rules,final-pretend,pretend,$(PREFIX),$(finaldir))

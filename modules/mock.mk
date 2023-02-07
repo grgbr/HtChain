@@ -36,6 +36,6 @@ $(call gen_dir_rules,mock)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-mock,stage-python)
+$(call gen_deps,stage-mock,stage-wheel)
 
 $(call gen_python_module_rules,stage-mock,mock,$(stagedir))

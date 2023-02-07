@@ -43,6 +43,6 @@ $(call gen_dir_rules,execnet)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-execnet,stage-python)
+$(call gen_deps,stage-execnet,stage-wheel)
 
 $(call gen_python_module_rules,stage-execnet,execnet,$(stagedir))

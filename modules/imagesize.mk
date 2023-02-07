@@ -44,7 +44,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-imagesize,stage-python)
+$(call gen_deps,stage-imagesize,stage-wheel)
 
 check_stage-imagesize = $(call imagesize_check_cmds,stage-imagesize)
 $(call gen_python_module_rules,stage-imagesize,\
@@ -57,7 +57,7 @@ $(call gen_python_module_rules,stage-imagesize,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-imagesize,stage-python)
+$(call gen_deps,final-imagesize,stage-wheel)
 
 check_final-imagesize = $(call imagesize_check_cmds,final-imagesize)
 $(call gen_python_module_rules,final-imagesize,\

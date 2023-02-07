@@ -33,6 +33,6 @@ $(call gen_dir_rules,webencodings)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-webencodings,stage-python)
+$(call gen_deps,stage-webencodings,stage-wheel)
 
 $(call gen_python_module_rules,stage-webencodings,webencodings,$(stagedir))

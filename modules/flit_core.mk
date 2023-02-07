@@ -56,7 +56,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-flit_core,stage-python)
+$(call gen_deps,stage-flit_core,stage-wheel)
 $(call gen_check_deps,stage-flit_core,stage-pytest stage-testpath)
 
 check_stage-flit_core = $(call flit_core_check_cmds,stage-flit_core)
@@ -70,7 +70,7 @@ $(call gen_python_module_rules,stage-flit_core,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-flit_core,stage-python)
+$(call gen_deps,final-flit_core,stage-wheel)
 $(call gen_check_deps,final-flit_core,stage-pytest stage-testpath)
 
 check_final-flit_core = $(call flit_core_check_cmds,final-flit_core)

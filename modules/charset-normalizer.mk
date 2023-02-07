@@ -54,7 +54,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-charset-normalizer,stage-python)
+$(call gen_deps,stage-charset-normalizer,stage-wheel)
 $(call gen_check_deps,stage-charset-normalizer,stage-pytest-cov)
 
 check_stage-charset-normalizer = $(call charset-normalizer_check_cmds,\
@@ -69,7 +69,7 @@ $(call gen_python_module_rules,stage-charset-normalizer,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-charset-normalizer,stage-python)
+$(call gen_deps,final-charset-normalizer,stage-wheel)
 $(call gen_check_deps,final-charset-normalizer,stage-pytest-cov)
 
 check_final-charset-normalizer = $(call charset-normalizer_check_cmds,\

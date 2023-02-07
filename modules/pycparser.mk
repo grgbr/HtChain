@@ -33,6 +33,6 @@ $(call gen_dir_rules,pycparser)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-pycparser,stage-python)
+$(call gen_deps,stage-pycparser,stage-wheel)
 
 $(call gen_python_module_rules,stage-pycparser,pycparser,$(stagedir))

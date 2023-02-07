@@ -45,7 +45,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-serializinghtml,stage-setuptools)
+$(call gen_deps,stage-sphinxcontrib-serializinghtml,stage-wheel)
 $(call gen_check_deps,stage-sphinxcontrib-serializinghtml,\
                       stage-pytest stage-sphinx)
 
@@ -62,7 +62,7 @@ $(call gen_python_module_rules,stage-sphinxcontrib-serializinghtml,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-serializinghtml,stage-setuptools)
+$(call gen_deps,final-sphinxcontrib-serializinghtml,stage-wheel)
 $(call gen_check_deps,final-sphinxcontrib-serializinghtml,\
                       stage-pytest stage-sphinx)
 

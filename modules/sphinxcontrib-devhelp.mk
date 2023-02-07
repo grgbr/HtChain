@@ -45,9 +45,8 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-devhelp,stage-setuptools)
-$(call gen_check_deps,stage-sphinxcontrib-devhelp,\
-                      stage-pytest stage-sphinx)
+$(call gen_deps,stage-sphinxcontrib-devhelp,stage-wheel)
+$(call gen_check_deps,stage-sphinxcontrib-devhelp,stage-pytest stage-sphinx)
 
 check_stage-sphinxcontrib-devhelp = \
 	$(call sphinxcontrib-devhelp_check_cmds,\
@@ -62,9 +61,8 @@ $(call gen_python_module_rules,stage-sphinxcontrib-devhelp,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-devhelp,stage-setuptools)
-$(call gen_check_deps,final-sphinxcontrib-devhelp,\
-                      stage-pytest stage-sphinx)
+$(call gen_deps,final-sphinxcontrib-devhelp,stage-wheel)
+$(call gen_check_deps,final-sphinxcontrib-devhelp,stage-pytest stage-sphinx)
 
 check_final-sphinxcontrib-devhelp = \
 	$(call sphinxcontrib-devhelp_check_cmds,\

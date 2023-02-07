@@ -37,7 +37,7 @@ $(call gen_dir_rules,sortedcontainers)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sortedcontainers,stage-python)
+$(call gen_deps,stage-sortedcontainers,stage-wheel)
 
 $(call gen_python_module_rules,stage-sortedcontainers,\
                                sortedcontainers,\

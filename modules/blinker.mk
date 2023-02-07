@@ -41,6 +41,6 @@ $(call gen_dir_rules,blinker)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-blinker,stage-python)
+$(call gen_deps,stage-blinker,stage-wheel)
 
 $(call gen_python_module_rules,stage-blinker,blinker,$(stagedir))

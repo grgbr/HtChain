@@ -42,7 +42,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-lxml,stage-python stage-libxml2 stage-libxslt)
+$(call gen_deps,stage-lxml,stage-wheel stage-libxml2 stage-libxslt)
 $(call gen_check_deps,stage-lxml,stage-pytest)
 
 check_stage-lxml = $(call lxml_check_cmds,stage-lxml)
@@ -52,7 +52,7 @@ $(call gen_python_module_rules,stage-lxml,lxml,$(stagedir),,check_stage-lxml)
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-lxml,stage-python stage-libxml2 stage-libxslt)
+$(call gen_deps,final-lxml,stage-wheel stage-libxml2 stage-libxslt)
 $(call gen_check_deps,final-lxml,stage-pytest)
 
 check_final-lxml = $(call lxml_check_cmds,final-lxml)

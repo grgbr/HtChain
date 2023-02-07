@@ -43,7 +43,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-urllib3,stage-python)
+$(call gen_deps,stage-urllib3,stage-wheel)
 $(call gen_check_deps,stage-urllib3,\
                       stage-urllib3 \
                       stage-pytest \
@@ -67,7 +67,7 @@ $(call gen_python_module_rules,stage-urllib3,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-urllib3,stage-python)
+$(call gen_deps,final-urllib3,stage-wheel)
 $(call gen_check_deps,final-urllib3,\
                       stage-urllib3 \
                       stage-pytest \

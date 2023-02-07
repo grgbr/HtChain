@@ -36,7 +36,7 @@ $(call gen_dir_rules,certifi)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-certifi,stage-python)
+$(call gen_deps,stage-certifi,stage-wheel)
 
 $(call gen_python_module_rules,stage-certifi,\
                                certifi,\
@@ -46,7 +46,7 @@ $(call gen_python_module_rules,stage-certifi,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-certifi,stage-python)
+$(call gen_deps,final-certifi,stage-wheel)
 
 $(call gen_python_module_rules,final-certifi,\
                                certifi,\

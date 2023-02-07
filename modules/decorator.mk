@@ -51,6 +51,6 @@ $(call gen_dir_rules,decorator)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-decorator,stage-python)
+$(call gen_deps,stage-decorator,stage-wheel)
 
 $(call gen_python_module_rules,stage-decorator,decorator,$(stagedir))

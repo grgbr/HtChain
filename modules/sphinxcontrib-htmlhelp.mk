@@ -47,7 +47,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-htmlhelp,stage-setuptools)
+$(call gen_deps,stage-sphinxcontrib-htmlhelp,stage-wheel)
 $(call gen_check_deps,stage-sphinxcontrib-htmlhelp,\
                       stage-pytest stage-sphinx stage-html5lib)
 
@@ -64,7 +64,7 @@ $(call gen_python_module_rules,stage-sphinxcontrib-htmlhelp,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-htmlhelp,stage-setuptools)
+$(call gen_deps,final-sphinxcontrib-htmlhelp,stage-wheel)
 $(call gen_check_deps,final-sphinxcontrib-htmlhelp,\
                       stage-pytest stage-sphinx stage-html5lib)
 

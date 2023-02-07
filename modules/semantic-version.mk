@@ -36,7 +36,7 @@ $(call gen_dir_rules,semantic-version)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-semantic-version,stage-python)
+$(call gen_deps,stage-semantic-version,stage-wheel)
 
 $(call gen_python_module_rules,stage-semantic-version,\
                                semantic-version,\

@@ -36,7 +36,7 @@ $(call gen_dir_rules,wcag-contrast-ratio)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-wcag-contrast-ratio,stage-python)
+$(call gen_deps,stage-wcag-contrast-ratio,stage-wheel)
 
 $(call gen_python_module_rules,stage-wcag-contrast-ratio,\
                                wcag-contrast-ratio,$(stagedir))

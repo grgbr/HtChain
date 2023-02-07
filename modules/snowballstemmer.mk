@@ -32,7 +32,7 @@ $(call gen_dir_rules,snowballstemmer)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-snowballstemmer,stage-python)
+$(call gen_deps,stage-snowballstemmer,stage-wheel)
 
 $(call gen_python_module_rules,stage-snowballstemmer,\
                                snowballstemmer,\
@@ -42,7 +42,7 @@ $(call gen_python_module_rules,stage-snowballstemmer,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-snowballstemmer,stage-python)
+$(call gen_deps,final-snowballstemmer,stage-wheel)
 
 $(call gen_python_module_rules,final-snowballstemmer,\
                                snowballstemmer,\

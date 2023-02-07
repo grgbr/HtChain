@@ -38,7 +38,7 @@ $(call gen_dir_rules,alabaster)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-alabaster,stage-python)
+$(call gen_deps,stage-alabaster,stage-wheel)
 
 $(call gen_python_module_rules,stage-alabaster,\
                                alabaster,\
@@ -48,7 +48,7 @@ $(call gen_python_module_rules,stage-alabaster,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-alabaster,stage-python)
+$(call gen_deps,final-alabaster,stage-wheel)
 
 $(call gen_python_module_rules,final-alabaster,\
                                alabaster,\

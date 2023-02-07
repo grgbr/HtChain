@@ -53,7 +53,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-cython,stage-python)
+$(call gen_deps,stage-cython,stage-wheel)
 
 check_stage-cython = $(call cython_check_cmds,stage-cython)
 $(call gen_python_module_rules,stage-cython,\

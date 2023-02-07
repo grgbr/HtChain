@@ -42,7 +42,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-markupsafe,stage-python)
+$(call gen_deps,stage-markupsafe,stage-wheel)
 $(call gen_check_deps,stage-markupsafe,stage-markupsafe stage-pytest)
 
 check_stage-markupsafe = $(call markupsafe_check_cmds,stage-markupsafe)
@@ -56,7 +56,7 @@ $(call gen_python_module_rules,stage-markupsafe,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-markupsafe,stage-python)
+$(call gen_deps,final-markupsafe,stage-wheel)
 $(call gen_check_deps,final-markupsafe,stage-markupsafe stage-pytest)
 
 check_final-markupsafe = $(call markupsafe_check_cmds,final-markupsafe)

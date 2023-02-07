@@ -33,6 +33,6 @@ $(call gen_dir_rules,pysocks)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-pysocks,stage-python)
+$(call gen_deps,stage-pysocks,stage-wheel)
 
 $(call gen_python_module_rules,stage-pysocks,pysocks,$(stagedir))

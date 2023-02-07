@@ -36,6 +36,6 @@ $(call gen_dir_rules,six)
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-six,stage-python)
+$(call gen_deps,stage-six,stage-wheel)
 
 $(call gen_python_module_rules,stage-six,six,$(stagedir))

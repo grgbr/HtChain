@@ -50,7 +50,7 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-docutils,stage-python)
+$(call gen_deps,stage-docutils,stage-wheel)
 
 check_stage-docutils = $(call docutils_check_cmds,stage-docutils)
 $(call gen_python_module_rules,stage-docutils,\
@@ -63,7 +63,7 @@ $(call gen_python_module_rules,stage-docutils,\
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-docutils,stage-python)
+$(call gen_deps,final-docutils,stage-wheel)
 
 check_final-docutils = $(call docutils_check_cmds,final-docutils)
 $(call gen_python_module_rules,final-docutils,\

@@ -37,7 +37,7 @@ $(call gen_dir_rules,setuptools-rust)
 ################################################################################
 
 $(call gen_deps,stage-setuptools-rust,\
-                stage-setuptools stage-typing-extensions stage-semantic-version)
+                stage-typing-extensions stage-semantic-version)
 
 $(call gen_python_module_rules,stage-setuptools-rust,\
                                setuptools-rust,\
