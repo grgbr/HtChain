@@ -3,10 +3,21 @@
 ################################################################################
 
 libffi_dist_url  := https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz
+libffi_dist_sum  := 31bad35251bf5c0adb998c88ff065085ca6105cf22071b9bd4b5d5d69db4fadf16cadeec9baca944c4bb97b619b035bb8279de8794b922531fddeb0779eb7fb1
 libffi_dist_name := $(notdir $(libffi_dist_url))
+libffi_vers      := $(patsubst libffi-%.tar.gz,%,$(libffi_dist_name))
+libffi_brief     := Foreign Function Interface library
+libffi_home      := https://sourceware.org/libffi/
+
+define libffi_desc
+A foreign function interface is the popular name for the interface that allows
+code written in one language to call code written in another language.
+endef
 
 define fetch_libffi_dist
-$(call download,$(libffi_dist_url),$(FETCHDIR)/$(libffi_dist_name))
+$(call download_csum,$(libffi_dist_url),\
+                     $(FETCHDIR)/$(libffi_dist_name),\
+                     $(libffi_dist_sum))
 endef
 $(call gen_fetch_rules,libffi,libffi_dist_name,fetch_libffi_dist)
 

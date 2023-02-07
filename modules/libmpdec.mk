@@ -2,31 +2,37 @@
 # libmpdec modules
 ################################################################################
 
-libmpdec_dist_url      := https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-2.5.1.tar.gz
-libmpdec_dist_sum      := 9f9cd4c041f99b5c49ffb7b59d9f12d95b683d88585608aa56a6307667b2b21f
-libmpdec_dist_name     := $(notdir $(libmpdec_dist_url))
-libmpdec_test_url      := http://speleotrove.com/decimal/dectest.zip
-libmpdec_test_name     := libmpdec-test.zip
+libmpdec_dist_url  := https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-2.5.1.tar.gz
+libmpdec_dist_sum  := 710cb5cb71dbcf3e170ca15869c148df0547b848400c6b6dd70c67d9961dbe1190af8fb4d1623bfb0ca2afe44f369a42e311ab5225ed89d4031cb49a3bd70f30
+libmpdec_dist_name := $(subst mpdecimal,libmpdec,$(notdir $(libmpdec_dist_url)))
+libmpdec_vers      := $(patsubst libmpdec-%.tar.gz,%,$(libmpdec_dist_name))
+libmpdec_brief     := Library for decimal floating point arithmetic
+libmpdec_home      := https://www.bytereef.org/mpdecimal/index.html
+
+define libmpdec_desc
+mpdecimal is a package for correctly-rounded arbitrary precision decimal
+floating point arithmetic.
+endef
 
 define fetch_libmpdec_dist
-$(call _download,$(libmpdec_dist_url),$(FETCHDIR)/$(libmpdec_dist_name).tmp)
-cat $(FETCHDIR)/$(libmpdec_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(libmpdec_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(libmpdec_dist_name).tmp,\
-          $(FETCHDIR)/$(libmpdec_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(libmpdec_dist_name)'
-$(call download,$(libmpdec_test_url),$(FETCHDIR)/$(libmpdec_test_name))
+$(call download_csum,$(libmpdec_dist_url),\
+                     $(FETCHDIR)/$(libmpdec_dist_name),\
+                     $(libmpdec_dist_sum))
 endef
-
-# As fetch_libmpdec_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(libmpdec_dist_name): SHELL:=/bin/bash
 $(call gen_fetch_rules,libmpdec,libmpdec_dist_name,fetch_libmpdec_dist)
 
-define fetch_libmpdec_test
-$(call download,$(libmpdec_test_url),$(FETCHDIR)/$(libmpdec_test_name))
+libmpdec_test_dist_url  := http://speleotrove.com/decimal/dectest.zip
+libmpdec_test_dist_sum  := 05f9d12aec1ebfc9ca211b01705b41c5cd1bbc54d9aa6c4799b40fb3ab1835433fd1a277735d26d2530c3793c58b107b3abb1c31f64340e5e9d7856d92c821cf
+libmpdec_test_dist_name := libmpdec-test.zip
+
+define fetch_libmpdec_test_dist
+$(call download_csum,$(libmpdec_test_dist_url),\
+                     $(FETCHDIR)/$(libmpdec_test_dist_name),\
+                     $(libmpdec_test_dist_sum))
 endef
-$(call gen_fetch_rules,libmpdec,libmpdec_test_name,fetch_libmpdec_test)
+$(call gen_fetch_rules,libmpdec,\
+                       libmpdec_test_dist_name,\
+                       fetch_libmpdec_test_dist)
 
 define xtract_libmpdec
 $(call rmrf,$(srcdir)/libmpdec)
@@ -34,7 +40,8 @@ $(call untar,$(srcdir)/libmpdec,\
              $(FETCHDIR)/$(libmpdec_dist_name),\
              --strip-components=1)
 $(call mkdir,$(srcdir)/libmpdec/tests/testdata)
-$(UNZIP) -d $(srcdir)/libmpdec/tests/testdata $(FETCHDIR)/$(libmpdec_test_name)
+$(UNZIP) -d $(srcdir)/libmpdec/tests/testdata \
+         $(FETCHDIR)/$(libmpdec_test_dist_name)
 cd $(srcdir)/libmpdec && \
 patch -p1 < $(PATCHDIR)/libmpdec-2.5.1-000-fix_runtest_lib_path.patch
 endef

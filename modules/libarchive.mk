@@ -1,11 +1,54 @@
+################################################################################
+# libarchive modules
+################################################################################
+
 libarchive_dist_url  := https://www.libarchive.org/downloads/libarchive-3.6.1.tar.xz
-libarchive_sig_url   := $(libarchive_dist_url).asc
+libarchive_dist_sum  := 2e5a72edc468080c0e8f29e07d9c33826ffb246fa040ec42399bedeecf698b7555f69ffd15057ad79c0f50cd4926d43174599d99632b1b99ec6cd159c43a70b8
 libarchive_dist_name := $(notdir $(libarchive_dist_url))
+libarchive_vers      := $(patsubst libarchive-%.tar.xz,%,$(libarchive_dist_name))
+libarchive_brief     := Multi-format archive and compression
+libarchive_home      := https://www.libarchive.org/
+
+define libarchive_desc
+The libarchive library provides a flexible interface for reading and writing
+archives in various formats such as tar and cpio. libarchive also supports
+reading and writing archives compressed using various compression filters such
+as gzip and bzip2. The library is inherently stream-oriented; readers serially
+iterate through the archive, writers serially add things to the archive.
+
+Archive formats supported are:
+
+* tar (read and write, including GNU extensions)
+* pax (read and write, including GNU and star extensions)
+* cpio (read and write, including odc and newc variants)
+* iso9660 (read and write, including Joliet and Rockridge extensions, with
+  some limitations)
+* zip (read only, with some limitations, uses zlib)
+* mtree (read and write)
+* shar (write only)
+* ar (read and write, including BSD and GNU/SysV variants)
+* empty (read only; in particular, note that no other format will accept an
+  empty file)
+* raw (read only)
+* xar (read only)
+* rar (read only, with some limitations)
+* 7zip (read and write, with some limitations)
+
+Filters supported are:
+
+* gzip (read and write, uses zlib)
+* bzip2 (read and write, uses bzlib)
+* compress (read and write, uses an internal implementation)
+* uudecode (read only)
+* separate command-line compressors with fixed-signature auto-detection
+* xz and lzma (read and write using liblzma)
+* zstandard (read and write using libzstd)
+endef
 
 define fetch_libarchive_dist
-$(call download_verify_detach,$(libarchive_dist_url), \
-                              $(libarchive_sig_url), \
-                              $(FETCHDIR)/$(libarchive_dist_name))
+$(call download_csum,$(libarchive_dist_url),\
+                     $(FETCHDIR)/$(libarchive_dist_name),\
+                     $(libarchive_dist_sum))
 endef
 $(call gen_fetch_rules,libarchive,libarchive_dist_name,fetch_libarchive_dist)
 

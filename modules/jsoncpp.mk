@@ -1,9 +1,30 @@
+################################################################################
+# jsoncpp modules
+################################################################################
+
 jsoncpp_dist_url  := https://github.com/open-source-parsers/jsoncpp/archive/refs/tags/1.9.5.tar.gz
-jsoncpp_vers      := $(patsubst %.tar.gz,%,$(notdir $(jsoncpp_dist_url)))
-jsoncpp_dist_name := jsoncpp-$(jsoncpp_vers).tar.gz
+jsoncpp_dist_sum  := 1d06e044759b1e1a4cc4960189dd7e001a0a4389d7239a6d59295af995a553518e4e0337b4b4b817e70da5d9731a4c98655af90791b6287870b5ff8d73ad8873
+jsoncpp_dist_name := jsoncpp-$(notdir $(jsoncpp_dist_url))
+jsoncpp_vers      := $(patsubst jsoncpp-%.tar.gz,%,$(jsoncpp_dist_name))
+jsoncpp_brief     := Library for reading and writing JSON for C++
+jsoncpp_home      := https://github.com/open-source-parsers/jsoncpp
+
+define jsoncpp_desc
+jsoncpp is an implementation of a JSON reader and writer in C++. JSON
+(JavaScript Object Notation) is a lightweight data-interchange format that it is
+easy to parse and redable for human. It is useful for building config files,
+network communications protocols, etc...
+
+This library provides following features:
+
+* High-level data structures for collecting data from JSON.
+* Easy-to-use reader and writer.
+endef
 
 define fetch_jsoncpp_dist
-$(call download,$(jsoncpp_dist_url),$(FETCHDIR)/$(jsoncpp_dist_name))
+$(call download_csum,$(jsoncpp_dist_url),\
+                     $(FETCHDIR)/$(jsoncpp_dist_name),\
+                     $(jsoncpp_dist_sum))
 endef
 $(call gen_fetch_rules,jsoncpp,jsoncpp_dist_name,fetch_jsoncpp_dist)
 
