@@ -59,11 +59,16 @@ endef
 # $(2): build / install prefix
 # $(3): make arguments
 # $(4): optional install destination directory
+#
+# Install fails if the binary program symlinks already exists because of a
+# previous install round. Hence, overwrite LN_S to instruct make install target
+# to pass the -f option to ln command when installing binary program symlinks.
 define lz4_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
          PREFIX='$(strip $(2))' \
          $(3) \
+         LN_S='ln -sf' \
          $(if $(strip $(4)),DESTDIR='$(strip $(4))')
 endef
 
