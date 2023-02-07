@@ -5,9 +5,10 @@
 charset-normalizer_dist_url  := https://files.pythonhosted.org/packages/96/d7/1675d9089a1f4677df5eb29c3f8b064aa1e70c1251a0a8a127803158942d/charset-normalizer-3.0.1.tar.gz
 charset-normalizer_dist_sum  := 25bfb8d708f2c1827d4f074f1b3c4f9932f7a00b833423f9edd6d5a942af39eeb703dea7471bdf2764094e8d01af7d98017c030f7b7a2a1a24e65c1161aef52f
 charset-normalizer_dist_name := $(notdir $(charset-normalizer_dist_url))
-charset-normalizer_vers      := $(patsubst charset-normalizer-%.tar.gz,\
-                                           %,\
-                                           $(charset-normalizer_dist_name))
+charset-normalizer_vers      := $(strip \
+                                  $(patsubst charset-normalizer-%.tar.gz,\
+                                             %,\
+                                             $(charset-normalizer_dist_name)))
 charset-normalizer_brief     := Python_ charset, encoding and language detection
 charset-normalizer_home      := https://github.com/Ousret/charset_normalizer
 
