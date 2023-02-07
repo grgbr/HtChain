@@ -66,17 +66,25 @@ if [ ! -d "$dir" ]; then
 	exit 1
 fi
 
-find "$dir" -type f | while read f; do
+# file does not recognize guile 2.2+ object files (byte-compiled files) since
+# using a regular ELF format. Skip them as they are not strippable anyway.
+#
+# Also note that some files are installed read only. This is the reason why we
+# make them user writeable (chmod) before stripping...
+find "$dir" -type f ! -path "*/guile/*.go" | while read f; do
 	type=$(file --brief --mime "$f")
 	case "$type" in
 	"application/x-executable; charset=binary")
 		echo "STRIP $f" >&2
+		chmod u+w "$f"
 		strip --strip-all "$f";;
 	"application/x-pie-executable; charset=binary")
 		echo "STRIP $f" >&2
+		chmod u+w "$f"
 		strip --strip-all "$f";;
 	"application/x-sharedlib; charset=binary")
 		echo "STRIP $f" >&2
+		chmod u+w "$f"
 		strip --strip-unneeded "$f" || true;;
 	esac
 done
