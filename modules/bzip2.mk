@@ -3,11 +3,14 @@
 ################################################################################
 
 bzip2_dist_url   := https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
-bzip2_dist_sum  := 083f5e675d73f3233c7930ebe20425a533feedeaaa9d8cc86831312a6581cefbe6ed0d08d2fa89be81082f2a5abdabca8b3c080bf97218a1bd59dc118a30b9f3
-bzip2_dist_name := $(notdir $(bzip2_dist_url))
-bzip2_vers      := $(patsubst bzip2-%.tar.gz,%,$(bzip2_dist_name))
-bzip2_brief     := High-quality block-sorting file compressor
-bzip2_home      := https://sourceware.org/bzip2/
+bzip2_dist_sum   := 083f5e675d73f3233c7930ebe20425a533feedeaaa9d8cc86831312a6581cefbe6ed0d08d2fa89be81082f2a5abdabca8b3c080bf97218a1bd59dc118a30b9f3
+bzip2_dist_name  := $(notdir $(bzip2_dist_url))
+bzip2_vers       := $(patsubst bzip2-%.tar.gz,%,$(bzip2_dist_name))
+_bzip2_vers_toks := $(subst .,$(space),$(bzip2_vers))
+bzip2_vers_maj   := $(word 1,$(_bzip2_vers_toks))
+bzip2_vers_min   := $(word 2,$(_bzip2_vers_toks))
+bzip2_brief      := High-quality block-sorting file compressor
+bzip2_home       := https://sourceware.org/bzip2/
 
 define bzip2_desc
 bzip2 is a freely available, patent free, data compressor.
