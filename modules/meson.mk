@@ -1,26 +1,25 @@
-# TODO:
-# * depends on qt5 (for testing) ??
-# * --disable-nls ? (stage vs final)
-# * setup pkg-config properly (for testing also)
-# * fix failing tests
-# * hotdoc support ?
+################################################################################
+# meson modules
+################################################################################
+
 meson_dist_url  := https://files.pythonhosted.org/packages/83/40/c0ea8d3072441403aa30d91b900051a961e0f6d58f702c0ec9ca812c8737/meson-1.0.0.tar.gz
-meson_dist_sum  := aa50a4ba4557c25e7d48446abfde857957dcdf58385fffbe670ba0e8efacce05
+meson_dist_sum  := 9b1195cfe856c1aa51bc79f6eb4d0f94925bb02d0a9fbd68a6a6ced6e5c252b09b22d9aac812640687e49b8d64a313ce48d0a69a3bf83ea8ffb8c9dab559fc23
 meson_dist_name := $(notdir $(meson_dist_url))
+meson_vers      := $(patsubst meson-%.tar.gz,%,$(meson_dist_name))
+meson_brief     := High-productivity build system
+meson_home      := https://mesonbuild.com
+
+define meson_desc
+Meson is a build system designed to increase programmer productivity. It does
+this by providing a fast, simple and easy to use interface for modern software
+development tools and practices.
+endef
 
 define fetch_meson_dist
-$(call _download,$(meson_dist_url),$(FETCHDIR)/$(meson_dist_name).tmp)
-cat $(FETCHDIR)/$(meson_dist_name).tmp | \
-	sha256sum --check \
-	          --status \
-	          <(echo "$(meson_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(meson_dist_name).tmp,\
-          $(FETCHDIR)/$(meson_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(meson_dist_name)'
+$(call download_csum,$(meson_dist_url),\
+                     $(FETCHDIR)/$(meson_dist_name),\
+                     $(meson_dist_sum))
 endef
-# As fetch_meson_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(meson_dist_name): SHELL:=/bin/bash
 $(call gen_fetch_rules,meson,meson_dist_name,fetch_meson_dist)
 
 define xtract_meson

@@ -7,21 +7,37 @@
 #       (required by bash)
 ################################################################################
 
-ncurses_dist_url      := https://ftp.gnu.org/gnu/ncurses/ncurses-6.3.tar.gz
-ncurses_sig_url       := $(ncurses_dist_url).sig
-ncurses_dist_name     := $(notdir $(ncurses_dist_url))
-urxvt_tinfo_dist_url  := https://raw.githubusercontent.com/exg/rxvt-unicode/rxvt-unicode-9.30/doc/etc/rxvt-unicode.terminfo
-urxvt_tinfo_dist_name := $(notdir $(urxvt_tinfo_dist_url))
+ncurses_dist_url  := https://ftp.gnu.org/gnu/ncurses/ncurses-6.3.tar.gz
+ncurses_dist_sum  := 5373f228cba6b7869210384a607a2d7faecfcbfef6dbfcd7c513f4e84fbd8bcad53ac7db2e7e84b95582248c1039dcfc7c4db205a618f7da22a166db482f0105
+ncurses_dist_name := $(notdir $(ncurses_dist_url))
+ncurses_vers      := $(patsubst ncurses-%.tar.gz,%,$(ncurses_dist_name))
+ncurses_brief     := Terminal-independent handling of character screens
+ncurses_home      := https://invisible-island.net/ncurses/ncurses.html
+
+define ncurses_desc
+The ncurses (new curses) library is a free software emulation of curses in
+System V Release 4.0 (SVr4), and more. It uses terminfo format, supports pads
+and color and multiple highlights and forms characters and function-key mapping,
+and has all the other SVr4-curses enhancements over BSD curses. SVr4 curses
+became the basis of X/Open Curses.
+endef
 
 define fetch_ncurses_dist
-$(call download_verify_detach,$(ncurses_dist_url), \
-                              $(ncurses_sig_url), \
-                              $(FETCHDIR)/$(ncurses_dist_name))
+$(call download_csum,$(ncurses_dist_url),\
+                     $(FETCHDIR)/$(ncurses_dist_name),\
+                     $(ncurses_dist_sum))
 endef
 $(call gen_fetch_rules,ncurses,ncurses_dist_name,fetch_ncurses_dist)
 
+urxvt_tinfo_dist_url  := https://raw.githubusercontent.com/exg/rxvt-unicode/rxvt-unicode-9.30/doc/etc/rxvt-unicode.terminfo
+urxvt_tinfo_dist_sum  := 325d65f4fd84e10ef4ebf8b06a003d4afe4ded2e5ec36d7c49d6c17107d851950a8d9373d1238d67b5083512ba934dc332c34d640303bda45ae3b2291f4174b8
+urxvt_tinfo_dist_name := $(notdir $(urxvt_tinfo_dist_url))
+
 define fetch_urxvt_tinfo_dist
 $(call download,$(urxvt_tinfo_dist_url),$(FETCHDIR)/$(urxvt_tinfo_dist_name))
+$(call download_csum,$(urxvt_tinfo_dist_url),\
+                     $(FETCHDIR)/$(urxvt_tinfo_dist_name),\
+                     $(urxvt_tinfo_dist_sum))
 endef
 $(call gen_fetch_rules,ncurses,urxvt_tinfo_dist_name,fetch_urxvt_tinfo_dist)
 

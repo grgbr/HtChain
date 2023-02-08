@@ -3,13 +3,30 @@
 ################################################################################
 
 openssl_dist_url  := https://www.openssl.org/source/openssl-3.0.4.tar.gz
-openssl_sig_url   := $(openssl_dist_url).asc
+openssl_dist_sum  := 478cd801dc4787688e6d9062969ae738c24f869bb186f717ad3be54ae8f2630e5cd845c504efd3405ea1ecda07ebee00014cc6ef7bca9585a6240cf89d516557
 openssl_dist_name := $(notdir $(openssl_dist_url))
+openssl_vers      := $(patsubst openssl-%.tar.gz,%,$(openssl_dist_name))
+openssl_brief     := Secure Sockets Layer toolkit
+openssl_home      := https://www.openssl.org/
+
+define openssl_desc
+Implementation of the SSL and TLS cryptographic protocols for secure
+communication over the Internet.
+
+It ships with tools and libraries useful for cryptographic operations such as:
+
+* creating RSA, DH, and DSA key parameters;
+* creating X.509 certificates, CSRs, and CRLs;
+* calculating message digests;
+* encrypting and decrypting with ciphers;
+* testing SSL/TLS clients and servers;
+* handling S/MIME signed or encrypted mail.
+endef
 
 define fetch_openssl_dist
-$(call download_verify_detach,$(openssl_dist_url), \
-                              $(openssl_sig_url), \
-                              $(FETCHDIR)/$(openssl_dist_name))
+$(call download_csum,$(openssl_dist_url),\
+                     $(FETCHDIR)/$(openssl_dist_name),\
+                     $(openssl_dist_sum))
 endef
 $(call gen_fetch_rules,openssl,openssl_dist_name,fetch_openssl_dist)
 

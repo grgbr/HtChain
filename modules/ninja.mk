@@ -1,11 +1,29 @@
-ninja_dist_url  := https://github.com/ninja-build/ninja/archive/refs/tags/v1.10.2.tar.gz
-ninja_sig_url   := $(ninja_dist_url).sig
-ninja_dist_name := $(patsubst v%,ninja-%,$(notdir $(ninja_dist_url)))
+################################################################################
+# ninja modules
+################################################################################
 
-$(call gen_deps,ninja,python)
+ninja_dist_url  := https://github.com/ninja-build/ninja/archive/refs/tags/v1.10.2.tar.gz
+ninja_dist_sum  := 895412ae1cbc83c656e92f282602a29300e08274e9dea0da4464202ae556e7a1ab03bec057f23da4756bbd91bd2d744cd7a64b336740fd2782bb4db5c3b7b496
+ninja_vers      := $(patsubst v%.tar.gz,%,$(notdir $(ninja_dist_url)))
+ninja_dist_name := ninja-$(ninja_vers).tar.gz
+ninja_brief     := Small build system closest in spirit to Make
+ninja_home      := https://ninja-build.org/
+
+define ninja_desc
+Ninja is yet another build system. It takes as input the interdependencies of
+files (typically source code and output executables) and orchestrates building
+them, quickly.
+
+Ninja joins a sea of other build systems. Its distinguishing goal is to be fast.
+It is born from the Chromium browser project, which has over 30,000 source files
+and whose other build systems can take ten seconds to start building after
+changing one file. Ninja is under a second.
+endef
 
 define fetch_ninja_dist
-$(call download,$(ninja_dist_url),$(FETCHDIR)/$(ninja_dist_name))
+$(call download_csum,$(ninja_dist_url),\
+                     $(FETCHDIR)/$(ninja_dist_name),\
+                     $(ninja_dist_sum))
 endef
 $(call gen_fetch_rules,ninja,ninja_dist_name,fetch_ninja_dist)
 

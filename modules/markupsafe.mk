@@ -1,23 +1,25 @@
-markupsafe_dist_url  := https://files.pythonhosted.org/packages/95/7e/68018b70268fb4a2a605e2be44ab7b4dd7ce7808adae6c5ef32e34f4b55a/MarkupSafe-2.1.2.tar.gz
-markupsafe_dist_sum  := abcabc8c2b26036d62d4c746381a6f7cf60aafcc653198ad678306986b09450d
-markupsafe_dist_name := $(notdir $(markupsafe_dist_url))
+################################################################################
+# markupsafe Python modules
+################################################################################
 
-define fetch_markupsafe_dist
-$(call _download,$(markupsafe_dist_url),\
-                 $(FETCHDIR)/$(markupsafe_dist_name).tmp)
-cat $(FETCHDIR)/$(markupsafe_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(markupsafe_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(markupsafe_dist_name).tmp,\
-          $(FETCHDIR)/$(markupsafe_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(markupsafe_dist_name)'
+markupsafe_dist_url  := https://files.pythonhosted.org/packages/95/7e/68018b70268fb4a2a605e2be44ab7b4dd7ce7808adae6c5ef32e34f4b55a/MarkupSafe-2.1.2.tar.gz
+markupsafe_dist_sum  := 84dbeddaf2df713b3cce94eb64876fea8f80c608e25130c18e4691be2b1dea56df8b772d26c0caca88231ef795125eb9678210c33bf20518c18e3047912ddb4b
+markupsafe_dist_name := $(subst M,m,$(notdir $(markupsafe_dist_url)))
+markupsafe_vers      := $(patsubst markupsafe-%.tar.gz,%,$(markupsafe_dist_name))
+markupsafe_brief     := HTML/XHTML/XML string library for Python_
+markupsafe_home      := https://palletsprojects.com/p/markupsafe/
+
+define markupsafe_desc
+MarkupSafe is a Python_ library implementing a unicode subclass that is aware of
+HTML escaping rules. It can be used to implement automatic string escaping.
 endef
 
-# As fetch_markupsafe_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(markupsafe_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,markupsafe,\
-                       markupsafe_dist_name,\
-                       fetch_markupsafe_dist)
+define fetch_markupsafe_dist
+$(call download_csum,$(markupsafe_dist_url),\
+                     $(FETCHDIR)/$(markupsafe_dist_name),\
+                     $(markupsafe_dist_sum))
+endef
+$(call gen_fetch_rules,markupsafe,markupsafe_dist_name,fetch_markupsafe_dist)
 
 define xtract_markupsafe
 $(call rmrf,$(srcdir)/markupsafe)

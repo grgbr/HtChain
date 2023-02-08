@@ -1,23 +1,27 @@
-packaging_dist_url  := https://files.pythonhosted.org/packages/47/d5/aca8ff6f49aa5565df1c826e7bf5e85a6df852ee063600c1efa5b932968c/packaging-23.0.tar.gz
-packaging_dist_sum  := b6ad297f8907de0fa2fe1ccbd26fdaf387f5f47c7275fedf8cce89f99446cf97
-packaging_dist_name := $(notdir $(packaging_dist_url))
+################################################################################
+# packaging Python modules
+################################################################################
 
-define fetch_packaging_dist
-$(call _download,$(packaging_dist_url),\
-                 $(FETCHDIR)/$(packaging_dist_name).tmp)
-cat $(FETCHDIR)/$(packaging_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(packaging_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(packaging_dist_name).tmp,\
-          $(FETCHDIR)/$(packaging_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(packaging_dist_name)'
+packaging_dist_url  := https://files.pythonhosted.org/packages/47/d5/aca8ff6f49aa5565df1c826e7bf5e85a6df852ee063600c1efa5b932968c/packaging-23.0.tar.gz
+packaging_dist_sum  := d8e2af37bf2acb665337983d14de2777d5dd6bda485699b9230d6fd4c21b01525407aa823966b60ac87ac231533b90261e87b371d747b679b6b6cc274ff635d8
+packaging_dist_name := $(notdir $(packaging_dist_url))
+packaging_vers      := $(patsubst packaging-%.tar.gz,%,$(packaging_dist_name))
+packaging_brief     := Core utilities for Python_ packages
+packaging_home      := https://pypi.python.org/pypi/packaging
+
+define packaging_desc
+These core utilities currently consist of:
+
+* version Handling (PEP 440) ;
+* dependency Specification (PEP 440).
 endef
 
-# As fetch_packaging_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(packaging_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,packaging,\
-                       packaging_dist_name,\
-                       fetch_packaging_dist)
+define fetch_packaging_dist
+$(call download_csum,$(packaging_dist_url),\
+                     $(FETCHDIR)/$(packaging_dist_name),\
+                     $(packaging_dist_sum))
+endef
+$(call gen_fetch_rules,packaging,packaging_dist_name,fetch_packaging_dist)
 
 define xtract_packaging
 $(call rmrf,$(srcdir)/packaging)

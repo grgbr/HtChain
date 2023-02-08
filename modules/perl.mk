@@ -1,13 +1,37 @@
+################################################################################
+# perl modules
+#
 # TODO:
 # * enable socks5 support using -Dusesocks configure option ?
 # * make depend onto Berkeley DB
+################################################################################
+
 perl_dist_url  := https://www.cpan.org/src/5.0/perl-5.36.0.tar.gz
+perl_dist_sum  := 76f2dbc764443c66bc3bfcc214a7c851f155de75b0f94a2923e10caa6ec9b8fd5aaafcfa65964cd3584eb7a6e4fea766abb5e0e840c5ae4237587ee047cd82dd
 perl_dist_name := $(notdir $(perl_dist_url))
 perl_vers      := $(patsubst perl-%.tar.gz,%,$(perl_dist_name))
 perl_vers_maj  := $(word 1,$(subst .,$(space),$(perl_vers)))
+perl_brief     := Larry Wall's Practical Extraction and Report Language
+perl_home      := http://dev.perl.org/
+
+define perl_desc
+Perl is a highly capable, feature-rich programming language with over 20 years
+of development. Perl 5 runs on over 100 platforms from portables to mainframes.
+Perl is suitable for both rapid prototyping and large scale development
+projects.
+
+Perl 5 supports many programming styles, including procedural, functional, and
+object-oriented. In addition to this, it is supported by an ever-growing
+collection of reusable modules which accelerate development. Some of these
+modules include Web frameworks, database integration, networking protocols, and
+encryption. Perl provides interfaces to C and C++ for custom extension
+development.
+endef
 
 define fetch_perl_dist
-$(call download,$(perl_dist_url),$(FETCHDIR)/$(perl_dist_name))
+$(call download_csum,$(perl_dist_url),\
+                     $(FETCHDIR)/$(perl_dist_name),\
+                     $(perl_dist_sum))
 endef
 $(call gen_fetch_rules,perl,perl_dist_name,fetch_perl_dist)
 
