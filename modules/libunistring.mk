@@ -3,13 +3,24 @@
 ################################################################################
 
 libunistring_dist_url  := https://ftp.gnu.org/gnu/libunistring/libunistring-1.0.tar.xz
-libunistring_sig_url   := $(libunistring_dist_url).sig
+libunistring_dist_sum  := 70d5ad82722844dbeacdfcb4d7593358e4a00a9222a98537add4b7f0bf4a2bb503dfb3cd627e52e2a5ca1d3da9e5daf38a6bd521197f92002e11e715fb1662d1
 libunistring_dist_name := $(notdir $(libunistring_dist_url))
+libunistring_vers      := $(patsubst libunistring-%.tar.xz,%,$(libunistring_dist_name))
+libunistring_brief     := Unicode string library for C
+libunistring_home      := https://www.gnu.org/software/libunistring/
+
+define libunistring_desc
+The libunistring library implements Unicode strings (in the UTF-8, UTF-16, and
+UTF-32 encodings), together with functions for Unicode characters (character
+names, classifications, properties) and functions for string processing
+(formatted output, width, word breaks, line breaks, normalization, case folding,
+regular expressions).
+endef
 
 define fetch_libunistring_dist
-$(call download_verify_detach,$(libunistring_dist_url),\
-                              $(libunistring_sig_url),\
-                              $(FETCHDIR)/$(libunistring_dist_name))
+$(call download_csum,$(libunistring_dist_url),\
+                     $(FETCHDIR)/$(libunistring_dist_name),\
+                     $(libunistring_dist_sum))
 endef
 $(call gen_fetch_rules,libunistring,\
                        libunistring_dist_name,\

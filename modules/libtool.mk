@@ -7,13 +7,25 @@
 ################################################################################
 
 libtool_dist_url  := https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz
-libtool_sig_url   := $(libtool_dist_url).sig
+libtool_dist_sum  := 47f4c6de40927254ff9ba452612c0702aea6f4edc7e797f0966c8c6bf0340d533598976cdba17f0bdc64545572e71cd319bbb587aa5f47cd2e7c1d96f873a3da
 libtool_dist_name := $(notdir $(libtool_dist_url))
+libtool_vers      := $(patsubst libtool-%.tar.xz,%,$(libtool_dist_name))
+libtool_brief     := Generic library support script
+libtool_home      := https://www.gnu.org/software/libtool/
+
+define libtool_desc
+This is GNU libtool, a generic library support script. Libtool hides the
+complexity of generating special library types (such as shared libraries) behind
+a consistent interface.  To use libtool, add the new generic library building
+commands to your ``Makefile``, ``Makefile.in``, or ``Makefile.am``.  See the
+documentation for details.  Libtool supports building static libraries on all
+platforms.
+endef
 
 define fetch_libtool_dist
-$(call download_verify_detach,$(libtool_dist_url), \
-                              $(libtool_sig_url), \
-                              $(FETCHDIR)/$(libtool_dist_name))
+$(call download_csum,$(libtool_dist_url),\
+                     $(FETCHDIR)/$(libtool_dist_name),\
+                     $(libtool_dist_sum))
 endef
 $(call gen_fetch_rules,libtool,libtool_dist_name,fetch_libtool_dist)
 

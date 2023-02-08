@@ -1,8 +1,24 @@
+################################################################################
+# libxslt modules
+################################################################################
+
 libxslt_dist_url  := https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.37.tar.xz
+libxslt_dist_sum  := a4e477d2bb918b7d01945e2c7491c3a4aae799dc1602bbd13de55c8a5052e210a20bc45115347eae44473c8b1d03dbc5e4a2aa18c2218f1fdfd376d87cd501ca
 libxslt_dist_name := $(notdir $(libxslt_dist_url))
+libxslt_vers      := $(patsubst libxslt-%.tar.xz,%,$(libxslt_dist_name))
+libxslt_brief     := XSLT 1.0 processing library
+libxslt_home      := http://xmlsoft.org/xslt/
+
+define libxslt_desc
+XSLT is an XML language for defining transformations of XML files from XML to
+some other arbitrary format, such as XML, HTML, plain text, etc.  using standard
+XSLT stylesheets. libxslt is a C library which implements XSLT version 1.0.
+endef
 
 define fetch_libxslt_dist
-$(call download,$(libxslt_dist_url),$(FETCHDIR)/$(libxslt_dist_name))
+$(call download_csum,$(libxslt_dist_url),\
+                     $(FETCHDIR)/$(libxslt_dist_name),\
+                     $(libxslt_dist_sum))
 endef
 $(call gen_fetch_rules,libxslt,libxslt_dist_name,fetch_libxslt_dist)
 

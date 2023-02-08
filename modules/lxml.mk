@@ -1,19 +1,34 @@
-lxml_dist_url  := https://files.pythonhosted.org/packages/70/bb/7a2c7b4f8f434aa1ee801704bf08f1e53d7b5feba3d5313ab17003477808/lxml-4.9.1.tar.gz
-lxml_dist_sum  := fe749b052bb7233fe5d072fcb549221a8cb1a16725c47c37e42b0b9cb3ff2c3f
-lxml_dist_name := $(notdir $(lxml_dist_url))
+################################################################################
+# lxml Python modules
+################################################################################
 
-define fetch_lxml_dist
-$(call _download,$(lxml_dist_url),$(FETCHDIR)/$(lxml_dist_name).tmp)
-cat $(FETCHDIR)/$(lxml_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(lxml_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(lxml_dist_name).tmp,\
-          $(FETCHDIR)/$(lxml_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(lxml_dist_name)'
+lxml_dist_url  := https://files.pythonhosted.org/packages/70/bb/7a2c7b4f8f434aa1ee801704bf08f1e53d7b5feba3d5313ab17003477808/lxml-4.9.1.tar.gz
+lxml_dist_sum  := d7ec55c7db2c63a716ca5f4d833706d90fc76c944885e010fcdb96786bcfe796994e438450cf4e8e6e75d702e21fb16971f28f854d7a1f76c34e4ae315414d84
+lxml_dist_name := $(notdir $(lxml_dist_url))
+lxml_vers      := $(patsubst lxml-%.tar.gz,%,$(lxml_dist_name))
+lxml_brief     := Python_ binding for the libxml2_ and libxslt_ libraries
+lxml_home      := http://lxml.de/
+
+define lxml_desc
+lxml is a new Python_ binding for libxml2_ and libxslt_, completely independent
+from existing Python_ bindings. Its aim:
+
+* Pythonic API.
+* Documented.
+* Use Python_ unicode strings in API.
+* Safe (no segfaults).
+* No manual memory management!
+
+lxml aims to provide a Pythonic API by following as much as possible the
+``ElementTree`` API, trying to avoid inventing too many new APIs, or the user's
+having to learn new things -- XML is complicated enough.
 endef
 
-# As fetch_lxml_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(lxml_dist_name): SHELL:=/bin/bash
+define fetch_lxml_dist
+$(call download_csum,$(lxml_dist_url),\
+                     $(FETCHDIR)/$(lxml_dist_name),\
+                     $(lxml_dist_sum))
+endef
 $(call gen_fetch_rules,lxml,lxml_dist_name,fetch_lxml_dist)
 
 define xtract_lxml

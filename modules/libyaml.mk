@@ -3,10 +3,21 @@
 ################################################################################
 
 libyaml_dist_url  := https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz
+libyaml_dist_sum  := dadd7d8e0d88b5ebab005e5d521d56d541580198aa497370966b98c904586e642a1cd4f3881094eb57624f218d50db77417bbfd0ffdce50340f011e35e8c4c02
 libyaml_dist_name := lib$(notdir $(libyaml_dist_url))
+libyaml_vers      := $(patsubst libyaml-%.tar.gz,%,$(libyaml_dist_name))
+libyaml_brief     := Fast YAML 1.1 parser and emitter library
+libyaml_home      := https://github.com/yaml/libyaml
+
+define libyaml_desc
+LibYAML is a C library for parsing and emitting data in YAML 1.1, a
+human-readable data serialization format.
+endef
 
 define fetch_libyaml_dist
-$(call download,$(libyaml_dist_url),$(FETCHDIR)/$(libyaml_dist_name))
+$(call download_csum,$(libyaml_dist_url),\
+                     $(FETCHDIR)/$(libyaml_dist_name),\
+                     $(libyaml_dist_sum))
 endef
 $(call gen_fetch_rules,libyaml,libyaml_dist_name,fetch_libyaml_dist)
 

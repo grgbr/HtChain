@@ -1,11 +1,32 @@
+################################################################################
+# libuv modules
+################################################################################
+
 libuv_dist_url  := https://dist.libuv.org/dist/v1.44.2/libuv-v1.44.2-dist.tar.gz
-libuv_sig_url   := $(libuv_dist_url).sign
-libuv_dist_name := $(notdir $(libuv_dist_url))
+libuv_dist_sum  := fef97751922070a7cac081527b919a4d46e483e8d8b41916eda6aa6bb870eeb1acfa4a507447ee8991965329e8c89c51c953120121765cf7e8a816c41f8ed763
+libuv_vers      := $(patsubst libuv-v%-dist.tar.gz,%,$(notdir $(libuv_dist_url)))
+libuv_dist_name := libuv-$(libuv_vers).tar.gz
+libuv_brief     := Asynchronous event notification library
+libuv_home      := https://libuv.org/
+
+define libuv_desc
+Libuv is the asynchronous library behind Node.js. Very similar to libevent or
+libev, it provides the main elements for event driven systems: watching and
+waiting for availability in a set of sockets, and some other events like timers
+or asynchronous messages. However, libuv also comes with some other extras like:
+
+* files watchers and asynchronous operations
+* a portable TCP and UDP API, as well as asynchronous DNS resolution
+* processes and threads management, and a portable inter-process communications
+  mechanism, with pipes and work queues
+* a plugins mechanism for loading libraries dynamically
+* interface with external libraries that also need to access the I/O.
+endef
 
 define fetch_libuv_dist
-$(call download_verify_detach,$(libuv_dist_url), \
-                              $(libuv_sig_url), \
-                              $(FETCHDIR)/$(libuv_dist_name))
+$(call download_csum,$(libuv_dist_url),\
+                     $(FETCHDIR)/$(libuv_dist_name),\
+                     $(libuv_dist_sum))
 endef
 $(call gen_fetch_rules,libuv,libuv_dist_name,fetch_libuv_dist)
 

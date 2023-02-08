@@ -1,23 +1,30 @@
-markdown_dist_url  := https://files.pythonhosted.org/packages/85/7e/133e943e97a943d2f1d8bae0c5060f8ac50e6691754eb9dbe036b047a9bb/Markdown-3.4.1.tar.gz
-markdown_dist_sum  := 3b809086bb6efad416156e00a0da66fe47618a5d6918dd688f53f40c8e4cfeff
-markdown_dist_name := $(notdir $(markdown_dist_url))
+################################################################################
+# markdown Python modules
+################################################################################
 
-define fetch_markdown_dist
-$(call _download,$(markdown_dist_url),\
-                 $(FETCHDIR)/$(markdown_dist_name).tmp)
-cat $(FETCHDIR)/$(markdown_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(markdown_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(markdown_dist_name).tmp,\
-          $(FETCHDIR)/$(markdown_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(markdown_dist_name)'
+markdown_dist_url  := https://files.pythonhosted.org/packages/85/7e/133e943e97a943d2f1d8bae0c5060f8ac50e6691754eb9dbe036b047a9bb/Markdown-3.4.1.tar.gz
+markdown_dist_sum  := 73b0006ac8aaf281a2dbc2c14534853dbb7ab26a620f3961975279feb83334b6868fa4bbcd30767189201a0c84e502dacd16783de3808393699ace0cbaab30a8
+markdown_dist_name := $(subst M,m,$(notdir $(markdown_dist_url)))
+markdown_vers      := $(patsubst markdown-%.tar.gz,%,$(markdown_dist_name))
+markdown_brief     := Python_ text-to-HTML conversion
+markdown_home      := https://github.com/Python-Markdown/markdown
+
+define markdown_desc
+Markdown is a text-to-HTML conversion tool for web writers. Markdown allows you
+to write using an easy-to-read, easy-to-write plain text format, then convert it
+to structurally valid XHTML (or HTML).
+
+This is a Python_ implementation of John Gruber's Markdown. The current version
+implements all Markdown syntax features and fully passes Markdown Test Suite
+1.0. It also supports footnotes and attributes.
 endef
 
-# As fetch_markdown_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(markdown_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,markdown,\
-                       markdown_dist_name,\
-                       fetch_markdown_dist)
+define fetch_markdown_dist
+$(call download_csum,$(markdown_dist_url),\
+                     $(FETCHDIR)/$(markdown_dist_name),\
+                     $(markdown_dist_sum))
+endef
+$(call gen_fetch_rules,markdown,markdown_dist_name,fetch_markdown_dist)
 
 define xtract_markdown
 $(call rmrf,$(srcdir)/markdown)

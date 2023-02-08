@@ -3,15 +3,29 @@
 ################################################################################
 
 libxml2_dist_url  := https://download.gnome.org/sources/libxml2/2.9/libxml2-2.9.14.tar.xz
-libxml2_sig_url   := $(libxml2_dist_url).sig
+libxml2_dist_sum  := d08e6cafb289c499fdc5b3a12181e032a34f7a249bc66758859f964d3e71e19fd69be79921e1a9d8ab1e692d15b13f5fae95eeb10c3236974d89e218f5107606
 libxml2_dist_name := $(notdir $(libxml2_dist_url))
+libxml2_vers      := $(patsubst libxml2-%.tar.xz,%,$(libxml2_dist_name))
+libxml2_brief     := GNOME XML library
+libxml2_home      := http://xmlsoft.org
+
+define libxml2_desc
+XML is a metalanguage to let you design your own markup language. A regular
+markup language defines a way to describe information in a certain class of
+documents (eg HTML). XML lets you define your own customized markup languages
+for many classes of document. It can do this because it\'s written in SGML, the
+international standard metalanguage for markup languages.
+
+This package provides a library providing an extensive API to handle such XML
+data files.
+endef
 
 define fetch_libxml2_dist
-$(call download,$(libxml2_dist_url),$(FETCHDIR)/$(libxml2_dist_name))
+$(call download_csum,$(libxml2_dist_url),\
+                     $(FETCHDIR)/$(libxml2_dist_name),\
+                     $(libxml2_dist_sum))
 endef
-$(call gen_fetch_rules,libxml2,\
-                       libxml2_dist_name,\
-                       fetch_libxml2_dist)
+$(call gen_fetch_rules,libxml2,libxml2_dist_name,fetch_libxml2_dist)
 
 define xtract_libxml2
 $(call rmrf,$(srcdir)/libxml2)

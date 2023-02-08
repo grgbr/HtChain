@@ -1,11 +1,28 @@
+################################################################################
+# GNU make modules
+################################################################################
+
 make_dist_url  := https://ftp.gnu.org/gnu/make/make-4.3.tar.lz
-make_sig_url   := $(make_dist_url).sig
+make_dist_sum  := ddf0fdcb9ee1b182ef294c5da70c1275288c99bef60e63a25c0abed2ddd44aba1770be4aab1db8cac81e5f624576f2127c5d825a1824e1c7a49df4f16445526b
 make_dist_name := $(notdir $(make_dist_url))
+make_vers      := $(patsubst make-%.tar.lz,%,$(make_dist_name))
+make_brief     := Utility for directing compilation
+make_home      := https://www.gnu.org/software/make/
+
+define make_desc
+GNU Make is a utility which controls the generation of executables and other
+target files of a program from the program\'s source files. It determines
+automatically which pieces of a large program need to be (re)created, and issues
+the commands to (re)create them. Make can be used to organize any task in which
+targets (files) are to be automatically updated based on input files whenever
+the corresponding input is newer --- it is not limited to building computer
+programs. Indeed, Make is a general purpose dependency solver.
+endef
 
 define fetch_make_dist
-$(call download_verify_detach,$(make_dist_url), \
-                              $(make_sig_url), \
-                              $(FETCHDIR)/$(make_dist_name))
+$(call download_csum,$(make_dist_url),\
+                     $(FETCHDIR)/$(make_dist_name),\
+                     $(make_dist_sum))
 endef
 $(call gen_fetch_rules,make,make_dist_name,fetch_make_dist)
 
