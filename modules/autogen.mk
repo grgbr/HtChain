@@ -53,11 +53,15 @@ $(call gen_dir_rules,autogen)
 # Don't bother fixing it since we do not really need dependency tracking (we
 # only build once after all). I suspect this is related to automake version
 # mismatch and we should probably run an autoupdate cycle...
+#
+# Also use MISSING=true to skip automatic Makefile generation based on
+# autotools.
 define autogen_config_cmds
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
 $(srcdir)/autogen/configure --prefix='$(strip $(2))' \
                             --disable-dependency-tracking \
+                            MISSING='true' \
                             $(3) \
                             $(verbose)
 endef
@@ -113,7 +117,6 @@ autogen_common_config_args := --enable-silent-rules \
 
 autogen_stage_config_args := $(autogen_common_config_args) \
                              --disable-nls \
-                             MISSING='true' \
                              $(stage_config_flags)
 
 $(call gen_deps,stage-autogen,\
