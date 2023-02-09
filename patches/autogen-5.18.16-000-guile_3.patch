@@ -30,3 +30,15 @@
    if test -n "$GUILE_EFFECTIVE_VERSION"; then
      _guile_tmp=""
      for v in $_guile_versions_to_search; do
+--- a/configure	2018-08-26 19:44:54.000000000 +0200
++++ b/configure	2023-02-09 15:38:57.799251702 +0100
+@@ -14799,7 +14799,7 @@
+ 		PKG_CONFIG=""
+ 	fi
+ fi
+-  _guile_versions_to_search="2.2 2.0 1.8"
++  _guile_versions_to_search="3.0 2.2 2.0 1.8"
+   if test -n "$GUILE_EFFECTIVE_VERSION"; then
+     _guile_tmp=""
+     for v in $_guile_versions_to_search; do
+

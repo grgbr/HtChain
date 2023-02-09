@@ -54,10 +54,8 @@ $(call gen_dir_rules,autogen)
 # only build once after all). I suspect this is related to automake version
 # mismatch and we should probably run an autoupdate cycle...
 define autogen_config_cmds
-cd $(srcdir)/autogen && \
-PATH="$(stagedir)/bin:$(PATH)" \
-$(stagedir)/bin/autoreconf -if
 cd $(builddir)/$(strip $(1)) && \
+env PATH="$(stagedir)/bin:$(PATH)" \
 $(srcdir)/autogen/configure --prefix='$(strip $(2))' \
                             --disable-dependency-tracking \
                             $(3) \
@@ -105,13 +103,15 @@ autogen_common_config_args := --enable-silent-rules \
                               --enable-shared \
                               --enable-static \
                               --with-libxml2 \
+                              --with-packager='$(PKGNAME)' \
+                              --with-packager-version='$(version)' \
                               GUILE="$(stagedir)/bin/guile"
 
 ################################################################################
 # Staging definitions
 ################################################################################
 
-autogen_stage_config_args := $(autogen_common_args) \
+autogen_stage_config_args := $(autogen_common_config_args) \
                              --disable-nls \
                              MISSING='true' \
                              $(stage_config_flags)
@@ -159,7 +159,7 @@ $(call gen_dir_rules,stage-autogen)
 # Final definitions
 ################################################################################
 
-autogen_final_config_args := $(autogen_common_args) \
+autogen_final_config_args := $(autogen_common_config_args) \
                              --enable-nls \
                              $(final_config_flags)
 
