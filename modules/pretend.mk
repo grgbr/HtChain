@@ -1,26 +1,31 @@
+################################################################################
+# pretend Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 pretend_dist_url  := https://files.pythonhosted.org/packages/3c/f8/7c86fd40c9e83deb10891a60d2dcb1af0b3b38064d72ebdb12486acc824f/pretend-1.0.9.tar.gz
-pretend_dist_sum  := c90eb810cde8ebb06dafcb8796f9a95228ce796531bc806e794c2f4649aa1b10
+pretend_dist_sum  := 25dfbc4035f7ec7088be40846847620495656ddedbc8a0111ca36e6f6cbd59f14b974403d60827363db3f11bedd38a91e84f9d494f7715e6e8cdb0abfa690a87
 pretend_dist_name := $(notdir $(pretend_dist_url))
+pretend_vers      := $(patsubst pretend-%.tar.gz,%,$(pretend_dist_name))
+pretend_brief     := Python_ library for stubbing
+pretend_home      := https://github.com/alex/pretend
 
-define fetch_pretend_dist
-$(call _download,$(pretend_dist_url),\
-                 $(FETCHDIR)/$(pretend_dist_name).tmp)
-cat $(FETCHDIR)/$(pretend_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pretend_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pretend_dist_name).tmp,\
-          $(FETCHDIR)/$(pretend_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pretend_dist_name)'
+define pretend_desc
+Pretend is a library to make stubbing with Python_ easier.
+
+Stubbing is a technique for writing tests. You may hear the term mixed up with
+mocks, fakes, or doubles. Basically a stub is an object that returns pre-canned
+responses, rather than doing any computation.
 endef
 
-# As fetch_pretend_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pretend_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,pretend,\
-                       pretend_dist_name,\
-                       fetch_pretend_dist)
+define fetch_pretend_dist
+$(call download_csum,$(pretend_dist_url),\
+                     $(FETCHDIR)/$(pretend_dist_name),\
+                     $(pretend_dist_sum))
+endef
+$(call gen_fetch_rules,pretend,pretend_dist_name,fetch_pretend_dist)
 
 define xtract_pretend
 $(call rmrf,$(srcdir)/pretend)

@@ -1,15 +1,27 @@
-# TODO:
-# * depends on bison flex gperf ncurses gtk3 qt5 L10n pkg-config
-# * depends on m4 ?
-# * --disable-nls ? (stage vs final)
+################################################################################
+# pkg-config modules
+################################################################################
+
 pkg-config_dist_url  := https://pkgconfig.freedesktop.org/releases/pkg-config-0.29.tar.gz
-pkg-config_sig_url   := $(pkg-config_dist_url).asc
+pkg-config_dist_sum  := c2857cd67801c0db5d204912453ff6bdc7da3ea61f8b1c6b38983d48dffb958725e7723f909abbc057c7b34a85c27290eec6943808312a75909306076064aa63
 pkg-config_dist_name := $(notdir $(pkg-config_dist_url))
+pkg-config_vers      := $(patsubst pkg-config-%.tar.gz,%,$(pkg-config_dist_name))
+pkg-config_brief     := Manage compile and link flags for libraries
+pkg-config_home      := http://pkg-config.freedesktop.org
+
+define pkg-config_desc
+pkg-config is a system for managing library compile and link flags that works
+with automake_ and autoconf_.
+
+Increasingly libraries ship with ".pc" files that allow querying of the
+compiler and linker flags needed to use them through the
+:manpage:`pkg-config(1)` program.
+endef
 
 define fetch_pkg-config_dist
-$(call download_verify_detach,$(pkg-config_dist_url),\
-                              $(pkg-config_sig_url),\
-                              $(FETCHDIR)/$(pkg-config_dist_name))
+$(call download_csum,$(pkg-config_dist_url),\
+                     $(FETCHDIR)/$(pkg-config_dist_name),\
+                     $(pkg-config_dist_sum))
 endef
 $(call gen_fetch_rules,pkg-config,pkg-config_dist_name,fetch_pkg-config_dist)
 

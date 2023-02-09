@@ -1,22 +1,27 @@
+################################################################################
+# pluggy Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 pluggy_dist_url  := https://files.pythonhosted.org/packages/a1/16/db2d7de3474b6e37cbb9c008965ee63835bba517e22cdb8c35b5116b5ce1/pluggy-1.0.0.tar.gz
-pluggy_dist_sum  := 4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159
+pluggy_dist_sum  := cf0bcbb4330c24ce473614befa19548f33fb39fa0ad094e1eae786202d7adadc28e16499f80ab96b630091765404ca5c5b6f9a55bc605e03514d8ab50cf9ae00
 pluggy_dist_name := $(notdir $(pluggy_dist_url))
+pluggy_vers      := $(patsubst pluggy-%.tar.gz,%,$(pluggy_dist_name))
+pluggy_brief     := Plugin and hook calling mechanisms for Python_
+pluggy_home      := https://github.com/pytest-dev/pluggy
 
-define fetch_pluggy_dist
-$(call _download,$(pluggy_dist_url),$(FETCHDIR)/$(pluggy_dist_name).tmp)
-cat $(FETCHDIR)/$(pluggy_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pluggy_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pluggy_dist_name).tmp,\
-          $(FETCHDIR)/$(pluggy_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pluggy_dist_name)'
+define pluggy_desc
+pluggy is the cristallized core of plugin management as used by some 150 plugins
+for pytest_.
 endef
 
-# As fetch_pluggy_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pluggy_dist_name): SHELL:=/bin/bash
+define fetch_pluggy_dist
+$(call download_csum,$(pluggy_dist_url),\
+                     $(FETCHDIR)/$(pluggy_dist_name),\
+                     $(pluggy_dist_sum))
+endef
 $(call gen_fetch_rules,pluggy,pluggy_dist_name,fetch_pluggy_dist)
 
 define xtract_pluggy
