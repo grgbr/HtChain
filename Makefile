@@ -268,19 +268,13 @@ endef
 # Final flags
 #
 
-_final_lib64_ldflags := -L$(finaldir)$(PREFIX)/lib64 \
-                        -Wl,-rpath-link,$(finaldir)$(PREFIX)/lib64 \
-                        -L$(finaldir)$(PREFIX)/lib \
-                        -Wl,-rpath-link,$(finaldir)$(PREFIX)/lib \
-                        -L$(_stage_lib64_path) \
+_final_lib64_ldflags := -L$(_stage_lib64_path) \
                         -Wl,-rpath-link,$(_stage_lib64_path) \
                         -L$(_stage_lib_path) \
                         -Wl,-rpath-link,$(_stage_lib_path) \
                         -Wl,-rpath,$(PREFIX)/lib \
                         -Wl,-rpath,$(PREFIX)/lib64
-_final_lib_ldflags   := -L$(finaldir)$(PREFIX)/lib \
-                        -Wl,-rpath-link,$(finaldir)$(PREFIX)/lib \
-                        -L$(_stage_lib_path) \
+_final_lib_ldflags   := -L$(_stage_lib_path) \
                         -Wl,-rpath-link,$(_stage_lib_path) \
                         -Wl,-rpath,$(PREFIX)/lib
 
