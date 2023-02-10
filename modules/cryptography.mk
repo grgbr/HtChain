@@ -50,9 +50,72 @@ $(call gen_dir_rules,cryptography)
 
 ################################################################################
 # Staging definitions
+#
+# Building cryptography implies building Rust extensions thanks to the
+# setuptools-rust Python module.
+# The Rust extensions building process download multiple source packages thanks
+# to the Rust Cargo package manager... We want these packages to be stored into
+# the build directory to prevent from user's home directory pollution (by
+# default cargo puts things under $HOME/.cargo)
+# Hence, we instruct cargo to store data under $(builddir)/cargo by setting the
+# CARGO_HOME environment variable.
+#
+# Note that we cannot use the standard gen_python_module_rules() macro here
+# since we need to give the pip install command the additional environment
+# variable CARGO_HOME.
+#
+# TODO:
+# This is a workaround solution untill we include support for Rust into HtChain.
 ################################################################################
 
 $(call gen_deps,stage-cryptography,\
                 stage-setuptools-rust stage-cffi stage-openssl)
 
-$(call gen_python_module_rules,stage-cryptography,cryptography,$(stagedir))
+# $(1): targets base name / module name
+# $(2): build /install prefix
+# $(3): optional install destination directory
+define cryptography_pip_install_cmds
+cd $(builddir)/$(strip $(1)) && \
+env PATH="$(stagedir)/bin:$(PATH)" \
+    CARGO_HOME="$(builddir)/cargo" \
+$(stage_python) -m pip --no-cache-dir \
+                       install --no-deps \
+                               --no-index \
+                               --ignore-installed \
+                               --force-reinstall \
+                               --no-build-isolation \
+                               --disable-pip-version-check \
+                               --prefix "$(strip $(2))" \
+                               $(if $(strip $(3)),--root "$(strip $(3))") \
+                               --compile \
+                               . \
+                               $(verbose)
+endef
+
+# $(1): targets base name / module name
+# $(2): build /install prefix
+# $(3): optional install destination directory
+define cryptography_install_cmds
+$(call cryptography_pip_install_cmds,$(1),$(2),$(installdir)/$(strip $(1)))
+$(call cryptography_pip_install_cmds,$(1),$(2),$(3))
+endef
+
+config_stage-cryptography    = $(call python_module_config_cmds,\
+                                      stage-cryptography,\
+                                      cryptography)
+install_stage-cryptography   = $(call cryptography_install_cmds,\
+                                      stage-cryptography,\
+                                      $(stagedir))
+uninstall_stage-cryptography = $(call python_module_uninstall_cmds,\
+                                      stage-cryptography)
+
+$(call gen_config_rules_with_dep,stage-cryptography,\
+                                 cryptography,\
+                                 config_stage-cryptography)
+$(call gen_clobber_rules,stage-cryptography)
+$(call gen_build_rules,stage-cryptography)
+$(call gen_clean_rules,stage-cryptography)
+$(call gen_install_rules,stage-cryptography,install_stage-cryptography)
+$(call gen_uninstall_rules,stage-cryptography,uninstall_stage-cryptography)
+$(call gen_check_rules,stage-cryptography)
+$(call gen_dir_rules,stage-cryptography)
