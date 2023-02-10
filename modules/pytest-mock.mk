@@ -1,22 +1,28 @@
+################################################################################
+# pytest-mock Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 pytest-mock_dist_url  := https://files.pythonhosted.org/packages/f6/2b/137a7db414aeaf3d753d415a2bc3b90aba8c5f61dff7a7a736d84b2ec60d/pytest-mock-3.10.0.tar.gz
-pytest-mock_dist_sum  := fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f
+pytest-mock_dist_sum  := 2ad6866d581a2999899e399ef5516d478a6172f52923f03703e3e3708229fb3b1178c91225b5cc90734c96abcb48fea517b11e0fc193da6fb592295395c14cd3
 pytest-mock_dist_name := $(notdir $(pytest-mock_dist_url))
+pytest-mock_vers      := $(patsubst pytest-mock-%.tar.gz,%,$(pytest-mock_dist_name))
+pytest-mock_brief     := Thin-wrapper around mock_ for easier use with Pytest_
+pytest-mock_home      := https://github.com/pytest-dev/pytest-mock/
 
-define fetch_pytest-mock_dist
-$(call _download,$(pytest-mock_dist_url),$(FETCHDIR)/$(pytest-mock_dist_name).tmp)
-cat $(FETCHDIR)/$(pytest-mock_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pytest-mock_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pytest-mock_dist_name).tmp,\
-          $(FETCHDIR)/$(pytest-mock_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pytest-mock_dist_name)'
+define pytest-mock_desc
+This plugin installs a "mocker" fixture which is a thin-wrapper around the
+patching API provided by the excellent mock_ package, but with the benefit of
+not having to worry about undoing patches at the end of a test.
 endef
 
-# As fetch_pytest-mock_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pytest-mock_dist_name): SHELL:=/bin/bash
+define fetch_pytest-mock_dist
+$(call download_csum,$(pytest-mock_dist_url),\
+                     $(FETCHDIR)/$(pytest-mock_dist_name),\
+                     $(pytest-mock_dist_sum))
+endef
 $(call gen_fetch_rules,pytest-mock,pytest-mock_dist_name,fetch_pytest-mock_dist)
 
 define xtract_pytest-mock

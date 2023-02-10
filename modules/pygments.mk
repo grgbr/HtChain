@@ -1,19 +1,33 @@
-pygments_dist_url  := https://files.pythonhosted.org/packages/da/6a/c427c06913204e24de28de5300d3f0e809933f376e0b7df95194b2bb3f71/Pygments-2.14.0.tar.gz
-pygments_dist_sum  := b3ed06a9e8ac9a9aae5a6f5dbe78a8a58655d17b43b93c078f094ddc476ae297
-pygments_dist_name := $(notdir $(pygments_dist_url))
+################################################################################
+# pygments Python modules
+################################################################################
 
-define fetch_pygments_dist
-$(call _download,$(pygments_dist_url),$(FETCHDIR)/$(pygments_dist_name).tmp)
-cat $(FETCHDIR)/$(pygments_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pygments_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pygments_dist_name).tmp,\
-          $(FETCHDIR)/$(pygments_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pygments_dist_name)'
+pygments_dist_url  := https://files.pythonhosted.org/packages/da/6a/c427c06913204e24de28de5300d3f0e809933f376e0b7df95194b2bb3f71/Pygments-2.14.0.tar.gz
+pygments_dist_sum  := 51416a8e2a8d0288cbbf6fd81e6870ffe9d999da255c43d0f870eb5cb4d01660416d136d39fad38b76c4bace3c3aa648fb306519e85e340545a87fc657aaeb15
+pygments_dist_name := $(subst P,p,$(notdir $(pygments_dist_url)))
+pygments_vers      := $(patsubst pygments-%.tar.gz,%,$(pygments_dist_name))
+pygments_brief     := Syntax highlighting package written in Python_
+pygments_home      := http://pygments.org/
+
+define pygments_desc
+Pygments aims to be a generic syntax highlighter for general use in all kinds of
+software such as forum systems, wikis or other applications that need to
+prettify source code.
+
+Highlights are:
+
+* a wide range of common languages and markup formats is supported
+* special attention is paid to details, increasing quality by a fair amount
+* support for new languages and formats are added easily
+* a number of output formats, presently HTML, LaTeX and ANSI sequences
+* it is usable as a command-line tool and as a library.
 endef
 
-# As fetch_pygments_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pygments_dist_name): SHELL:=/bin/bash
+define fetch_pygments_dist
+$(call download_csum,$(pygments_dist_url),\
+                     $(FETCHDIR)/$(pygments_dist_name),\
+                     $(pygments_dist_sum))
+endef
 $(call gen_fetch_rules,pygments,pygments_dist_name,fetch_pygments_dist)
 
 define xtract_pygments

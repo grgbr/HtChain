@@ -1,22 +1,28 @@
+################################################################################
+# pycparser Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 pycparser_dist_url  := https://files.pythonhosted.org/packages/5e/0b/95d387f5f4433cb0f53ff7ad859bd2c6051051cebbb564f139a999ab46de/pycparser-2.21.tar.gz
-pycparser_dist_sum  := e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206
+pycparser_dist_sum  := e61fbdde484d1cf74d4b27bdde40cf2da4b7028ca8ecd37c83d77473dab707d457321aecaf97da3b114c1d58a4eb200290b76f9c958044b57e5fed949895b5f0
 pycparser_dist_name := $(notdir $(pycparser_dist_url))
+pycparser_vers      := $(patsubst pycparser-%.tar.gz,%,$(pycparser_dist_name))
+pycparser_brief     := C parser in Python_
+pycparser_home      := https://github.com/eliben/pycparser
 
-define fetch_pycparser_dist
-$(call _download,$(pycparser_dist_url),$(FETCHDIR)/$(pycparser_dist_name).tmp)
-cat $(FETCHDIR)/$(pycparser_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pycparser_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pycparser_dist_name).tmp,\
-          $(FETCHDIR)/$(pycparser_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pycparser_dist_name)'
+define pycparser_desc
+pycparser is a complete parser of the C language, written in pure Python_ using
+the PLY parsing library. It parses C code into an AST and can serve as a
+front-end for C compilers or analysis tools.
 endef
 
-# As fetch_pycparser_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pycparser_dist_name): SHELL:=/bin/bash
+define fetch_pycparser_dist
+$(call download_csum,$(pycparser_dist_url),\
+                     $(FETCHDIR)/$(pycparser_dist_name),\
+                     $(pycparser_dist_sum))
+endef
 $(call gen_fetch_rules,pycparser,pycparser_dist_name,fetch_pycparser_dist)
 
 define xtract_pycparser
