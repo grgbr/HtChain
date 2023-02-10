@@ -48,6 +48,7 @@ $(stage_meson) setup --prefix "$(strip $(2))" \
                      --stdsplit \
                      --buildtype release \
                      --default-library both \
+                     --libdir "$(strip $(2))/lib" \
                      "$(builddir)/$(strip $(1))" \
                      "$(srcdir)/jsoncpp"
 endef
