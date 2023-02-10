@@ -120,11 +120,14 @@ define gcc_check_cmds
  $(MAKE) -j1 --directory $(builddir)/$(strip $(1)) check
 endef
 
+# Do not include --enable-cet since failing to build with gcc-7 at bootstrapping
+# time. Do not enable it during stage / final steps since we do not build a
+# hardened toolchain anyway.
+# --enable-cet: fails to build with old gcc
 gcc_common_x86_64_args := --with-arch=native \
                           --with-cpu=native \
                           --with-tune=native \
                           --with-fpmath=avx \
-                          --enable-cet \
                           --disable-softfloat
 
 gcc_common_args        := --enable-silent-rules \
