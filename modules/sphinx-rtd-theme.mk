@@ -1,20 +1,27 @@
-sphinx-rtd-theme_dist_url  := https://files.pythonhosted.org/packages/5e/99/bce1a116ce6cfdcfeffe0a8e30139134dd5dda1269ae8a2995b7c5156d71/sphinx_rtd_theme-1.1.1.tar.gz
-sphinx-rtd-theme_dist_sum  := 6146c845f1e1947b3c3dd4432c28998a1693ccc742b4f9ad7c63129f0757c103
-sphinx-rtd-theme_dist_name := $(notdir $(sphinx-rtd-theme_dist_url))
+################################################################################
+# Sphinx Read the Docs theme Python modules
+################################################################################
 
-define fetch_sphinx-rtd-theme_dist
-$(call _download,$(sphinx-rtd-theme_dist_url),\
-                 $(FETCHDIR)/$(sphinx-rtd-theme_dist_name).tmp)
-cat $(FETCHDIR)/$(sphinx-rtd-theme_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(sphinx-rtd-theme_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(sphinx-rtd-theme_dist_name).tmp,\
-          $(FETCHDIR)/$(sphinx-rtd-theme_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(sphinx-rtd-theme_dist_name)'
+sphinx-rtd-theme_dist_url  := https://files.pythonhosted.org/packages/5e/99/bce1a116ce6cfdcfeffe0a8e30139134dd5dda1269ae8a2995b7c5156d71/sphinx_rtd_theme-1.1.1.tar.gz
+sphinx-rtd-theme_dist_sum  := c3e6e3a9d25b9c48a9830e696ca5c8f0c185a0328c76032cbe6dcfb93cda7ad9a724ec4e0e2a99079db28f35aa61ef2f569b87ce98a01c47a9701a6070bc395e
+sphinx-rtd-theme_dist_name := $(notdir $(sphinx-rtd-theme_dist_url))
+sphinx-rtd-theme_vers      := $(patsubst sphinx-rtd-theme-%.tar.gz,%,$(sphinx-rtd-theme_dist_name))
+sphinx-rtd-theme_brief     := Sphinx_ theme from readthedocs.org
+sphinx-rtd-theme_home      := https://sphinx-rtd-theme.readthedocs.io/
+
+define sphinx-rtd-theme_desc
+This mobile-friendly sphinx_ theme was initially created for `Read the Docs
+<https://readthedocs.org/>`_, but can be incorporated in any project.
+
+Among other things, it features a left panel with a browseable table of
+contents, and a search bar.
 endef
 
-# As fetch_sphinx-rtd-theme_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(sphinx-rtd-theme_dist_name): SHELL:=/bin/bash
+define fetch_sphinx-rtd-theme_dist
+$(call download_csum,$(sphinx-rtd-theme_dist_url),\
+                     $(FETCHDIR)/$(sphinx-rtd-theme_dist_name),\
+                     $(sphinx-rtd-theme_dist_sum))
+endef
 $(call gen_fetch_rules,sphinx-rtd-theme,\
                        sphinx-rtd-theme_dist_name,\
                        fetch_sphinx-rtd-theme_dist)

@@ -1,19 +1,34 @@
-snowballstemmer_dist_url  := https://files.pythonhosted.org/packages/44/7b/af302bebf22c749c56c9c3e8ae13190b5b5db37a33d9068652e8f73b7089/snowballstemmer-2.2.0.tar.gz
-snowballstemmer_dist_sum  := 09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1
-snowballstemmer_dist_name := $(notdir $(snowballstemmer_dist_url))
+################################################################################
+# snowballstemmer Python modules
+################################################################################
 
-define fetch_snowballstemmer_dist
-$(call _download,$(snowballstemmer_dist_url),$(FETCHDIR)/$(snowballstemmer_dist_name).tmp)
-cat $(FETCHDIR)/$(snowballstemmer_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(snowballstemmer_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(snowballstemmer_dist_name).tmp,\
-          $(FETCHDIR)/$(snowballstemmer_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(snowballstemmer_dist_name)'
+snowballstemmer_dist_url  := https://files.pythonhosted.org/packages/44/7b/af302bebf22c749c56c9c3e8ae13190b5b5db37a33d9068652e8f73b7089/snowballstemmer-2.2.0.tar.gz
+snowballstemmer_dist_sum  := f1dee83e06fc79ffb250892fe62c75e3393b9af07fbf7cde413e6391870aa74934302771239dea5c9bc89806684f95059b00c9ffbcf7340375c9dd8f1216cd37
+snowballstemmer_dist_name := $(notdir $(snowballstemmer_dist_url))
+snowballstemmer_vers      := $(patsubst snowballstemmer-%.tar.gz,%,$(snowballstemmer_dist_name))
+snowballstemmer_brief     := Pure Python_ Snowball stemming library
+snowballstemmer_home      := https://github.com/snowballstem/snowball
+
+define snowballstemmer_desc
+Snowball provides access to efficient algorithms for calculating a "stemmed"
+form of a word.  This is a form with most of the common morphological endings
+removed; hopefully representing a common linguistic base form.  This is most
+useful in building search engines and information retrieval software; for
+example, a search with stemming enabled should be able to find a document
+containing "cycling" given the query "cycles".
+
+Snowball provides algorithms for several (mainly European) languages.  It also
+provides access to the classic Porter stemming algorithm for English: although
+this has been superseded by an improved algorithm, the original algorithm may be
+of interest to information retrieval researchers wishing to reproduce results of
+earlier experiments.
 endef
 
-# As fetch_snowballstemmer_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(snowballstemmer_dist_name): SHELL:=/bin/bash
+define fetch_snowballstemmer_dist
+$(call download_csum,$(snowballstemmer_dist_url),\
+                     $(FETCHDIR)/$(snowballstemmer_dist_name),\
+                     $(snowballstemmer_dist_sum))
+endef
 $(call gen_fetch_rules,snowballstemmer,\
                        snowballstemmer_dist_name,\
                        fetch_snowballstemmer_dist)
