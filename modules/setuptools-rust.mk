@@ -1,23 +1,31 @@
+################################################################################
+# setuptools-rust Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 setuptools-rust_dist_url  := https://files.pythonhosted.org/packages/99/db/e4ecb483ffa194d632ed44bda32cb740e564789fed7e56c2be8e2a0e2aa6/setuptools-rust-1.5.2.tar.gz
-setuptools-rust_dist_sum  := d8daccb14dc0eae1b6b6eb3ecef79675bd37b4065369f79c35393dd5c55652c7
+setuptools-rust_dist_sum  := 79b1de5581b9558cdf227320c421aa2445b2e6b8583ed9c118ee8d7acdfde9d947e7d11fa6a9697c475d4ca387c86ca6846429099ec30d2eb6e40f8849fcecc0
 setuptools-rust_dist_name := $(notdir $(setuptools-rust_dist_url))
+setuptools-rust_vers      := $(patsubst setuptools-rust-%.tar.gz,%,$(setuptools-rust_dist_name))
+setuptools-rust_brief     := Setuptools Rust extension plugin
+setuptools-rust_home      := https://github.com/PyO3/setuptools-rust
 
-define fetch_setuptools-rust_dist
-$(call _download,$(setuptools-rust_dist_url),\
-                 $(FETCHDIR)/$(setuptools-rust_dist_name).tmp)
-cat $(FETCHDIR)/$(setuptools-rust_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(setuptools-rust_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(setuptools-rust_dist_name).tmp,\
-          $(FETCHDIR)/$(setuptools-rust_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(setuptools-rust_dist_name)'
+define setuptools-rust_desc
+setuptools-rust is a plugin for setuptools to build Rust Python_ extensions
+implemented with `PyO3 <https://github.com/pyo3/pyo3>`_ or
+`rust-cpython <https://github.com/dgrunwald/rust-cpython>`_.
+
+Compile and distribute Python_ extensions written in Rust as easily as if they
+were written in C.
 endef
 
-# As fetch_setuptools-rust_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(setuptools-rust_dist_name): SHELL:=/bin/bash
+define fetch_setuptools-rust_dist
+$(call download_csum,$(setuptools-rust_dist_url),\
+                     $(FETCHDIR)/$(setuptools-rust_dist_name),\
+                     $(setuptools-rust_dist_sum))
+endef
 $(call gen_fetch_rules,setuptools-rust,\
                        setuptools-rust_dist_name,\
                        fetch_setuptools-rust_dist)

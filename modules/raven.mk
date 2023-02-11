@@ -1,26 +1,30 @@
+################################################################################
+# raven Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 raven_dist_url  := https://files.pythonhosted.org/packages/79/57/b74a86d74f96b224a477316d418389af9738ba7a63c829477e7a86dd6f47/raven-6.10.0.tar.gz
-raven_dist_sum  := 3fa6de6efa2493a7c827472e984ce9b020797d0da16f1db67197bcc23c8fae54
+raven_dist_sum  := 37ca6d5953dc92b57b3bf4e2edb3947d41f33711d9babfc9eafb8712dc5923829f8810e5123e63749710aeecceb66e56bf8b5b60868f61d750704e20add3c747
 raven_dist_name := $(notdir $(raven_dist_url))
+raven_vers      := $(patsubst raven-%.tar.gz,%,$(raven_dist_name))
+raven_brief     := Raven is a client for Sentry
+raven_home      := https://github.com/getsentry/raven-python
 
-define fetch_raven_dist
-$(call _download,$(raven_dist_url),\
-                 $(FETCHDIR)/$(raven_dist_name).tmp)
-cat $(FETCHDIR)/$(raven_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(raven_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(raven_dist_name).tmp,\
-          $(FETCHDIR)/$(raven_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(raven_dist_name)'
+define raven_desc
+Raven is a Python_ client for `Sentry <https://getsentry.com>`_. It provides
+full out-of-the-box support for many of the popular frameworks,
+including Django, Flask_, and Pylons. Raven also includes drop-in support
+for any WSGI-compatible web application.
 endef
 
-# As fetch_raven_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(raven_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,raven,\
-                       raven_dist_name,\
-                       fetch_raven_dist)
+define fetch_raven_dist
+$(call download_csum,$(raven_dist_url),\
+                     $(FETCHDIR)/$(raven_dist_name),\
+                     $(raven_dist_sum))
+endef
+$(call gen_fetch_rules,raven,raven_dist_name,fetch_raven_dist)
 
 define xtract_raven
 $(call rmrf,$(srcdir)/raven)

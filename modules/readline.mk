@@ -5,15 +5,30 @@
 ################################################################################
 
 readline_dist_url  := https://ftp.gnu.org/gnu/readline/readline-8.1.2.tar.gz
-readline_sig_url   := $(readline_dist_url).sig
+readline_dist_sum  := b512275c8aa8b3b3178366c6d681f867676fc1c881e375134a88e9c860a448535e04ca43df727817fd0048261e48203e88bd1c086e86572022d1d65fb0350e4d
 readline_dist_name := $(notdir $(readline_dist_url))
+readline_vers      := $(patsubst readline-%.tar.gz,%,$(readline_dist_name))
+readline_brief     := GNU readline and history libraries
+readline_home      := https://tiswww.case.edu/php/chet/readline/rltop.html
+
+define readline_desc
+The GNU Readline library provides a set of functions for use by applications
+that allow users to edit command lines as they are typed in. Both Emacs and vi
+editing modes are available. The Readline library includes additional functions
+to maintain a list of previously-entered command lines, to recall and perhaps
+reedit those lines, and perform csh-like history expansion on previous commands.
+
+The history facilities are also placed into a separate library, the History
+library, as part of the build process. The History library may be used without
+Readline in applications which desire its capabilities.
+endef
 
 define fetch_readline_dist
-$(call download,$(readline_dist_url),$(FETCHDIR)/$(readline_dist_name))
+$(call download_csum,$(readline_dist_url),\
+                     $(FETCHDIR)/$(readline_dist_name),\
+                     $(readline_dist_sum))
 endef
-$(call gen_fetch_rules,readline,\
-                       readline_dist_name,\
-                       fetch_readline_dist)
+$(call gen_fetch_rules,readline,readline_dist_name,fetch_readline_dist)
 
 define xtract_readline
 $(call rmrf,$(srcdir)/readline)

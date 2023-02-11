@@ -1,12 +1,27 @@
+################################################################################
+# rhash modules
+################################################################################
+
 rhash_vers      := 1.4.2
 rhash_dist_url  := https://sourceforge.net/projects/rhash/files/rhash/$(rhash_vers)/rhash-$(rhash_vers)-src.tar.gz/download
-rhash_sig_url   := https://sourceforge.net/projects/rhash/files/rhash/$(rhash_vers)/rhash-$(rhash_vers)-src.tar.gz.asc/download
+rhash_dist_sum  := 41df57e8b3f32c93d8e6f2ac668b32aaa23eb2eaf90a83f109e61e511404a5036ea88bcf2854e19c1ade0f61960e0d9edf01f3d82e1c645fed36579e9d7a6a25
 rhash_dist_name := rhash-$(rhash_vers).tar.gz
+rhash_brief     := Library for hash functions computing
+rhash_home      := http://rhash.sourceforge.net
+
+define rhash_desc
+LibRHash is a professional, portable, thread-safe C library for computing magnet
+links and a wide variety of hash sums, such as CRC32, MD4, MD5, SHA1, SHA256,
+SHA512, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R 34.11-94,
+RIPEMD-160, HAS-160, EDON-R, Whirlpool and Snefru.  Hash sums are used to ensure
+and verify integrity of large volumes of data for a long-term storing or
+transferring.
+endef
 
 define fetch_rhash_dist
-$(call download_verify_detach,$(rhash_dist_url), \
-                              $(rhash_sig_url), \
-                              $(FETCHDIR)/$(rhash_dist_name))
+$(call download_csum,$(rhash_dist_url),\
+                     $(FETCHDIR)/$(rhash_dist_name),\
+                     $(rhash_dist_sum))
 endef
 $(call gen_fetch_rules,rhash,rhash_dist_name,fetch_rhash_dist)
 

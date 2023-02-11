@@ -1,22 +1,28 @@
+################################################################################
+# Pytest Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 pytest_dist_url  := https://files.pythonhosted.org/packages/0b/21/055f39bf8861580b43f845f9e8270c7786fe629b2f8562ff09007132e2e7/pytest-7.2.0.tar.gz
-pytest_dist_sum  := c4014eb40e10f11f355ad4e3c2fb2c6c6d1919c73f3b5a433de4708202cade59
+pytest_dist_sum  := a16b034c8522f0aa6ee9541b07b79be713565a6e755ab0489b38c2b0a0ed9f7857c87f952ff24c199a2e4c0d71ee26e918dd06abfe994d30ac90e32ae3e8c4d1
 pytest_dist_name := $(notdir $(pytest_dist_url))
+pytest_vers      := $(patsubst pytest-%.tar.gz,%,$(pytest_dist_name))
+pytest_brief     := Simple, powerful testing in Python_
+pytest_home      := https://docs.pytest.org/en/latest/
 
-define fetch_pytest_dist
-$(call _download,$(pytest_dist_url),$(FETCHDIR)/$(pytest_dist_name).tmp)
-cat $(FETCHDIR)/$(pytest_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pytest_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pytest_dist_name).tmp,\
-          $(FETCHDIR)/$(pytest_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pytest_dist_name)'
+define pytest_desc
+This testing tool has for objective to allow the developers to limit the
+boilerplate code around the tests, promoting the use of built-in mechanisms such
+as the ``assert`` keyword.
 endef
 
-# As fetch_pytest_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pytest_dist_name): SHELL:=/bin/bash
+define fetch_pytest_dist
+$(call download_csum,$(pytest_dist_url),\
+                     $(FETCHDIR)/$(pytest_dist_name),\
+                     $(pytest_dist_sum))
+endef
 $(call gen_fetch_rules,pytest,pytest_dist_name,fetch_pytest_dist)
 
 define xtract_pytest

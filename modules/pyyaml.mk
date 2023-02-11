@@ -1,23 +1,34 @@
-pyyaml_dist_url  := https://files.pythonhosted.org/packages/36/2b/61d51a2c4f25ef062ae3f74576b01638bebad5e045f747ff12643df63844/PyYAML-6.0.tar.gz
-pyyaml_dist_sum  := 68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2
-pyyaml_dist_name := $(notdir $(pyyaml_dist_url))
+################################################################################
+# pyyaml Python modules
+################################################################################
 
-define fetch_pyyaml_dist
-$(call _download,$(pyyaml_dist_url),\
-                 $(FETCHDIR)/$(pyyaml_dist_name).tmp)
-cat $(FETCHDIR)/$(pyyaml_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(pyyaml_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(pyyaml_dist_name).tmp,\
-          $(FETCHDIR)/$(pyyaml_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(pyyaml_dist_name)'
+pyyaml_dist_url  := https://files.pythonhosted.org/packages/36/2b/61d51a2c4f25ef062ae3f74576b01638bebad5e045f747ff12643df63844/PyYAML-6.0.tar.gz
+pyyaml_dist_sum  := b402993073282e7f4202823b051d364b91929362edd5b3aebe93b56833956ec9279c1ba82b97f8bc8a2b82d20e1060e4ec9fc90400a6ed902adce3e4f83a6e0e
+pyyaml_vers      := $(patsubst PyYAML-%.tar.gz,%,$(notdir $(pyyaml_dist_url)))
+pyyaml_dist_name := pyyaml-$(pyyaml_vers).tar.gz
+pyyaml_brief     := YAML parser and emitter for Python_
+pyyaml_home      := https://pyyaml.org/
+
+define pyyaml_desc
+YAML is a data serialization format designed for human readability and
+interaction with scripting languages. PyYAML is a YAML parser and emitter for
+Python_.
+
+PyYAML features a complete YAML 1.1 parser, Unicode support, pickle support,
+capable extension API, and sensible error messages. PyYAML supports standard
+YAML tags and provides Python-specific tags that allow to represent an arbitrary
+Python_ object.
+
+PyYAML is applicable for a broad range of tasks from complex configuration files
+to object serialization and persistence.
 endef
 
-# As fetch_pyyaml_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(pyyaml_dist_name): SHELL:=/bin/bash
-$(call gen_fetch_rules,pyyaml,\
-                       pyyaml_dist_name,\
-                       fetch_pyyaml_dist)
+define fetch_pyyaml_dist
+$(call download_csum,$(pyyaml_dist_url),\
+                     $(FETCHDIR)/$(pyyaml_dist_name),\
+                     $(pyyaml_dist_sum))
+endef
+$(call gen_fetch_rules,pyyaml,pyyaml_dist_name,fetch_pyyaml_dist)
 
 define xtract_pyyaml
 $(call rmrf,$(srcdir)/pyyaml)
