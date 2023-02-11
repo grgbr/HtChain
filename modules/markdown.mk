@@ -14,7 +14,7 @@ Markdown is a text-to-HTML conversion tool for web writers. Markdown allows you
 to write using an easy-to-read, easy-to-write plain text format, then convert it
 to structurally valid XHTML (or HTML).
 
-This is a Python_ implementation of John Gruber's Markdown. The current version
+This is a Python_ implementation of John Gruber\'s Markdown. The current version
 implements all Markdown syntax features and fully passes Markdown Test Suite
 1.0. It also supports footnotes and attributes.
 endef

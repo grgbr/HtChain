@@ -11,7 +11,7 @@ perl_dist_sum  := 76f2dbc764443c66bc3bfcc214a7c851f155de75b0f94a2923e10caa6ec9b8
 perl_dist_name := $(notdir $(perl_dist_url))
 perl_vers      := $(patsubst perl-%.tar.gz,%,$(perl_dist_name))
 perl_vers_maj  := $(word 1,$(subst .,$(space),$(perl_vers)))
-perl_brief     := Larry Wall's Practical Extraction and Report Language
+perl_brief     := Larry Wall\'s Practical Extraction and Report Language
 perl_home      := http://dev.perl.org/
 
 define perl_desc

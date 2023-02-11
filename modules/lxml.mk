@@ -20,8 +20,8 @@ from existing Python_ bindings. Its aim:
 * No manual memory management!
 
 lxml aims to provide a Pythonic API by following as much as possible the
-``ElementTree`` API, trying to avoid inventing too many new APIs, or the user's
-having to learn new things -- XML is complicated enough.
+``ElementTree`` API, trying to avoid inventing too many new APIs, or the
+user\'s having to learn new things -- XML is complicated enough.
 endef
 
 define fetch_lxml_dist
