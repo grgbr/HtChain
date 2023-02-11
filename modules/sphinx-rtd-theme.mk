@@ -5,7 +5,7 @@
 sphinx-rtd-theme_dist_url  := https://files.pythonhosted.org/packages/5e/99/bce1a116ce6cfdcfeffe0a8e30139134dd5dda1269ae8a2995b7c5156d71/sphinx_rtd_theme-1.1.1.tar.gz
 sphinx-rtd-theme_dist_sum  := c3e6e3a9d25b9c48a9830e696ca5c8f0c185a0328c76032cbe6dcfb93cda7ad9a724ec4e0e2a99079db28f35aa61ef2f569b87ce98a01c47a9701a6070bc395e
 sphinx-rtd-theme_dist_name := $(notdir $(sphinx-rtd-theme_dist_url))
-sphinx-rtd-theme_vers      := $(patsubst sphinx-rtd-theme-%.tar.gz,%,$(sphinx-rtd-theme_dist_name))
+sphinx-rtd-theme_vers      := $(patsubst sphinx_rtd_theme-%.tar.gz,%,$(sphinx-rtd-theme_dist_name))
 sphinx-rtd-theme_brief     := Sphinx_ theme from readthedocs.org
 sphinx-rtd-theme_home      := https://sphinx-rtd-theme.readthedocs.io/
 

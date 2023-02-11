@@ -4,8 +4,8 @@
 
 markupsafe_dist_url  := https://files.pythonhosted.org/packages/95/7e/68018b70268fb4a2a605e2be44ab7b4dd7ce7808adae6c5ef32e34f4b55a/MarkupSafe-2.1.2.tar.gz
 markupsafe_dist_sum  := 84dbeddaf2df713b3cce94eb64876fea8f80c608e25130c18e4691be2b1dea56df8b772d26c0caca88231ef795125eb9678210c33bf20518c18e3047912ddb4b
-markupsafe_dist_name := $(subst M,m,$(notdir $(markupsafe_dist_url)))
-markupsafe_vers      := $(patsubst markupsafe-%.tar.gz,%,$(markupsafe_dist_name))
+markupsafe_vers      := $(patsubst MarkupSafe-%.tar.gz,%,$(notdir $(markupsafe_dist_url)))
+markupsafe_dist_name := markupsafe-$(markupsafe_vers).tar.gz
 markupsafe_brief     := HTML/XHTML/XML string library for Python_
 markupsafe_home      := https://palletsprojects.com/p/markupsafe/
 
