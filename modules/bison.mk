@@ -124,7 +124,7 @@ $(call gen_dir_rules,stage-bison)
 bison_final_config_args := $(bison_common_args) \
                            $(final_config_flags)
 
-$(call gen_deps,final-bison,stage-gcc stage-m4)
+$(call gen_deps,final-bison,stage-gcc stage-m4 stage-flex)
 $(call gen_check_deps,final-bison,stage-perl)
 
 config_final-bison       = $(call bison_config_cmds,final-bison,\
