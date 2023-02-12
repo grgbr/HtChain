@@ -1,11 +1,28 @@
+################################################################################
+# texinfo modules
+################################################################################
+
 texinfo_dist_url  := https://ftp.gnu.org/gnu/texinfo/texinfo-6.8.tar.xz
-texinfo_sig_url   := $(texinfo_dist_url).sig
+texinfo_dist_sum  := 0ff9290b14e4d83e32b889cfa24e6d065f98b2a764daf6b92c6c895fddbb35258398da6257c113220d5a4d886f7b54b09c4b117ca5eacfee6797f9bffde0f909
 texinfo_dist_name := $(notdir $(texinfo_dist_url))
+texinfo_vers      := $(patsubst texinfo-%.tar.xz,%,$(texinfo_dist_name))
+texinfo_brief     := Documentation system for on-line information and printed output
+texinfo_home      := https://www.gnu.org/software/texinfo/
+
+define texinfo_desc
+Texinfo is a documentation system that uses a single source file to produce both
+on-line information and printed output.
+
+Using Texinfo, you can create a printed document with the normal features of a
+book, including chapters, sections, cross references, and indices.  From the
+same Texinfo source file, you can create a menu-driven, on-line Info file with
+nodes, menus, cross references, and indices.
+endef
 
 define fetch_texinfo_dist
-$(call download_verify_detach,$(texinfo_dist_url), \
-                              $(texinfo_sig_url), \
-                              $(FETCHDIR)/$(texinfo_dist_name))
+$(call download_csum,$(texinfo_dist_url),\
+                     $(FETCHDIR)/$(texinfo_dist_name),\
+                     $(texinfo_dist_sum))
 endef
 $(call gen_fetch_rules,texinfo,texinfo_dist_name,fetch_texinfo_dist)
 

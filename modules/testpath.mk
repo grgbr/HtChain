@@ -1,22 +1,27 @@
+################################################################################
+# testpath Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 testpath_dist_url  := https://files.pythonhosted.org/packages/08/ad/a3e7d580902f57e31d2181563fc4088894692bb6ef79b816344f27719cdc/testpath-0.6.0.tar.gz
-testpath_dist_sum  := 2f1b97e6442c02681ebe01bd84f531028a7caea1af3825000f52345c30285e0f
+testpath_dist_sum  := 64ec7ee32ed766e518eabcbb552a0675b2495cac6b94adb2972dd0db97d747146d3a181e8fac59d847dbaaa4f573c349e51a4e3bf3991eb33207bb2176736649
 testpath_dist_name := $(notdir $(testpath_dist_url))
+testpath_vers      := $(patsubst testpath-%.tar.gz,%,$(testpath_dist_name))
+testpath_brief     := Utilities for Python_ code working with files and commands
+testpath_home      := https://github.com/jupyter/testpath
 
-define fetch_testpath_dist
-$(call _download,$(testpath_dist_url),$(FETCHDIR)/$(testpath_dist_name).tmp)
-cat $(FETCHDIR)/$(testpath_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(testpath_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(testpath_dist_name).tmp,\
-          $(FETCHDIR)/$(testpath_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(testpath_dist_name)'
+define testpath_desc
+It contains functions to check things on the filesystem, and tools for mocking
+and recording calls to those.
 endef
 
-# As fetch_testpath_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(testpath_dist_name): SHELL:=/bin/bash
+define fetch_testpath_dist
+$(call download_csum,$(testpath_dist_url),\
+                     $(FETCHDIR)/$(testpath_dist_name),\
+                     $(testpath_dist_sum))
+endef
 $(call gen_fetch_rules,testpath,testpath_dist_name,fetch_testpath_dist)
 
 define xtract_testpath

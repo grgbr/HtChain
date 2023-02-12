@@ -3,20 +3,23 @@
 ################################################################################
 
 util-linux_dist_url  := https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.38/util-linux-2.38.tar.xz
-util-linux_sig_url   := https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.38/util-linux-2.38.tar.sign
+util-linux_dist_sum  := d0f7888f457592067938e216695871ce6475a45d83a092cc3fd72b8cf8fca145ca5f3a99122f1744ef60b4f773055cf4e178dc6c59cd30837172aee0b5597e8c
 util-linux_dist_name := $(notdir $(util-linux_dist_url))
+util-linux_vers      := $(patsubst util-linux-%.tar.xz,%,$(util-linux_dist_name))
+util-linux_brief     := Miscellaneous Linux system utilities
+util-linux_home      := http://www.kernel.org/pub/linux/utils/util-linux/
 
+define util-linux_desc
+This package contains a number of important utilities, most of which are
+oriented towards maintenance of your system. Some of the more important
+utilities included in this package allow you to view kernel messages, create new
+filesystems, view block device information, interface with real time clock, etc.
+endef
 
-$(FETCHDIR)/$(util-linux_dist_name): SHELL:=/bin/bash
 define fetch_util-linux_dist
-$(call _download,$(util-linux_dist_url),$(FETCHDIR)/$(util-linux_dist_name).tmp)
-$(call _download,$(util-linux_sig_url),$(FETCHDIR)/$(util-linux_dist_name).sig)
-$(scriptdir)/gpg_verify.sh --homedir $(FETCHDIR)/.gnupg \
-                           $(FETCHDIR)/$(util-linux_dist_name).sig \
-                           <(xzcat $(FETCHDIR)/$(util-linux_dist_name).tmp)
-$(call mv,$(FETCHDIR)/$(util-linux_dist_name).tmp,\
-          $(FETCHDIR)/$(util-linux_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(util-linux_dist_name)'
+$(call download_csum,$(util-linux_dist_url),\
+                     $(FETCHDIR)/$(util-linux_dist_name),\
+                     $(util-linux_dist_sum))
 endef
 $(call gen_fetch_rules,util-linux,util-linux_dist_name,fetch_util-linux_dist)
 

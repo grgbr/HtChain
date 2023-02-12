@@ -1,22 +1,32 @@
-# Module required for check targets only. Do not bother verifying it to prevent
-# from fetching loads of dependencies.
+################################################################################
+# urllib3 Python modules
+################################################################################
 
 urllib3_dist_url  := https://files.pythonhosted.org/packages/c5/52/fe421fb7364aa738b3506a2d99e4f3a56e079c0a798e9f4fa5e14c60922f/urllib3-1.26.14.tar.gz
-urllib3_dist_sum  := 076907bf8fd355cde77728471316625a4d2f7e713c125f51953bb5b3eecf4f72
+urllib3_dist_sum  := 0a2dffcb4d3b199e1d82c2bb0d8f4e6b57466bdc43e31dbed62b392ef32e021f6d31cb53ebedef9e1a62b1113f7a370e9f0baa36e3fba942a2543473e4df0828
 urllib3_dist_name := $(notdir $(urllib3_dist_url))
+urllib3_vers      := $(patsubst urllib3-%.tar.gz,%,$(urllib3_dist_name))
+urllib3_brief     := HTTP library with thread-safe connection pooling for Python_
+urllib3_home      := https://urllib3.readthedocs.io/
 
-define fetch_urllib3_dist
-$(call _download,$(urllib3_dist_url),$(FETCHDIR)/$(urllib3_dist_name).tmp)
-cat $(FETCHDIR)/$(urllib3_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(urllib3_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(urllib3_dist_name).tmp,\
-          $(FETCHDIR)/$(urllib3_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(urllib3_dist_name)'
+define urllib3_desc
+urllib3 supports features left out of urllib and urllib2 libraries.
+
+* re-use the same socket connection for multiple requests
+  (``HTTPConnectionPool`` and ``HTTPSConnectionPool``) with optional client-side
+  certificate verification;
+* file posting (``encode_multipart_formdata``);
+* built-in redirection and retries (optional);
+* supports gzip and deflate decoding;
+* thread-safe and sanity-safe;
+* small and easy to understand codebase perfect for extending and building upon.
 endef
 
-# As fetch_urllib3_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(urllib3_dist_name): SHELL:=/bin/bash
+define fetch_urllib3_dist
+$(call download_csum,$(urllib3_dist_url),\
+                     $(FETCHDIR)/$(urllib3_dist_name),\
+                     $(urllib3_dist_sum))
+endef
 $(call gen_fetch_rules,urllib3,urllib3_dist_name,fetch_urllib3_dist)
 
 define xtract_urllib3

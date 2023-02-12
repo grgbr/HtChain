@@ -1,21 +1,31 @@
 ################################################################################
 # tcl modules
 #
-# !Warning! TCL test suites required IPv6 support enabled to complete.
+# !Warning! TCL test suites requires IPv6 support enabled to complete.
 ################################################################################
 
 tcl_dist_url  := https://prdownloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz
-tcl_dist_name := $(notdir $(tcl_dist_url))
-tcl_vers      := $(patsubst tcl%-src.tar.gz,%,$(tcl_dist_name))
+tcl_dist_sum  := 15def824484309fff6831b436e33d91ab1c6b095178f427d1f58b9a04e5e676b18dfdf1d225c6ab9ec15dc233358c40789edc7daf91c5908a1837e9f337feb60
+tcl_vers      := $(patsubst tcl%-src.tar.gz,%,$(notdir $(tcl_dist_url)))
 tcl_vers_toks := $(subst .,$(space),$(tcl_vers))
 tcl_vers_maj  := $(word 1,$(tcl_vers_toks))
 tcl_vers_min  := $(word 2,$(tcl_vers_toks))
+tcl_dist_name := tcl-$(tcl_vers).tar.gz
+tcl_brief     := Tcl, the Tool Command Language
+tcl_home      := http://www.tcl.tk/
 
 # List of packages to build shipped with TCL.
 tcl_packages  := itcl4.2.2 tdbc1.1.3 thread2.8.7 tdbcsqlite3-1.1.3
 
+define tcl_desc
+Tcl is a powerful, easy to use, embeddable, cross-platform interpreted scripting
+language.
+endef
+
 define fetch_tcl_dist
-$(call download,$(tcl_dist_url),$(FETCHDIR)/$(tcl_dist_name))
+$(call download_csum,$(tcl_dist_url),\
+                     $(FETCHDIR)/$(tcl_dist_name),\
+                     $(tcl_dist_sum))
 endef
 $(call gen_fetch_rules,tcl,tcl_dist_name,fetch_tcl_dist)
 

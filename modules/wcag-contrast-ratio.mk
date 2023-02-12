@@ -1,23 +1,32 @@
+################################################################################
+# wcag-contrast-ratio Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 wcag-contrast-ratio_dist_url  := https://files.pythonhosted.org/packages/1f/ec/faf3e7ee407a00081372632cdd9858302c8a9bb071e3767f8dac2ac3f9e2/wcag-contrast-ratio-0.9.tar.gz
-wcag-contrast-ratio_dist_sum  := 69192b8e5c0a7d0dc5ff1187eeb3e398141633a4bde51c69c87f58fe87ed361c
+wcag-contrast-ratio_dist_sum  := 2723b4b317383151724fe8213d0662e401eb562622afcebb5632be7c5b8f643e34859f4ace9e9e95215648ea443c11ddb5d3ab5859dc5d2c93815f5391d5434c
 wcag-contrast-ratio_dist_name := $(notdir $(wcag-contrast-ratio_dist_url))
+wcag-contrast-ratio_vers      := $(patsubst wcag-contrast-ratio-%.tar.gz,%,$(wcag-contrast-ratio_dist_name))
+wcag-contrast-ratio_brief     := Python_ library computing contrast ratios required by WCAG 2.0
+wcag-contrast-ratio_home      := https://github.com/gsnedders/wcag-contrast-ratio
 
-define fetch_wcag-contrast-ratio_dist
-$(call _download,$(wcag-contrast-ratio_dist_url),\
-                 $(FETCHDIR)/$(wcag-contrast-ratio_dist_name).tmp)
-cat $(FETCHDIR)/$(wcag-contrast-ratio_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(wcag-contrast-ratio_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(wcag-contrast-ratio_dist_name).tmp,\
-          $(FETCHDIR)/$(wcag-contrast-ratio_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(wcag-contrast-ratio_dist_name)'
+define wcag-contrast-ratio_desc
+This package provides a Python_ library that calculates the contrast ratio of
+colors based on Web Content Accessibility Guidelines (WCAG) 2 standard,
+published by the Web Accessibility Initiative (WAI). The actual WCAG technical
+documents are created by the Accessibility Guidelines Working Group (AG WG),
+which are part of the WAI.
+
+This library also provides some checking if contrast meets the required level.
 endef
 
-# As fetch_wcag-contrast-ratio_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(wcag-contrast-ratio_dist_name): SHELL:=/bin/bash
+define fetch_wcag-contrast-ratio_dist
+$(call download_csum,$(wcag-contrast-ratio_dist_url),\
+                     $(FETCHDIR)/$(wcag-contrast-ratio_dist_name),\
+                     $(wcag-contrast-ratio_dist_sum))
+endef
 $(call gen_fetch_rules,wcag-contrast-ratio,\
                        wcag-contrast-ratio_dist_name,\
                        fetch_wcag-contrast-ratio_dist)

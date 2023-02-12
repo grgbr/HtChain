@@ -3,15 +3,33 @@
 ################################################################################
 
 sqlite_dist_url   := https://github.com/sqlite/sqlite/archive/refs/tags/version-3.39.0.tar.gz
-sqlite_dist_name  := $(patsubst version-%,sqlite-%,$(notdir $(sqlite_dist_url)))
-sqlite_vers       := $(shell echo '$(sqlite_dist_name)' | \
-                             sed --silent 's/sqlite-\([0-9.]\+\)\.tar\..*/\1/p')
+sqlite_dist_sum   := a40a759c8040bc226da619906473c22c75d1c3b7fb670527e017c192a8874087128f1dc3731bfa39a9a5da3d8941e965baa5f9456ab1f79de01e508c3357cc17
+sqlite_vers       := $(patsubst version-%.tar.gz,%,$(notdir $(sqlite_dist_url)))
 _sqlite_vers_toks := $(subst .,$(space),$(sqlite_vers))
 sqlite_vers_maj   := $(word 1,$(_sqlite_vers_toks))
 sqlite_vers_min   := $(word 2,$(_sqlite_vers_toks))
+sqlite_dist_name  := sqlite-$(sqlite_vers).tar.gz
+sqlite_brief      := Small, fast, self-contained, high-reliability, SQL database engine
+sqlite_home       := https://www.sqlite.org/
+
+define sqlite_desc
+SQLite is a C-language library that implements a small, fast, self-contained,
+high-reliability, full-featured, SQL database engine. SQLite is the most used
+database engine in the world. SQLite is built into all mobile phones and most
+computers and comes bundled inside countless other applications that people use
+every day.
+
+The SQLite file format is stable, cross-platform, and backwards compatible and
+the developers pledge to keep it that way through the year 2050. SQLite database
+files are commonly used as containers to transfer rich content between systems
+and as a long-term archival format for data. There are over 1 trillion (1e12)
+SQLite databases in active use.
+endef
 
 define fetch_sqlite_dist
-$(call download,$(sqlite_dist_url),$(FETCHDIR)/$(sqlite_dist_name))
+$(call download_csum,$(sqlite_dist_url),\
+                     $(FETCHDIR)/$(sqlite_dist_name),\
+                     $(sqlite_dist_sum))
 endef
 $(call gen_fetch_rules,sqlite,sqlite_dist_name,fetch_sqlite_dist)
 

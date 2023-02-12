@@ -1,22 +1,27 @@
+################################################################################
+# tomli Python modules
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 tomli_dist_url  := https://files.pythonhosted.org/packages/c0/3f/d7af728f075fb08564c5949a9c95e44352e23dee646869fa104a3b2060a3/tomli-2.0.1.tar.gz
-tomli_dist_sum  := de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
+tomli_dist_sum  := fd410039e255e2b3359e999d69a5a2d38b9b89b77e8557f734f2621dfbd5e1207e13aecc11589197ec22594c022f07f41b4cfe486a3a719281a595c95fd19ecf
 tomli_dist_name := $(notdir $(tomli_dist_url))
+tomli_vers      := $(patsubst tomli-%.tar.gz,%,$(tomli_dist_name))
+tomli_brief     := A lil\' TOML parser for Python_
+tomli_home      := https://github.com/hukkin/tomli
 
-define fetch_tomli_dist
-$(call _download,$(tomli_dist_url),$(FETCHDIR)/$(tomli_dist_name).tmp)
-cat $(FETCHDIR)/$(tomli_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(tomli_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(tomli_dist_name).tmp,\
-          $(FETCHDIR)/$(tomli_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(tomli_dist_name)'
+define tomli_desc
+Tomli is a Python_ library for parsing `TOML <https://toml.io/>`_.
+Tomli is fully compatible with `TOML v1.0.0 <https://toml.io/en/v1.0.0>`_.
 endef
 
-# As fetch_tomli_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(tomli_dist_name): SHELL:=/bin/bash
+define fetch_tomli_dist
+$(call download_csum,$(tomli_dist_url),\
+                     $(FETCHDIR)/$(tomli_dist_name),\
+                     $(tomli_dist_sum))
+endef
 $(call gen_fetch_rules,tomli,tomli_dist_name,fetch_tomli_dist)
 
 define xtract_tomli
