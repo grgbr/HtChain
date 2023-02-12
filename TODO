@@ -7,6 +7,9 @@ Review:
 Fix:
 ====
 * fix guile linking to system-wide libgmp !!
+* fix flex dependencies ?? (see top level comments), make sure we dont need to
+  run autoreconf (since configure.ac is patched)
+* fix remaining staging directory rpath from final area (python, etc...)
 * pytz: fix pytest warnings
 * cpan-gettext: implement final support
   see ExtUtils::MakeMaker doc: https://perldoc.perl.org/ExtUtils::MakeMaker
@@ -25,7 +28,6 @@ Fix:
     found')
 * packaging: fix DeprecationWarning: Creating a LegacyVersion message while
   running unit tests / make check...
-* fix chrpath doc dir located at top-level staging directory
 * fix versioning scheme (include branch name, etc...)
 * fix flex dependencies ?? (see top level comments), make sure we dont need to
   run autoreconf (since configure.ac is patched)
@@ -46,3 +48,6 @@ TODO:
 * asciidoc: for util-linux
 * rustc
 * libbdb and make perl depend on it
+* certifi: apply debian patch https://salsa.debian.org/debian/python-certifi/-/blob/debian/master/debian/patches/0001-Use-Debian-provided-etc-ssl-certs-ca-certificates.crt.patch
+           to get certificates from system-wide ca-certificates package
+	   (/etc/ssl/certs)

@@ -5,60 +5,41 @@ log()
 	printf "$(basename $0): $1\n" >&2
 }
 
-awk_script='
-BEGIN {
-	stat=0
-}
-
-/(RUNPATH)|(RPATH)/ {
-	split($2, path, ":");
-	warn=0;
-	for (p in path) {
-		if (path[p] !~ regex) {
-			warn=1;
-			break;
-		}
-	}
-	if (warn) {
-		printf("%s RPATH ... NOK:\n", elf) > "/dev/stderr";
-		for (p in path)
-			printf("\t%s\n", path[p]) > "/dev/stderr";
-		stat=1;
-	}
-	else if (verbose)
-		printf("%s RPATH ... OK\n", elf) > "/dev/stderr";
-}
-
-END {
-	exit stat
-}'
-
-validate_rpath()
+validate_shebang()
 {
 	local path="$1"
-	local match="$2"
+	local interp="$2"
+	local prefix="$3"
+	local regex
 
-	readelf -d $path | awk -F'[][]' \
-	                       -v elf="$path" \
-	                       -v regex="$match" \
-	                       -v verbose="$verbose" \
-	                       "$awk_script"
+	if ! head -n 1 $f | grep -q "^#!.*${interp}"; then
+		return 0
+	fi
+
+	regex="^#\!${prefix}/bin/${interp}|^#\![^[:blank:]]/bin/env.*${interp}"
+	if ! head -n 1 $f | grep -Eq "$regex"; then
+		echo "Checking ${interp} $f ... NOK" >&2
+		return 1
+	else
+		if [ $verbose -ne 0 ]; then
+			echo "Checking ${interp} $f ... OK" >&2
+		fi
+	fi
 }
 
-validate_subtree_rpath()
+validate_subtree_shebang()
 {
 	local dir="$1"
-	local match="$2"
+	local prefix="$2"
 	local stat=0
 
 	for f in $(find "$dir" -type f); do
-		case "$(file --brief --mime "$f")" in
-		"application/x-executable; charset=binary" | \
-		"application/x-pie-executable; charset=binary" | \
-		"application/x-sharedlib; charset=binary")
-			if ! validate_rpath "$f" "$match"; then
-				stat=1
-			fi;;
+		res=""
+		case $(file --brief --mime-type "$f") in
+		text/x-script.python)
+			validate_shebang "$f" "python" "$prefix" || stat=1;;
+		text/x-perl)
+			validate_shebang "$f" "perl" "$prefix" || stat=1;;
 		esac
 	done
 
@@ -70,10 +51,9 @@ usage() {
 	local ret=$1
 
 	cat >&2 <<_EOF
-Usage: $(basename $0) [OPTIONS] <DIR> <MATCH>
+Usage: $(basename $0) [OPTIONS] <DIR> <PREFIX>
 
-Validate RPATH/RUNPATH of all binaries, shared libraries and objects found under
-<DIR> directory.
+Strip all binary files found under <DIR> directory.
 
 With OPTIONS:
   -v|--verbose -- be verbose
@@ -81,7 +61,7 @@ With OPTIONS:
 
 Where:
   DIR       -- pathname to directory hierarchy
-  MATCH     -- a regular expression allowing to identify valid RPATH/RUNPATH
+  PREFIX    -- install hierarchy prefix pathname
 _EOF
 
 	exit $ret
@@ -105,6 +85,7 @@ if ! opts=$(getopt \
 	echo
 	usage 1
 fi
+verbose=0
 # Replace command line with getopt parsed output
 eval set -- "$opts"
 # Process command line option arguments now that it has been sanitized by getopt
@@ -130,6 +111,9 @@ if [ ! -d "$dir" ]; then
 	exit 1
 fi
 
-match="$2"
+prefix="$2"
+if [ -z "$prefix" ]; then
+	exit 1
+fi
 
-validate_subtree_rpath "$dir" "$match"
+validate_subtree_shebang "$dir" "$prefix"
