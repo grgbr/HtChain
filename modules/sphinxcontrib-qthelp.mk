@@ -1,22 +1,24 @@
-sphinxcontrib-qthelp_dist_url  := https://files.pythonhosted.org/packages/b1/8e/c4846e59f38a5f2b4a0e3b27af38f2fcf904d4bfd82095bf92de0b114ebd/sphinxcontrib-qthelp-1.0.3.tar.gz
-sphinxcontrib-qthelp_dist_sum  := 4c33767ee058b70dba89a6fc5c1892c0d57a54be67ddd3e7875a18d14cba5a72
-sphinxcontrib-qthelp_dist_name := $(notdir $(sphinxcontrib-qthelp_dist_url))
+################################################################################
+# sphinxcontrib-qthelp Python modules
+################################################################################
 
-define fetch_sphinxcontrib-qthelp_dist
-$(call _download,$(sphinxcontrib-qthelp_dist_url),\
-                 $(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name).tmp)
-cat $(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name).tmp | \
-	sha256sum --check \
-	          --status \
-	          <(echo "$(sphinxcontrib-qthelp_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name).tmp,\
-          $(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name)'
+sphinxcontrib-qthelp_dist_url  := https://files.pythonhosted.org/packages/b1/8e/c4846e59f38a5f2b4a0e3b27af38f2fcf904d4bfd82095bf92de0b114ebd/sphinxcontrib-qthelp-1.0.3.tar.gz
+sphinxcontrib-qthelp_dist_sum  := 29f77e4b3f1a4868c2a34dbd853415e5d813f482cd23b982aeed42d53acba09b896d77ba930c34cce8af043bb7d64a19acff610430e942038d95a410b6e0b5fa
+sphinxcontrib-qthelp_dist_name := $(notdir $(sphinxcontrib-qthelp_dist_url))
+sphinxcontrib-qthelp_vers      := $(patsubst sphinxcontrib-qthelp-%.tar.gz,%,$(sphinxcontrib-qthelp_dist_name))
+sphinxcontrib-qthelp_brief     := Sphinx_ extension which outputs QtHelp document
+sphinxcontrib-qthelp_home      := https://www.sphinx-doc.org/
+
+define sphinxcontrib-qthelp_desc
+This module contains a Sphinx_ builder which produces Qt help collection support
+files that allow the Qt collection generator to compile them.
 endef
 
-# As fetch_sphinxcontrib-qthelp_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name): SHELL:=/bin/bash
+define fetch_sphinxcontrib-qthelp_dist
+$(call download_csum,$(sphinxcontrib-qthelp_dist_url),\
+                     $(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name),\
+                     $(sphinxcontrib-qthelp_dist_sum))
+endef
 $(call gen_fetch_rules,sphinxcontrib-qthelp,\
                        sphinxcontrib-qthelp_dist_name,\
                        fetch_sphinxcontrib-qthelp_dist)

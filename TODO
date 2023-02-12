@@ -27,12 +27,13 @@ Fix:
   running unit tests / make check...
 * fix chrpath doc dir located at top-level staging directory
 * fix versioning scheme (include branch name, etc...)
+* fix flex dependencies ?? (see top level comments), make sure we dont need to
+  run autoreconf (since configure.ac is patched)
 
 TODO:
 * help message(s) !!
 * include htchain version into default package version for toolchain (mainly gcc suite)
 * doxygen: xapian support for doxygen search engine ?
-* rename lz4 tarball properly (actually named 1.9.3.tar.gz)
 * curl: enable support for: libidn2, libpsl, libgsasl and ldap ?
 * openssl imagesize sphinx urllib3: replace SSL_CERT_DIR usage by a link from
   <stagedir and finaldir>/etc/ssl/certs to system-wide /etc/ssl/certs
@@ -44,3 +45,4 @@ TODO:
 * yang / pyang
 * asciidoc: for util-linux
 * rustc
+* libbdb and make perl depend on it
