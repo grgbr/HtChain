@@ -1,22 +1,24 @@
-sphinxcontrib-jsmath_dist_url  := https://files.pythonhosted.org/packages/b2/e8/9ed3830aeed71f17c026a07a5097edcf44b692850ef215b161b8ad875729/sphinxcontrib-jsmath-1.0.1.tar.gz
-sphinxcontrib-jsmath_dist_sum  := a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8
-sphinxcontrib-jsmath_dist_name := $(notdir $(sphinxcontrib-jsmath_dist_url))
+################################################################################
+# sphinxcontrib-jsmath Python modules
+################################################################################
 
-define fetch_sphinxcontrib-jsmath_dist
-$(call _download,$(sphinxcontrib-jsmath_dist_url),\
-                 $(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name).tmp)
-cat $(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name).tmp | \
-	sha256sum --check \
-	          --status \
-	          <(echo "$(sphinxcontrib-jsmath_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name).tmp,\
-          $(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name)'
+sphinxcontrib-jsmath_dist_url  := https://files.pythonhosted.org/packages/b2/e8/9ed3830aeed71f17c026a07a5097edcf44b692850ef215b161b8ad875729/sphinxcontrib-jsmath-1.0.1.tar.gz
+sphinxcontrib-jsmath_dist_sum  := c1e6488f5c0ca4567c27ec7c597c9db321ac32ce354c4ad62fea534b2ae1c0acb183a921f46216bbc3891f14acfaac05ddf324b8fdaf99828df07bc91aa7e5c7
+sphinxcontrib-jsmath_dist_name := $(notdir $(sphinxcontrib-jsmath_dist_url))
+sphinxcontrib-jsmath_vers      := $(patsubst sphinxcontrib-jsmath-%.tar.gz,%,$(sphinxcontrib-jsmath_dist_name))
+sphinxcontrib-jsmath_brief     := Sphinx_ extension to render math in HTML via JavaScript
+sphinxcontrib-jsmath_home      := https://www.sphinx-doc.org/
+
+define sphinxcontrib-jsmath_desc
+This package provides an extension to the Python_ Sphinx_ documentation system
+which renders math as HTML using JavaScript.
 endef
 
-# As fetch_sphinxcontrib-jsmath_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name): SHELL:=/bin/bash
+define fetch_sphinxcontrib-jsmath_dist
+$(call download_csum,$(sphinxcontrib-jsmath_dist_url),\
+                     $(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name),\
+                     $(sphinxcontrib-jsmath_dist_sum))
+endef
 $(call gen_fetch_rules,sphinxcontrib-jsmath,\
                        sphinxcontrib-jsmath_dist_name,\
                        fetch_sphinxcontrib-jsmath_dist)

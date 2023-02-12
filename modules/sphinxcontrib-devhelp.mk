@@ -1,22 +1,25 @@
-sphinxcontrib-devhelp_dist_url  := https://files.pythonhosted.org/packages/98/33/dc28393f16385f722c893cb55539c641c9aaec8d1bc1c15b69ce0ac2dbb3/sphinxcontrib-devhelp-1.0.2.tar.gz
-sphinxcontrib-devhelp_dist_sum  := ff7f1afa7b9642e7060379360a67e9c41e8f3121f2ce9164266f61b9f4b338e4
-sphinxcontrib-devhelp_dist_name := $(notdir $(sphinxcontrib-devhelp_dist_url))
+################################################################################
+# sphinxcontrib-devhelp Python modules
+################################################################################
 
-define fetch_sphinxcontrib-devhelp_dist
-$(call _download,$(sphinxcontrib-devhelp_dist_url),\
-                 $(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name).tmp)
-cat $(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name).tmp | \
-	sha256sum --check \
-	          --status \
-	          <(echo "$(sphinxcontrib-devhelp_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name).tmp,\
-          $(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name)'
+sphinxcontrib-devhelp_dist_url  := https://files.pythonhosted.org/packages/98/33/dc28393f16385f722c893cb55539c641c9aaec8d1bc1c15b69ce0ac2dbb3/sphinxcontrib-devhelp-1.0.2.tar.gz
+sphinxcontrib-devhelp_dist_sum  := 83b46eaf26df3932ea2136cfda1c0fca4fc08ce8bca564845b3efe5bb00d6c8c93991f4edd4913d4ec796e2d85bd2c7265adf28e98f42e8094daeb5ac11a0eb1
+sphinxcontrib-devhelp_dist_name := $(notdir $(sphinxcontrib-devhelp_dist_url))
+sphinxcontrib-devhelp_vers      := $(patsubst sphinxcontrib-devhelp-%.tar.gz,%,$(sphinxcontrib-devhelp_dist_name))
+sphinxcontrib-devhelp_brief     := Sphinx_ extension which outputs Devhelp document
+sphinxcontrib-devhelp_home      := http://sphinx-doc.org/
+
+define sphinxcontrib-devhelp_desc
+This module contains a Sphinx_ builder which produces
+`GNOME <https://www.gnome.org/>`_ Devhelp support file that allows the
+`GNOME <https://www.gnome.org/>`_ Devhelp reader to view them.
 endef
 
-# As fetch_sphinxcontrib-devhelp_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name): SHELL:=/bin/bash
+define fetch_sphinxcontrib-devhelp_dist
+$(call download_csum,$(sphinxcontrib-devhelp_dist_url),\
+                     $(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name),\
+                     $(sphinxcontrib-devhelp_dist_sum))
+endef
 $(call gen_fetch_rules,sphinxcontrib-devhelp,\
                        sphinxcontrib-devhelp_dist_name,\
                        fetch_sphinxcontrib-devhelp_dist)

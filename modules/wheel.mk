@@ -1,21 +1,30 @@
+################################################################################
+# wheel Python modules
+#
 # Required to build some python modules from source.
+################################################################################
 
 wheel_dist_url  := https://files.pythonhosted.org/packages/a2/b8/6a06ff0f13a00fc3c3e7d222a995526cbca26c1ad107691b6b1badbbabf1/wheel-0.38.4.tar.gz
-wheel_dist_sum  := 965f5259b566725405b05e7cf774052044b1ed30119b5d586b2703aafe8719ac
+wheel_dist_sum  := 46d0589868cdc653b231bd3adb63c1e1e65c2d4d2a7696c2a64b6dc42b2512496af4ee28e5cea66d4dcc6c610ce2d567792f044929dea8ba3e22d2f8d6cafe61
 wheel_dist_name := $(notdir $(wheel_dist_url))
+wheel_vers      := $(patsubst wheel-%.tar.gz,%,$(wheel_dist_name))
+wheel_brief     := Built-package format for Python_
+wheel_home      := https://github.com/pypa/wheel
 
-define fetch_wheel_dist
-$(call _download,$(wheel_dist_url),$(FETCHDIR)/$(wheel_dist_name).tmp)
-cat $(FETCHDIR)/$(wheel_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(wheel_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(wheel_dist_name).tmp,\
-          $(FETCHDIR)/$(wheel_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(wheel_dist_name)'
+define wheel_desc
+A wheel is a ZIP-format archive with a specially formatted filename and the
+:file:`.whl` extension. It is designed to contain all the files for a PEP 376
+compatible install in a way that is very close to the on-disk format.
+
+The wheel project provides a ``bdist_wheel`` command for setuptools. Wheel files
+can be installed with :command:`pip`.
 endef
 
-# As fetch_wheel_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(wheel_dist_name): SHELL:=/bin/bash
+define fetch_wheel_dist
+$(call download_csum,$(wheel_dist_url),\
+                     $(FETCHDIR)/$(wheel_dist_name),\
+                     $(wheel_dist_sum))
+endef
 $(call gen_fetch_rules,wheel,wheel_dist_name,fetch_wheel_dist)
 
 define xtract_wheel

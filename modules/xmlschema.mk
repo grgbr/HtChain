@@ -1,19 +1,34 @@
-xmlschema_dist_url  := https://files.pythonhosted.org/packages/87/82/be78541aeab8d0523d6f967f6fbe892143583978e5f32215f79ac67747e5/xmlschema-2.1.1.tar.gz
-xmlschema_dist_sum  := 5ca34ff15dd3276cfb2e3e7b4c8dde4b7d4d27080f333a93b6c3f817e90abddf
-xmlschema_dist_name := $(notdir $(xmlschema_dist_url))
+################################################################################
+# xmlschema Python modules
+################################################################################
 
-define fetch_xmlschema_dist
-$(call _download,$(xmlschema_dist_url),$(FETCHDIR)/$(xmlschema_dist_name).tmp)
-cat $(FETCHDIR)/$(xmlschema_dist_name).tmp | \
-	sha256sum --check --status <(echo "$(xmlschema_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(xmlschema_dist_name).tmp,\
-          $(FETCHDIR)/$(xmlschema_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(xmlschema_dist_name)'
+xmlschema_dist_url  := https://files.pythonhosted.org/packages/87/82/be78541aeab8d0523d6f967f6fbe892143583978e5f32215f79ac67747e5/xmlschema-2.1.1.tar.gz
+xmlschema_dist_sum  := 2c55de21ab4aaba9f499a0b348e60a50939af41b5ce43787c339ce86e4067681acf28b155bfba90346b1e8d976c468ad0ca21f73f76afc55bd700b1866bba945
+xmlschema_dist_name := $(notdir $(xmlschema_dist_url))
+xmlschema_vers      := $(patsubst xmlschema-%.tar.gz,%,$(xmlschema_dist_name))
+xmlschema_brief     := Implementation of XML Schema for Python_
+xmlschema_home      := https://github.com/sissaschool/xmlschema
+
+define xmlschema_desc
+This library includes the following features:
+
+* full XSD 1.0 and XSD 1.1 support
+* building of XML schema objects from XSD files
+* validation of XML instances against XSD schemas
+* decoding of XML data into Python_ data and to JSON
+* encoding of Python_ data and JSON to XML
+* data decoding and encoding ruled by converter classes
+* an XPath based API for finding schema\'s elements and attributes
+* support of XSD validation modes strict/lax/skip
+* remote attacks protection by default using an XMLParser that forbids
+  entities
 endef
 
-# As fetch_xmlschema_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(xmlschema_dist_name): SHELL:=/bin/bash
+define fetch_xmlschema_dist
+$(call download_csum,$(xmlschema_dist_url),\
+                     $(FETCHDIR)/$(xmlschema_dist_name),\
+                     $(xmlschema_dist_sum))
+endef
 $(call gen_fetch_rules,xmlschema,xmlschema_dist_name,fetch_xmlschema_dist)
 
 define xtract_xmlschema

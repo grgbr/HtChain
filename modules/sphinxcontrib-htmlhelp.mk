@@ -1,22 +1,24 @@
-sphinxcontrib-htmlhelp_dist_url  := https://files.pythonhosted.org/packages/eb/85/93464ac9bd43d248e7c74573d58a791d48c475230bcf000df2b2700b9027/sphinxcontrib-htmlhelp-2.0.0.tar.gz
-sphinxcontrib-htmlhelp_dist_sum  := f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2
-sphinxcontrib-htmlhelp_dist_name := $(notdir $(sphinxcontrib-htmlhelp_dist_url))
+################################################################################
+# sphinxcontrib-htmlhelp Python modules
+################################################################################
 
-define fetch_sphinxcontrib-htmlhelp_dist
-$(call _download,$(sphinxcontrib-htmlhelp_dist_url),\
-                 $(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name).tmp)
-cat $(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name).tmp | \
-	sha256sum --check \
-	          --status \
-	          <(echo "$(sphinxcontrib-htmlhelp_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name).tmp,\
-          $(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name)'
+sphinxcontrib-htmlhelp_dist_url  := https://files.pythonhosted.org/packages/eb/85/93464ac9bd43d248e7c74573d58a791d48c475230bcf000df2b2700b9027/sphinxcontrib-htmlhelp-2.0.0.tar.gz
+sphinxcontrib-htmlhelp_dist_sum  := 6ed673966615f3e818e00de4b7e59c27f0a0d7b494294f804540777c580480870c36002c08d8ad626b7b41a676fe40edc0b0b5ffc6ad8080f38f59c24e157636
+sphinxcontrib-htmlhelp_dist_name := $(notdir $(sphinxcontrib-htmlhelp_dist_url))
+sphinxcontrib-htmlhelp_vers      := $(patsubst sphinxcontrib-htmlhelp-%.tar.gz,%,$(sphinxcontrib-htmlhelp_dist_name))
+sphinxcontrib-htmlhelp_brief     := Sphinx_ extension which renders HTML help files
+sphinxcontrib-htmlhelp_home      := https://www.sphinx-doc.org/
+
+define sphinxcontrib-htmlhelp_desc
+This package provides an extension to the Python_ Sphinx_ documentation system
+which outputs HTML help files.
 endef
 
-# As fetch_sphinxcontrib-htmlhelp_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name): SHELL:=/bin/bash
+define fetch_sphinxcontrib-htmlhelp_dist
+$(call download_csum,$(sphinxcontrib-htmlhelp_dist_url),\
+                     $(FETCHDIR)/$(sphinxcontrib-htmlhelp_dist_name),\
+                     $(sphinxcontrib-htmlhelp_dist_sum))
+endef
 $(call gen_fetch_rules,sphinxcontrib-htmlhelp,\
                        sphinxcontrib-htmlhelp_dist_name,\
                        fetch_sphinxcontrib-htmlhelp_dist)

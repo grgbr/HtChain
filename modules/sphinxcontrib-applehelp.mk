@@ -1,22 +1,24 @@
-sphinxcontrib-applehelp_dist_url  := https://files.pythonhosted.org/packages/32/df/45e827f4d7e7fcc84e853bcef1d836effd762d63ccb86f43ede4e98b478c/sphinxcontrib-applehelp-1.0.4.tar.gz
-sphinxcontrib-applehelp_dist_sum  := 828f867945bbe39817c210a1abfd1bc4895c8b73fcaade56d45357a348a07d7e
-sphinxcontrib-applehelp_dist_name := $(notdir $(sphinxcontrib-applehelp_dist_url))
+################################################################################
+# sphinxcontrib-applehelp Python modules
+################################################################################
 
-define fetch_sphinxcontrib-applehelp_dist
-$(call _download,$(sphinxcontrib-applehelp_dist_url),\
-                 $(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name).tmp)
-cat $(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name).tmp | \
-	sha256sum --check \
-	          --status \
-	          <(echo "$(sphinxcontrib-applehelp_dist_sum)  -")
-$(call mv,$(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name).tmp,\
-          $(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name))
-$(SYNC) --file-system '$(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name)'
+sphinxcontrib-applehelp_dist_url  := https://files.pythonhosted.org/packages/32/df/45e827f4d7e7fcc84e853bcef1d836effd762d63ccb86f43ede4e98b478c/sphinxcontrib-applehelp-1.0.4.tar.gz
+sphinxcontrib-applehelp_dist_sum  := 998249b6ac2061d3fefec508396f407af450794d2c08a255c9384e9b1a6222bb83af5421115790cb689ebf5dce1ca846ae3fcb71b60ea6183d79262969a26218
+sphinxcontrib-applehelp_dist_name := $(notdir $(sphinxcontrib-applehelp_dist_url))
+sphinxcontrib-applehelp_vers      := $(patsubst sphinxcontrib-applehelp-%.tar.gz,%,$(sphinxcontrib-applehelp_dist_name))
+sphinxcontrib-applehelp_brief     := Sphinx_ extension which outputs Apple help books
+sphinxcontrib-applehelp_home      := https://www.sphinx-doc.org/
+
+define sphinxcontrib-applehelp_desc
+Plugin for the Sphinx_ documentation generation system that can render output in
+the Apple help book format.
 endef
 
-# As fetch_sphinxcontrib-applehelp_dist() macro above relies upon a complex process
-# substitution construct, enforce usage of bash a shell.
-$(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name): SHELL:=/bin/bash
+define fetch_sphinxcontrib-applehelp_dist
+$(call download_csum,$(sphinxcontrib-applehelp_dist_url),\
+                     $(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name),\
+                     $(sphinxcontrib-applehelp_dist_sum))
+endef
 $(call gen_fetch_rules,sphinxcontrib-applehelp,\
                        sphinxcontrib-applehelp_dist_name,\
                        fetch_sphinxcontrib-applehelp_dist)
