@@ -48,20 +48,33 @@ $(srcdir)/bison/configure --prefix='$(strip $(2))' $(3) $(verbose)
 endef
 
 # $(1): targets base name / module name
+#
+# Give make an LD_LIBRARY_PATH since running a temporary build-side bison
+# requiring various libraries (such as libtextstyle.so) which are not yet
+# definitely installed at final stage.
 define bison_build_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) all $(verbose)
++$(MAKE) --directory $(builddir)/$(strip $(1)) all \
+         LD_LIBRARY_PATH='$(_stage_lib_path)' \
+         $(verbose)
 endef
 
 # $(1): targets base name / module name
 define bison_clean_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) clean $(verbose)
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+	clean \
+	$(verbose)
 endef
 
 # $(1): targets base name / module name
 # $(2): optional install destination directory
+#
+# Give make an LD_LIBRARY_PATH since running a temporary build-side bison
+# requiring various libraries (such as libtextstyle.so) which are not yet
+# definitely installed at final stage.
 define bison_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
+         LD_LIBRARY_PATH='$(_stage_lib_path)' \
          $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
          $(verbose)
 endef
@@ -91,7 +104,7 @@ bison_common_config_args := --enable-silent-rules \
 # Staging definitions
 ################################################################################
 
-bison_stage_config_args := $(bison_common_args) \
+bison_stage_config_args := $(bison_common_config_args) \
                            --disable-nls \
                            MISSING='true' \
                            $(filter-out FLEX=% LEX=%,$(stage_config_flags))
@@ -121,10 +134,18 @@ $(call gen_dir_rules,stage-bison)
 # Final definitions
 ################################################################################
 
-bison_final_config_args := $(bison_common_args) \
+# Disable RPATH at configure time to prevent from embedding $(stage_lib_path)
+# into binary RPATH.
+bison_final_config_args := $(bison_common_config_args) \
+                           --enable-nls \
+                           --disable-rpath \
                            $(final_config_flags)
 
-$(call gen_deps,final-bison,stage-gcc stage-m4 stage-flex)
+$(call gen_deps,final-bison,stage-gcc \
+                            stage-m4 \
+                            stage-flex \
+                            stage-readline \
+                            stage-gettext)
 $(call gen_check_deps,final-bison,stage-perl)
 
 config_final-bison       = $(call bison_config_cmds,final-bison,\
