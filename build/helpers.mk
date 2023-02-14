@@ -221,8 +221,9 @@ endef
 # $(3): optional install destination directory
 define pip_module_install_cmds
 cd $(builddir)/$(strip $(1)) && \
-env PATH="$(stagedir)/bin:$(PATH)" \
+env PATH='$(stagedir)/bin:$(PATH)' \
 $(stage_python) -m pip --no-cache-dir \
+                       $(if $(V),--verbose) \
                        install --no-deps \
                                --no-index \
                                --ignore-installed \
