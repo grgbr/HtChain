@@ -87,7 +87,7 @@ endef
 bdw-gc_common_config_args := --enable-silent-rules \
                              --enable-shared \
                              --enable-static \
-                             --enable-threads \
+                             --enable-threads=posix \
                              --enable-cplusplus \
                              --disable-gcj-support \
                              --disable-java-finalization \
