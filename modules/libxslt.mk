@@ -92,7 +92,7 @@ libxslt_common_config_args := --enable-silent-rules \
 # Staging definitions
 ################################################################################
 
-libxslt_stage_config_args := $(libxslt_common_args) \
+libxslt_stage_config_args := $(libxslt_common_config_args) \
                              MISSING='true' \
                              $(stage_config_flags)
 
@@ -126,7 +126,7 @@ $(call gen_dir_rules,stage-libxslt)
 # Final definitions
 ################################################################################
 
-libxslt_final_config_args := $(libxslt_common_args) \
+libxslt_final_config_args := $(libxslt_common_config_args) \
                              $(final_config_flags) \
                              LT_SYS_LIBRARY_PATH="$(stagedir)/lib"
 

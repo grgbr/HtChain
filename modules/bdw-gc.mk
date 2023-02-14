@@ -98,7 +98,7 @@ bdw-gc_common_config_args := --enable-silent-rules \
 # Staging definitions
 ################################################################################
 
-bdw-gc_stage_config_args := $(bdw-gc_common_args) \
+bdw-gc_stage_config_args := $(bdw-gc_common_config_args) \
                             --disable-docs \
                             MISSING='true' \
                             $(call stage_config_flags,$(rpath_flags))
@@ -129,7 +129,7 @@ $(call gen_dir_rules,stage-bdw-gc)
 # Final definitions
 ################################################################################
 
-bdw-gc_final_config_args := $(bdw-gc_common_args) \
+bdw-gc_final_config_args := $(bdw-gc_common_config_args) \
                             --enable-docs \
                             $(call final_config_flags,$(rpath_flags))
 

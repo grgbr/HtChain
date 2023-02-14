@@ -106,9 +106,6 @@ $(call gen_dir_rules,stage-ninja)
 # Final definitions
 ################################################################################
 
-ninja_final_config_args := $(ninja_common_args) \
-                           $(final_config_flags)
-
 $(call gen_deps,final-ninja,stage-python)
 
 build_final-ninja        = $(call ninja_build_cmds,final-ninja,\

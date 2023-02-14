@@ -92,7 +92,7 @@ libuv_common_config_args := --enable-silent-rules \
 # Staging definitions
 ################################################################################
 
-libuv_stage_config_args := $(libuv_common_args) \
+libuv_stage_config_args := $(libuv_common_config_args) \
                            MISSING='true' \
                            $(call stage_config_flags,$(rpath_flags))
 
@@ -120,7 +120,7 @@ $(call gen_dir_rules,stage-libuv)
 # Final definitions
 ################################################################################
 
-libuv_final_config_args := $(libuv_common_args) \
+libuv_final_config_args := $(libuv_common_config_args) \
                            $(call final_config_flags,$(rpath_flags))
 
 $(call gen_deps,final-libuv,stage-gcc)
