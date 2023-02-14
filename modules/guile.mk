@@ -2,12 +2,15 @@
 # guile modules
 ################################################################################
 
-guile_dist_url  := https://ftp.gnu.org/gnu/guile/guile-3.0.9.tar.xz
-guile_dist_sum  := a1e47a60a654f26edc57b3a34d943e15a055fc85c3cc764e912be23a80d56534b16f3512d7c7bc426f24a0cac1fcc9556802ac248f10c1fbdde51cd1e24afaf2
-guile_dist_name := $(notdir $(guile_dist_url))
-guile_vers      := $(patsubst guile-%.tar.xz,%,$(guile_dist_name))
-guile_brief     := GNU extension language and Scheme interpreter
-guile_home      := http://www.gnu.org/software/guile/
+guile_dist_url   := https://ftp.gnu.org/gnu/guile/guile-3.0.9.tar.xz
+guile_dist_sum   := a1e47a60a654f26edc57b3a34d943e15a055fc85c3cc764e912be23a80d56534b16f3512d7c7bc426f24a0cac1fcc9556802ac248f10c1fbdde51cd1e24afaf2
+guile_dist_name  := $(notdir $(guile_dist_url))
+guile_vers       := $(patsubst guile-%.tar.xz,%,$(guile_dist_name))
+_guile_vers_toks := $(subst .,$(space),$(guile_vers))
+guile_vers_maj   := $(word 1,$(_guile_vers_toks))
+guile_vers_min   := $(word 2,$(_guile_vers_toks))
+guile_brief      := GNU extension language and Scheme interpreter
+guile_home       := http://www.gnu.org/software/guile/
 
 define guile_desc
 Guile is a Scheme implementation designed for real world programming, providing
@@ -90,7 +93,7 @@ guile_common_config_args := --enable-silent-rules \
 # Staging definitions
 ################################################################################
 
-guile_stage_config_args := $(guile_common_args) \
+guile_stage_config_args := $(guile_common_config_args) \
                            --disable-nls \
                            MISSING='true' \
                            $(stage_config_flags)
@@ -123,9 +126,11 @@ $(call gen_dir_rules,stage-guile)
 # Final definitions
 ################################################################################
 
-guile_final_config_args := $(guile_common_args) \
-                           --enable-nls \
-                           $(final_config_flags)
+guile_final_config_args := \
+	$(guile_common_config_args) \
+	--enable-nls \
+	GUILE_FOR_BUILD='$(stage_guile)' \
+	$(final_config_flags)
 
 $(call gen_deps,final-guile,stage-bdw-gc \
                             stage-libunistring \
@@ -144,10 +149,13 @@ clean_final-guile        = $(call guile_clean_cmds,final-guile)
 define install_final-guile
 $(call guile_install_cmds,final-guile,$(finaldir))
 $(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/lib/libguile-3.0.so \
+                 $(finaldir)$(PREFIX)/lib/libguile-$(guile_vers_maj).$(guile_vers_min).so \
                  $(verbose)
 $(stage_chrpath) --replace "$(final_lib_path)" \
                  $(finaldir)$(PREFIX)/bin/guile \
+                 $(verbose)
+$(stage_chrpath) --replace "$(final_lib_path)" \
+                 $(finaldir)$(PREFIX)/lib/guile/$(guile_vers_maj).$(guile_vers_min)/extensions/guile-readline.so \
                  $(verbose)
 endef
 
