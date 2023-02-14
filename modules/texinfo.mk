@@ -57,12 +57,15 @@ define texinfo_clean_cmds
 endef
 
 # $(1): targets base name / module name
-# $(2): optional install destination directory
+# $(2): build / install prefix
+# $(3): optional install destination directory
 define texinfo_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
-         $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
+         $(if $(strip $(3)),DESTDIR='$(strip $(3))') \
          $(verbose)
+$(call fixup_shebang,$(strip $(3))$(strip $(2))/bin/texi2any,\
+                     $(strip $(2))/bin/perl)
 endef
 
 # $(1): targets base name / module name
@@ -113,7 +116,7 @@ config_stage-texinfo    = $(call texinfo_config_cmds,\
                                  $(texinfo_stage_config_args))
 build_stage-texinfo     = $(call texinfo_build_cmds,stage-texinfo)
 clean_stage-texinfo     = $(call texinfo_clean_cmds,stage-texinfo)
-install_stage-texinfo   = $(call texinfo_install_cmds,stage-texinfo)
+install_stage-texinfo   = $(call texinfo_install_cmds,stage-texinfo,$(stagedir))
 uninstall_stage-texinfo = $(call texinfo_uninstall_cmds,\
                                  stage-texinfo,\
                                  $(stagedir))
@@ -144,7 +147,9 @@ config_final-texinfo    = $(call texinfo_config_cmds,\
                                  $(texinfo_final_config_args))
 build_final-texinfo     = $(call texinfo_build_cmds,final-texinfo)
 clean_final-texinfo     = $(call texinfo_clean_cmds,final-texinfo)
-install_final-texinfo   = $(call texinfo_install_cmds,final-texinfo,$(finaldir))
+install_final-texinfo   = $(call texinfo_install_cmds,final-texinfo,\
+                                                      $(PREFIX),\
+                                                      $(finaldir))
 uninstall_final-texinfo = $(call texinfo_uninstall_cmds,\
                                  final-texinfo,\
                                  $(PREFIX),\
