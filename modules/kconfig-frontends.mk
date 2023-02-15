@@ -71,12 +71,15 @@ define kconfig-frontends_clean_cmds
 endef
 
 # $(1): targets base name / module name
-# $(2): optional install destination directory
+# $(2): build / install prefix
+# $(3): optional install destination directory
 define kconfig-frontends_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
-         $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
+         $(if $(strip $(3)),DESTDIR='$(strip $(3))') \
          $(verbose)
+$(call fixup_shebang,$(strip $(3))$(strip $(2))/bin/kconfig-diff,\
+                     $(strip $(2))/bin/python)
 endef
 
 # $(1): targets base name / module name
@@ -105,47 +108,49 @@ kconfig-frontends_common_config_args := \
 ################################################################################
 # Staging definitions
 ################################################################################
-
-kconfig-frontends_stage_config_args := \
-	$(kconfig-frontends_common_config_args) \
-	MISSING='true' \
-	$(stage_config_flags)
-
-$(call gen_deps,stage-kconfig-frontends,\
-                stage-pkg-config \
-                stage-libtool \
-                stage-flex \
-                stage-gperf \
-                stage-ncurses)
-
-config_stage-kconfig-frontends    = $(call kconfig-frontends_config_cmds,\
-                                           stage-kconfig-frontends,\
-                                           $(stagedir),\
-                                           $(kconfig-frontends_stage_config_args))
-build_stage-kconfig-frontends     = $(call kconfig-frontends_build_cmds,\
-                                           stage-kconfig-frontends)
-clean_stage-kconfig-frontends     = $(call kconfig-frontends_clean_cmds,\
-                                           stage-kconfig-frontends)
-install_stage-kconfig-frontends   = $(call kconfig-frontends_install_cmds,\
-                                           stage-kconfig-frontends)
-uninstall_stage-kconfig-frontends = $(call kconfig-frontends_uninstall_cmds,\
-                                           stage-kconfig-frontends,\
-                                           $(stagedir))
-check_stage-kconfig-frontends     = $(call kconfig-frontends_check_cmds,\
-                                           stage-kconfig-frontends)
-
-$(call gen_config_rules_with_dep,stage-kconfig-frontends,\
-                                 kconfig-frontends,\
-                                 config_stage-kconfig-frontends)
-$(call gen_clobber_rules,stage-kconfig-frontends)
-$(call gen_build_rules,stage-kconfig-frontends,build_stage-kconfig-frontends)
-$(call gen_clean_rules,stage-kconfig-frontends,clean_stage-kconfig-frontends)
-$(call gen_install_rules,stage-kconfig-frontends,\
-                         install_stage-kconfig-frontends)
-$(call gen_uninstall_rules,stage-kconfig-frontends,\
-                           uninstall_stage-kconfig-frontends)
-$(call gen_check_rules,stage-kconfig-frontends,check_stage-kconfig-frontends)
-$(call gen_dir_rules,stage-kconfig-frontends)
+#
+#kconfig-frontends_stage_config_args := \
+#	$(kconfig-frontends_common_config_args) \
+#	MISSING='true' \
+#	$(stage_config_flags)
+#
+#$(call gen_deps,stage-kconfig-frontends,\
+#                stage-pkg-config \
+#                stage-libtool \
+#                stage-flex \
+#                stage-gperf \
+#                stage-ncurses \
+#                stage-python)
+#
+#config_stage-kconfig-frontends    = $(call kconfig-frontends_config_cmds,\
+#                                           stage-kconfig-frontends,\
+#                                           $(stagedir),\
+#                                           $(kconfig-frontends_stage_config_args))
+#build_stage-kconfig-frontends     = $(call kconfig-frontends_build_cmds,\
+#                                           stage-kconfig-frontends)
+#clean_stage-kconfig-frontends     = $(call kconfig-frontends_clean_cmds,\
+#                                           stage-kconfig-frontends)
+#install_stage-kconfig-frontends   = $(call kconfig-frontends_install_cmds,\
+#                                           stage-kconfig-frontends,\
+#                                           $(stagedir))
+#uninstall_stage-kconfig-frontends = $(call kconfig-frontends_uninstall_cmds,\
+#                                           stage-kconfig-frontends,\
+#                                           $(stagedir))
+#check_stage-kconfig-frontends     = $(call kconfig-frontends_check_cmds,\
+#                                           stage-kconfig-frontends)
+#
+#$(call gen_config_rules_with_dep,stage-kconfig-frontends,\
+#                                 kconfig-frontends,\
+#                                 config_stage-kconfig-frontends)
+#$(call gen_clobber_rules,stage-kconfig-frontends)
+#$(call gen_build_rules,stage-kconfig-frontends,build_stage-kconfig-frontends)
+#$(call gen_clean_rules,stage-kconfig-frontends,clean_stage-kconfig-frontends)
+#$(call gen_install_rules,stage-kconfig-frontends,\
+#                         install_stage-kconfig-frontends)
+#$(call gen_uninstall_rules,stage-kconfig-frontends,\
+#                           uninstall_stage-kconfig-frontends)
+#$(call gen_check_rules,stage-kconfig-frontends,check_stage-kconfig-frontends)
+#$(call gen_dir_rules,stage-kconfig-frontends)
 
 ################################################################################
 # Final definitions
@@ -172,6 +177,7 @@ clean_final-kconfig-frontends        = $(call kconfig-frontends_clean_cmds,\
                                               final-kconfig-frontends)
 install_final-kconfig-frontends      = $(call kconfig-frontends_install_cmds,\
                                               final-kconfig-frontends,\
+                                              $(PREFIX),\
                                               $(finaldir))
 uninstall_final-kconfig-frontends    = $(call kconfig-frontends_uninstall_cmds,\
                                               final-kconfig-frontends,\
