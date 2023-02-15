@@ -132,7 +132,7 @@ $(call gen_dir_rules,stage-automake)
 
 automake_final_config_args := --enable-silent-rules \
                               $(final_config_flags) \
-                              ac_cv_path_PERL="/usr/bin/env perl"
+                              ac_cv_path_PERL="$(stage_perl)"
 
 $(call gen_deps,final-automake,stage-autoconf stage-help2man)
 $(call gen_check_deps,final-automake,stage-libtool stage-flex stage-dejagnu \
@@ -145,8 +145,16 @@ config_final-automake    = $(call automake_config_cmds,\
                                   $(automake_final_config_args))
 build_final-automake     = $(call automake_build_cmds,final-automake)
 clean_final-automake     = $(call automake_clean_cmds,final-automake)
-install_final-automake   = $(call automake_install_cmds,final-automake,\
-                                                        $(finaldir))
+
+final-automake_perl_fixups := bin/aclocal bin/automake
+
+define install_final-automake
+$(call automake_install_cmds,final-automake,$(finaldir))
+$(call fixup_shebang,$(addprefix $(finaldir)$(PREFIX)/,\
+                                 $(final-automake_perl_fixups)),\
+                     $(PREFIX)/bin/perl)
+endef
+
 uninstall_final-automake = $(call automake_uninstall_cmds,\
                                   final-automake,\
                                   $(PREFIX),\
