@@ -74,10 +74,6 @@ define help2man_uninstall_cmds
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
-help2man_common_config_args := --enable-silent-rules \
-                               --enable-threads=posix \
-                               --disable-assert
-
 ################################################################################
 # Staging definitions
 ################################################################################
@@ -120,8 +116,12 @@ config_final-help2man       = $(call help2man_config_cmds,\
                                      $(help2man_final_config_args))
 build_final-help2man        = $(call help2man_build_cmds,final-help2man)
 clean_final-help2man        = $(call help2man_clean_cmds,final-help2man)
-install_final-help2man      = $(call help2man_install_cmds,final-help2man,\
-                                                           $(finaldir))
+
+define install_final-help2man
+$(call help2man_install_cmds,final-help2man,$(finaldir))
+$(call fixup_shebang,$(finaldir)$(PREFIX)/bin/help2man,$(PREFIX)/bin/perl -w)
+endef
+
 uninstall_final-help2man    = $(call help2man_uninstall_cmds,\
                                      final-help2man,\
                                      $(PREFIX),\
