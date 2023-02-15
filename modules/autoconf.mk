@@ -133,14 +133,14 @@ final-autoconf_perl_fixups := bin/ifnames \
                               bin/autoscan \
                               bin/autoreconf
 
-define fixup_final_perl_interp
+define fixup_final-autoconf_perl_interp
 $(SED) --in-place 's;$(stage_perl);$(PREFIX)/bin/perl;g' \
        $(addprefix $(finaldir)$(PREFIX)/,$(1))
 endef
 
 define install_final-autoconf
 $(call autoconf_install_cmds,final-autoconf,$(finaldir))
-$(call fixup_final_perl_interp,$(final-autoconf_perl_fixups))
+$(call fixup_final-autoconf_perl_interp,$(final-autoconf_perl_fixups))
 endef
 
 uninstall_final-autoconf    = $(call autoconf_uninstall_cmds,final-autoconf,\
