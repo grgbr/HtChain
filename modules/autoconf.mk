@@ -115,7 +115,7 @@ $(call gen_dir_rules,stage-autoconf)
 
 autoconf_final_config_args  = --enable-silent-rules \
                               $(final_config_flags) \
-                              ac_cv_path_PERL="/usr/bin/env perl"
+                              ac_cv_path_PERL="$(stage_perl)"
 
 $(call gen_deps,final-autoconf,stage-m4 stage-perl)
 
@@ -125,8 +125,24 @@ config_final-autoconf       = $(call autoconf_config_cmds,\
                                      $(autoconf_final_config_args))
 build_final-autoconf        = $(call autoconf_build_cmds,final-autoconf)
 clean_final-autoconf        = $(call autoconf_clean_cmds,final-autoconf)
-install_final-autoconf      = $(call autoconf_install_cmds,final-autoconf,\
-                                                           $(finaldir))
+
+final-autoconf_perl_fixups := bin/ifnames \
+                              bin/autoheader \
+                              bin/autom4te \
+                              bin/autoupdate \
+                              bin/autoscan \
+                              bin/autoreconf
+
+define fixup_final_perl_interp
+$(SED) --in-place 's;$(stage_perl);$(PREFIX)/bin/perl;g' \
+       $(addprefix $(finaldir)$(PREFIX)/,$(1))
+endef
+
+define install_final-autoconf
+$(call autoconf_install_cmds,final-autoconf,$(finaldir))
+$(call fixup_final_perl_interp,$(final-autoconf_perl_fixups))
+endef
+
 uninstall_final-autoconf    = $(call autoconf_uninstall_cmds,final-autoconf,\
                                                              $(PREFIX),\
                                                              $(finaldir))
