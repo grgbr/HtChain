@@ -207,11 +207,20 @@ define log
         "[$(debdist)] ============="
 endef
 
-# Replace shebang of script given in argument
-# $(1): pathname to script to modify
+# Replace shebang of scripts given in argument
+# $(1): pathname to scripts to modify
 # $(2): replacement shebang
 define fixup_shebang
 $(SED) --follow-symlinks --in-place '1s;^#!.*;#!$(strip $(2));' $(1)
+endef
+
+# Replace RPATH / RUNPATH of binaries given in argument
+# $(1): pathname to binaries to modify
+# $(2): replacement RPATH / RUNPATH
+#
+# Watch out ! Must be used only once stage-chrpath module has been installed !
+define fixup_rpath
+$(stage_chrpath) --replace "$(strip $(2))" $(1) $(verbose)
 endef
 
 ################################################################################

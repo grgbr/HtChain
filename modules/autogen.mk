@@ -176,20 +176,23 @@ config_final-autogen       = $(call autogen_config_cmds,\
 build_final-autogen        = $(call autogen_build_cmds,final-autogen)
 clean_final-autogen        = $(call autogen_clean_cmds,final-autogen)
 
+final-autogen_perl_fixups := share/autogen/mdoc2texi \
+                             share/autogen/mdoc2man \
+                             share/autogen/man2mdoc
+
+final-autogen_rpath_fixups := bin/autogen \
+                              bin/columns \
+                              bin/getdefs \
+                              bin/xml2ag
+
 define install_final-autogen
 $(call autogen_install_cmds,final-autogen,$(finaldir))
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/bin/autogen \
-                 $(verbose)
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/bin/columns \
-                 $(verbose)
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/bin/getdefs \
-                 $(verbose)
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/bin/xml2ag \
-                 $(verbose)
+$(call fixup_shebang,$(addprefix $(finaldir)$(PREFIX)/,\
+                                 $(final-autogen_perl_fixups)),\
+                     $(PREFIX)/bin/perl)
+$(call fixup_rpath,$(addprefix $(finaldir)$(PREFIX)/,\
+                               $(final-autogen_rpath_fixups)),\
+                   $(final_lib_path))
 endef
 
 uninstall_final-autogen    = $(call autogen_uninstall_cmds,final-autogen,\
