@@ -16,8 +16,8 @@ validate_shebang()
 		return 0
 	fi
 
-	regex="^#\!${prefix}/bin/${interp}|^#\![^[:blank:]]/bin/env.*${interp}"
-	if ! head -n 1 $f | grep -Eq "$regex"; then
+	regex="^#\![[:blank:]]*${prefix}/bin/${interp}"
+	if ! head -n 1 $f | grep -q "$regex"; then
 		echo "Checking ${interp} $f ... NOK" >&2
 		return 1
 	else
