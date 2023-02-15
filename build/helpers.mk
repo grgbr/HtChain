@@ -273,22 +273,25 @@ endef
 # $(2): name of xtract module these config rules will depend on
 # $(3): build /install prefix
 # $(4): optional install destination directory
-# $(5): optional name of checking rules macro
 define python_module_rules
 config_$(strip $(1))    = $$(call python_module_config_cmds,$(strip $(1)),\
                                                             $(strip $(2)))
-install_$(strip $(1))   = $$(call python_module_install_cmds,$(strip $(1)),\
-                                                             $(strip $(3)),\
-                                                             $(strip $(4)))
+$(if $(value install_$(strip $(1))),\
+     ,\
+     install_$(strip $(1)) = $$(call python_module_install_cmds,$(strip $(1)),\
+                                                                $(strip $(3)),\
+                                                                $(strip $(4))))
+
 uninstall_$(strip $(1)) = $$(call python_module_uninstall_cmds,$(strip $(1)),\
                                                                $(strip $(4)))
+
 $(call config_rules_with_dep,$(1),$(2),config_$(strip $(1)))
 $(call clobber_rules,$(1))
 $(call build_rules,$(1))
 $(call clean_rules,$(1))
 $(call install_rules,$(1),install_$(strip $(1)))
 $(call uninstall_rules,$(1),uninstall_$(strip $(1)))
-$(call check_rules,$(1),$(strip $(5)))
+$(call check_rules,$(1),check_$(strip $(1)))
 $(call dir_rules,$(1))
 endef
 
@@ -296,7 +299,6 @@ endef
 # $(2): name of xtract module these config rules will depend on
 # $(3): build /install prefix
 # $(4): optional install destination directory
-# $(5): optional name of checking rules macro
 define gen_python_module_rules
-$(eval $(call python_module_rules,$(1),$(2),$(3),$(4),$(5)))
+$(eval $(call python_module_rules,$(1),$(2),$(3),$(4)))
 endef
