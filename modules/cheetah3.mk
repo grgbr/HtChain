@@ -63,26 +63,32 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-cheetah3 = $(call cheetah3_check_cmds,stage-cheetah3)
+
 $(call gen_deps,stage-cheetah3,stage-markdown stage-pygments)
 $(call gen_check_deps,stage-cheetah3,stage-cheetah3)
-
-check_stage-cheetah3 = $(call cheetah3_check_cmds,stage-cheetah3)
 $(call gen_python_module_rules,stage-cheetah3,\
                                cheetah3,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-cheetah3)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-cheetah3,stage-markdown stage-pygments)
-$(call gen_check_deps,final-cheetah3,stage-cheetah3)
+final-cheetah3_shebang_fixups := bin/cheetah bin/cheetah-compile
+
+define install_final-cheetah3
+$(call python_module_install_cmds,final-cheetah3,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-cheetah3_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
 
 check_final-cheetah3 = $(call cheetah3_check_cmds,final-cheetah3)
+
+$(call gen_deps,final-cheetah3,stage-markdown stage-pygments)
+$(call gen_check_deps,final-cheetah3,stage-cheetah3)
 $(call gen_python_module_rules,final-cheetah3,\
                                cheetah3,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-cheetah3)
+                               $(finaldir))
