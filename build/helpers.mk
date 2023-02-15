@@ -211,7 +211,7 @@ endef
 # $(1): pathname to script to modify
 # $(2): replacement shebang
 define fixup_shebang
-$(SED) --in-place '1s;^#!.*;#!$(strip $(2));' $(1)
+$(SED) --follow-symlinks --in-place '1s;^#!.*;#!$(strip $(2));' $(1)
 endef
 
 ################################################################################
