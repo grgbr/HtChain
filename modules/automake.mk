@@ -2,12 +2,15 @@
 # autoconf modules
 ################################################################################
 
-automake_dist_url  := https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.xz
-automake_dist_sum  := 3084ae543aa3fb5a05104ffb2e66cfa9a53080f2343c44809707fd648516869511500dba50dae67ff10f92a1bf3b5a92b2a0fa01cda30adb69b9da03994d9d88
-automake_dist_name := $(notdir $(automake_dist_url))
-automake_vers      := $(patsubst automake-%.tar.xz,%,$(automake_dist_name))
-automake_brief     := Tool for generating GNU Standards-compliant Makefiles
-automake_home      := https://www.gnu.org/software/automake/
+automake_dist_url   := https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.xz
+automake_dist_sum   := 3084ae543aa3fb5a05104ffb2e66cfa9a53080f2343c44809707fd648516869511500dba50dae67ff10f92a1bf3b5a92b2a0fa01cda30adb69b9da03994d9d88
+automake_dist_name  := $(notdir $(automake_dist_url))
+automake_vers       := $(patsubst automake-%.tar.xz,%,$(automake_dist_name))
+_automake_vers_toks := $(subst .,$(space),$(automake_vers))
+automake_vers_maj   := $(word 1,$(_automake_vers_toks))
+automake_vers_min   := $(word 2,$(_automake_vers_toks))
+automake_brief      := Tool for generating GNU Standards-compliant Makefiles
+automake_home       := https://www.gnu.org/software/automake/
 
 define automake_desc
 Automake is a tool for automatically generating :file:`Makefile.in` from
@@ -61,12 +64,19 @@ define automake_clean_cmds
 endef
 
 # $(1): targets base name / module name
-# $(2): optional install destination directory
+# $(2): build / install prefix
+# $(3): optional install destination directory
 define automake_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
-         $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
+         $(if $(strip $(3)),DESTDIR='$(strip $(3))') \
          $(verbose)
+$(call rmf,$(strip $(3))$(strip $(2))/bin/aclocal)
+$(call slink,aclocal-$(automake_vers_maj).$(automake_vers_min),\
+             $(strip $(3))$(strip $(2))/bin/aclocal)
+$(call rmf,$(strip $(3))$(strip $(2))/bin/automake)
+$(call slink,automake-$(automake_vers_maj).$(automake_vers_min),\
+             $(strip $(3))$(strip $(2))/bin/automake)
 endef
 
 # $(1): targets base name / module name
@@ -112,7 +122,8 @@ config_stage-automake       = $(call automake_config_cmds,\
                                      $(automake_stage_config_args))
 build_stage-automake        = $(call automake_build_cmds,stage-automake)
 clean_stage-automake        = $(call automake_clean_cmds,stage-automake)
-install_stage-automake      = $(call automake_install_cmds,stage-automake)
+install_stage-automake      = $(call automake_install_cmds,stage-automake,\
+                                                           $(stagedir))
 uninstall_stage-automake    = $(call automake_uninstall_cmds,stage-automake,\
                                                              $(stagedir))
 check_stage-automake        = $(call automake_check_cmds,stage-automake)
@@ -149,7 +160,7 @@ clean_final-automake     = $(call automake_clean_cmds,final-automake)
 final-automake_perl_fixups := bin/aclocal bin/automake
 
 define install_final-automake
-$(call automake_install_cmds,final-automake,$(finaldir))
+$(call automake_install_cmds,final-automake,$(PREFIX),$(finaldir))
 $(call fixup_shebang,$(addprefix $(finaldir)$(PREFIX)/,\
                                  $(final-automake_perl_fixups)),\
                      $(PREFIX)/bin/perl)
