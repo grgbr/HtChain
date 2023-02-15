@@ -187,9 +187,15 @@ config_final-openssl    = $(call openssl_config_cmds,\
 build_final-openssl     = $(call openssl_build_cmds,final-openssl)
 clean_final-openssl     = $(call openssl_clean_cmds,final-openssl)
 
+final-openssl_perl_fixups := bin/c_rehash \
+                             etc/ssl/misc/tsget.pl \
+                             etc/ssl/misc/CA.pl
+
 define install_final-openssl
 $(call openssl_install_cmds,final-openssl,$(PREFIX),$(finaldir))
-$(call fixup_shebang,$(finaldir)$(PREFIX)/bin/c_rehash,$(PREFIX)/bin/perl)
+$(call fixup_shebang,$(addprefix $(finaldir)$(PREFIX)/,\
+                                 $(final-openssl_perl_fixups)),\
+                     $(PREFIX)/bin/perl)
 endef
 
 uninstall_final-openssl = $(call openssl_uninstall_cmds,final-openssl,\
