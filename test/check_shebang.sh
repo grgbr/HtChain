@@ -27,13 +27,25 @@ validate_shebang()
 	fi
 }
 
+list_subtree_files()
+{
+	local dir="$1"
+
+	find "$dir" -type f \
+	            ! \( -path "*/doc/*" -o \
+	                 -path "*/gtk-doc/*" -o \
+	                 -path "*/man/*" -o \
+	                 -path "*/info/*" -o \
+	                 -path "*/locale/*" \)
+}
+
 validate_subtree_shebang()
 {
 	local dir="$1"
 	local prefix="$2"
 	local stat=0
 
-	for f in $(find "$dir" -type f); do
+	for f in $(list_subtree_files "$dir"); do
 		res=""
 		case $(file --brief --mime-type "$f") in
 		text/x-script.python)
