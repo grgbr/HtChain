@@ -13,6 +13,7 @@ CHMOD   := chmod
 INSTALL := install
 UNZIP   := unzip
 ECHOE   := /bin/echo -e
+SED     := sed
 
 empty :=
 
@@ -210,7 +211,7 @@ endef
 # $(1): pathname to script to modify
 # $(2): replacement shebang
 define fixup_shebang
-sed --in-place '1s;^#!.*;#!$(strip $(2));' $(1)
+$(SED) --in-place '1s;^#!.*;#!$(strip $(2));' $(1)
 endef
 
 ################################################################################
