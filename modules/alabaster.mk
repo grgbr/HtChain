@@ -1,5 +1,9 @@
+################################################################################
+# alabaster Python modules
+#
 # Use version 0.7.12 as 0.7.13 breaks sphinx test_config.py::test_needs_sphinx
 # test...
+################################################################################
 
 alabaster_dist_url  := https://files.pythonhosted.org/packages/cc/b4/ed8dcb0d67d5cfb7f83c4d5463a7614cb1d078ad7ae890c9143edebbf072/alabaster-0.7.12.tar.gz
 alabaster_dist_sum  := e3bfd0c92ce01f08d5e6d9dc1ef0967ca1f54827e08756f4a0ba7be8d3b8bec7f2e53a169b831ff5ce2d2548f7f52c6e518bcc513e49bb3e4c38274293aebbac
@@ -39,18 +43,11 @@ $(call gen_dir_rules,alabaster)
 ################################################################################
 
 $(call gen_deps,stage-alabaster,stage-wheel)
-
-$(call gen_python_module_rules,stage-alabaster,\
-                               alabaster,\
-                               $(stagedir))
+$(call gen_python_module_rules,stage-alabaster,alabaster,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
 $(call gen_deps,final-alabaster,stage-wheel)
-
-$(call gen_python_module_rules,final-alabaster,\
-                               alabaster,\
-                               $(PREFIX),\
-                               $(finaldir))
+$(call gen_python_module_rules,final-alabaster,alabaster,$(PREFIX),$(finaldir))
