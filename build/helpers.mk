@@ -227,6 +227,28 @@ endef
 # Python module helpers
 ################################################################################
 
+define python_ext_lib_suffix_stmts :=
+import sysconfig;
+print(sysconfig.get_config_var('EXT_SUFFIX'))
+endef
+
+# Return python module C extension library file name suffix
+# Something like ".cpython-310-x86_64-linux-gnu.so"
+define python_ext_lib_suffix
+$(shell exec $(stage_python) -s -c "$(python_ext_lib_suffix_stmts)")
+endef
+
+define python_site_path_comp_stmts :=
+import sys, site;
+print(site.getsitepackages()[0].removeprefix(sys.exec_prefix + '/'))
+endef
+
+# Return python module install path with exec_prefix removed
+# Something like "lib/python3.10/site-packages"
+define python_site_path_comp
+$(shell exec $(stage_python) -s -c "$(python_site_path_comp_stmts)")
+endef
+
 # $(1): targets base name / module name
 # $(2): source directory basename
 define python_module_config_cmds
