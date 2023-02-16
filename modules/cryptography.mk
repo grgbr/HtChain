@@ -68,54 +68,24 @@ $(call gen_dir_rules,cryptography)
 # This is a workaround solution untill we include support for Rust into HtChain.
 ################################################################################
 
-$(call gen_deps,stage-cryptography,\
-                stage-setuptools-rust stage-cffi stage-openssl)
-
-# $(1): targets base name / module name
-# $(2): build /install prefix
-# $(3): optional install destination directory
-define cryptography_pip_install_cmds
-cd $(builddir)/$(strip $(1)) && \
+define install_stage-cryptography
+cd $(builddir)/stage-cryptography && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     CARGO_HOME="$(builddir)/cargo" \
 $(stage_python) -m pip --no-cache-dir \
+                       $(if $(V),--verbose) \
                        install --no-deps \
                                --no-index \
                                --ignore-installed \
                                --force-reinstall \
                                --no-build-isolation \
                                --disable-pip-version-check \
-                               --prefix "$(strip $(2))" \
-                               $(if $(strip $(3)),--root "$(strip $(3))") \
+                               --prefix "$(stagedir)" \
                                --compile \
                                . \
                                $(verbose)
 endef
 
-# $(1): targets base name / module name
-# $(2): build /install prefix
-# $(3): optional install destination directory
-define cryptography_install_cmds
-$(call cryptography_pip_install_cmds,$(1),$(2),$(installdir)/$(strip $(1)))
-$(call cryptography_pip_install_cmds,$(1),$(2),$(3))
-endef
-
-config_stage-cryptography    = $(call python_module_config_cmds,\
-                                      stage-cryptography,\
-                                      cryptography)
-install_stage-cryptography   = $(call cryptography_install_cmds,\
-                                      stage-cryptography,\
-                                      $(stagedir))
-uninstall_stage-cryptography = $(call python_module_uninstall_cmds,\
-                                      stage-cryptography)
-
-$(call gen_config_rules_with_dep,stage-cryptography,\
-                                 cryptography,\
-                                 config_stage-cryptography)
-$(call gen_clobber_rules,stage-cryptography)
-$(call gen_build_rules,stage-cryptography)
-$(call gen_clean_rules,stage-cryptography)
-$(call gen_install_rules,stage-cryptography,install_stage-cryptography)
-$(call gen_uninstall_rules,stage-cryptography,uninstall_stage-cryptography)
-$(call gen_check_rules,stage-cryptography)
-$(call gen_dir_rules,stage-cryptography)
+$(call gen_deps,stage-cryptography,\
+                stage-setuptools-rust stage-cffi stage-openssl)
+$(call gen_python_module_rules,stage-cryptography,cryptography,$(stagedir))
