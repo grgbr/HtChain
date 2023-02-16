@@ -45,7 +45,4 @@ $(call gen_dir_rules,coverage)
 
 $(call gen_deps,stage-coverage,stage-wheel)
 
-$(call gen_python_module_rules,stage-coverage,\
-                               coverage,$(stagedir),\
-                               ,\
-                               check_stage-coverage)
+$(call gen_python_module_rules,stage-coverage,coverage,$(stagedir))
