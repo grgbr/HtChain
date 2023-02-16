@@ -50,24 +50,39 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-docutils,stage-wheel)
-
 check_stage-docutils = $(call docutils_check_cmds,stage-docutils)
-$(call gen_python_module_rules,stage-docutils,\
-                               docutils,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-docutils)
+
+$(call gen_deps,stage-docutils,stage-wheel)
+$(call gen_python_module_rules,stage-docutils,docutils,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-docutils,stage-wheel)
+final-docutils_shebang_fixups := bin/rstpep2html.py \
+                                 bin/rst2s5.py \
+                                 bin/docutils \
+                                 bin/rst2xetex.py \
+                                 bin/rst2html4.py \
+                                 bin/rst2xml.py \
+                                 bin/rst2man.py \
+                                 bin/rst2latex.py \
+                                 bin/rst2html.py \
+                                 bin/rst2odt.py \
+                                 bin/rst2odt_prepstyles.py \
+                                 bin/rst2pseudoxml.py
+
+define install_final-docutils
+$(call python_module_install_cmds,final-docutils,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-docutils_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
 
 check_final-docutils = $(call docutils_check_cmds,final-docutils)
+
+$(call gen_deps,final-docutils,stage-wheel)
 $(call gen_python_module_rules,final-docutils,\
                                docutils,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-docutils)
+                               $(finaldir))
