@@ -47,26 +47,21 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-elementpath = $(call elementpath_check_cmds,stage-elementpath)
+
 $(call gen_deps,stage-elementpath,stage-wheel)
 $(call gen_check_deps,stage-elementpath,stage-pytest)
-
-check_stage-elementpath = $(call elementpath_check_cmds,stage-elementpath)
-$(call gen_python_module_rules,stage-elementpath,\
-                               elementpath,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-elementpath)
+$(call gen_python_module_rules,stage-elementpath,elementpath,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-elementpath = $(call elementpath_check_cmds,final-elementpath)
+
 $(call gen_deps,final-elementpath,stage-wheel)
 $(call gen_check_deps,final-elementpath,stage-pytest)
-
-check_final-elementpath = $(call elementpath_check_cmds,final-elementpath)
 $(call gen_python_module_rules,final-elementpath,\
                                elementpath,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-elementpath)
+                               $(finaldir))
