@@ -56,26 +56,21 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-flit_core = $(call flit_core_check_cmds,stage-flit_core)
+
 $(call gen_deps,stage-flit_core,stage-wheel)
 $(call gen_check_deps,stage-flit_core,stage-pytest stage-testpath)
-
-check_stage-flit_core = $(call flit_core_check_cmds,stage-flit_core)
-$(call gen_python_module_rules,stage-flit_core,\
-                               flit_core,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-flit_core)
+$(call gen_python_module_rules,stage-flit_core,flit_core,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-flit_core = $(call flit_core_check_cmds,final-flit_core)
+
 $(call gen_deps,final-flit_core,stage-wheel)
 $(call gen_check_deps,final-flit_core,stage-pytest stage-testpath)
-
-check_final-flit_core = $(call flit_core_check_cmds,final-flit_core)
 $(call gen_python_module_rules,final-flit_core,\
                                flit_core,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-flit_core)
+                               $(finaldir))
