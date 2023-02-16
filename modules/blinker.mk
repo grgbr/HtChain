@@ -1,9 +1,9 @@
 ################################################################################
 # blinker modules
-################################################################################
-
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 blinker_dist_url  := https://files.pythonhosted.org/packages/2b/12/82786486cefb68685bb1c151730f510b0f4e5d621d77f245bc0daf9a6c64/blinker-1.5.tar.gz
 blinker_dist_sum  := b1880fdc974be63e16e2b826bdbc8ee161bc0234591b8b41deed937a1e1b9d0bf1fb697c8e94644de9cc1900aedd39d08cfc3e59fef51abec295552f96418722
@@ -42,5 +42,4 @@ $(call gen_dir_rules,blinker)
 ################################################################################
 
 $(call gen_deps,stage-blinker,stage-wheel)
-
 $(call gen_python_module_rules,stage-blinker,blinker,$(stagedir))

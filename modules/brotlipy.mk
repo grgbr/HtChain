@@ -1,9 +1,9 @@
 ################################################################################
 # brotlipy modules
-################################################################################
-
+#
 # Module required for check targets only. Do not bother verifying it to prevent
 # from fetching loads of dependencies.
+################################################################################
 
 brotlipy_dist_url  := https://files.pythonhosted.org/packages/d9/91/bc79b88590e4f662bd40a55a2b6beb0f15da4726732efec5aa5a3763d856/brotlipy-0.7.0.tar.gz
 brotlipy_dist_sum  := 2a01e5b2d217043f13316afc4f54569c5dff76d31c296d4be563a5851195380ab80a33a3035ca95effdebffb45806fb9a431a181bba6f9af205b7f5576937268
@@ -41,5 +41,4 @@ $(call gen_dir_rules,brotlipy)
 ################################################################################
 
 $(call gen_deps,stage-brotlipy,stage-cffi)
-
 $(call gen_python_module_rules,stage-brotlipy,brotlipy,$(stagedir))
