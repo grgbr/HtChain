@@ -54,28 +54,36 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-charset-normalizer,stage-wheel)
-$(call gen_check_deps,stage-charset-normalizer,stage-pytest-cov)
-
 check_stage-charset-normalizer = $(call charset-normalizer_check_cmds,\
                                         stage-charset-normalizer)
+
+$(call gen_deps,stage-charset-normalizer,stage-wheel)
+$(call gen_check_deps,stage-charset-normalizer,stage-pytest-cov)
 $(call gen_python_module_rules,stage-charset-normalizer,\
                                charset-normalizer,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-charset-normalizer)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-charset-normalizer,stage-wheel)
-$(call gen_check_deps,final-charset-normalizer,stage-pytest-cov)
+final-charset-normalizer_shebang_fixups := bin/normalizer
+
+define install_final-charset-normalizer
+$(call python_module_install_cmds,final-charset-normalizer,\
+                                  $(PREFIX),\
+                                  $(finaldir))
+$(call fixup_shebang,$(addprefix $(finaldir)$(PREFIX)/,\
+                     $(final-charset-normalizer_shebang_fixups)),\
+                     $(PREFIX)/bin/python)
+endef
 
 check_final-charset-normalizer = $(call charset-normalizer_check_cmds,\
                                         final-charset-normalizer)
+
+$(call gen_deps,final-charset-normalizer,stage-wheel)
+$(call gen_check_deps,final-charset-normalizer,stage-pytest-cov)
 $(call gen_python_module_rules,final-charset-normalizer,\
                                charset-normalizer,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-charset-normalizer)
+                               $(finaldir))
