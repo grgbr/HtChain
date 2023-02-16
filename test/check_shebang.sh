@@ -47,10 +47,10 @@ validate_subtree_shebang()
 
 	for f in $(list_subtree_files "$dir"); do
 		res=""
-		case $(file --brief --mime-type "$f") in
-		text/x-script.python)
+		case $(file --brief "$f") in
+		'Python script, ASCII text executable')
 			validate_shebang "$f" "python" "$prefix" || stat=1;;
-		text/x-perl)
+		'Perl script text executable')
 			validate_shebang "$f" "perl" "$prefix" || stat=1;;
 		esac
 	done
