@@ -50,25 +50,31 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-breathe = $(call breathe_check_cmds,stage-breathe)
+
 $(call gen_deps,stage-breathe,stage-sphinx)
 $(call gen_check_deps,stage-breathe,stage-breathe stage-pytest)
-
-check_stage-breathe = $(call breathe_check_cmds,stage-breathe)
 $(call gen_python_module_rules,stage-breathe,\
                                breathe,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-breathe)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-breathe,stage-sphinx)
-$(call gen_check_deps,final-breathe,stage-breathe stage-pytest)
+final-breathe_shebang_fixups := bin/breathe-apidoc
+
+define install_final-breathe
+$(call python_module_install_cmds,final-breathe,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-breathe_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
 
 check_final-breathe = $(call breathe_check_cmds,final-breathe)
+
+$(call gen_deps,final-breathe,stage-sphinx)
+$(call gen_check_deps,final-breathe,stage-breathe stage-pytest)
 $(call gen_python_module_rules,final-breathe,breathe,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-breathe)
+                               $(finaldir))
