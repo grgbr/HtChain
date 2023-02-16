@@ -53,24 +53,55 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-cython,stage-wheel)
-
 check_stage-cython = $(call cython_check_cmds,stage-cython)
+
+$(call gen_deps,stage-cython,stage-wheel)
 $(call gen_python_module_rules,stage-cython,\
                                cython,\
-                               $(stagedir), \
-                               ,\
-                               check_stage-cython)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-cython,stage-python)
+final-cython_shebang_fixups := \
+	bin/cython \
+	bin/cythonize \
+	bin/cygdb \
+	$(addprefix $(python_site_path_comp)/,\
+	            cython.py \
+	            Cython/Build/Cythonize.py \
+	            Cython/Debugger/libpython.py \
+	            Cython/Debugger/Cygdb.py)
+
+final-cython_ext_lib_names := Tempita/_tempita \
+                              Plex/Actions \
+                              Plex/Scanners \
+                              Runtime/refnanny \
+                              Compiler/FusedNode \
+                              Compiler/Scanning \
+                              Compiler/FlowControl \
+                              Compiler/Visitor
+
+final-cython_rpath_fixups = \
+	$(addprefix $(python_site_path_comp)/Cython/,\
+	            $(addsuffix $(python_ext_lib_suffix),\
+	                        $(final-cython_ext_lib_names)))
+
+define install_final-cython
+$(call python_module_install_cmds,final-cython,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-cython_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+$(call fixup_rpath,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-cython_rpath_fixups)),\
+       $(final_lib_path))
+endef
 
 check_final-cython = $(call cython_check_cmds,final-cython)
+
+$(call gen_deps,final-cython,stage-python)
 $(call gen_python_module_rules,final-cython,\
                                cython,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-cython)
+                               $(finaldir))
