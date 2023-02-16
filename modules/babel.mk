@@ -46,26 +46,27 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-babel = $(call babel_check_cmds,stage-babel)
+
 $(call gen_deps,stage-babel,stage-pytz)
 $(call gen_check_deps,stage-babel,stage-pytest stage-freezegun)
-
-check_stage-babel = $(call babel_check_cmds,stage-babel)
-$(call gen_python_module_rules,stage-babel,\
-                               babel,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-babel)
+$(call gen_python_module_rules,stage-babel,babel,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-babel,stage-pytz)
-$(call gen_check_deps,final-babel,stage-pytest stage-freezegun)
+final-babel_shebang_fixups := bin/pybabel
+
+define install_final-babel
+$(call python_module_install_cmds,final-babel,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-babel_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
 
 check_final-babel = $(call babel_check_cmds,final-babel)
-$(call gen_python_module_rules,final-babel,\
-                               babel,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-babel)
+
+$(call gen_deps,final-babel,stage-pytz)
+$(call gen_check_deps,final-babel,stage-pytest stage-freezegun)
+$(call gen_python_module_rules,final-babel,babel,$(PREFIX),$(finaldir))
