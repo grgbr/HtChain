@@ -57,22 +57,38 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-lxml = $(call lxml_check_cmds,stage-lxml)
+
 $(call gen_deps,stage-lxml,stage-wheel stage-libxml2 stage-libxslt)
 $(call gen_check_deps,stage-lxml,stage-pytest)
-
-check_stage-lxml = $(call lxml_check_cmds,stage-lxml)
-$(call gen_python_module_rules,stage-lxml,lxml,$(stagedir),,check_stage-lxml)
+$(call gen_python_module_rules,stage-lxml,lxml,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-lxml,stage-wheel stage-libxml2 stage-libxslt)
-$(call gen_check_deps,final-lxml,stage-pytest)
+final-lxml_ext_lib_names := etree \
+                            _elementpath \
+                            builder \
+                            html/clean \
+                            html/diff \
+                            sax \
+                            objectify
+
+final-lxml_rpath_fixups = \
+	$(addprefix $(python_site_path_comp)/lxml/,\
+	            $(addsuffix $(python_ext_lib_suffix),\
+	                        $(final-lxml_ext_lib_names)))
+
+define install_final-lxml
+$(call python_module_install_cmds,final-lxml,$(PREFIX),$(finaldir))
+$(call fixup_rpath,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-lxml_rpath_fixups)),\
+       $(final_lib_path))
+endef
 
 check_final-lxml = $(call lxml_check_cmds,final-lxml)
-$(call gen_python_module_rules,final-lxml,\
-                               lxml,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-lxml)
+
+$(call gen_deps,final-lxml,stage-wheel stage-libxml2 stage-libxslt)
+$(call gen_check_deps,final-lxml,stage-pytest)
+$(call gen_python_module_rules,final-lxml,lxml,$(PREFIX),$(finaldir))
