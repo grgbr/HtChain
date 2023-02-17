@@ -49,24 +49,30 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-markdown,stage-pyyaml)
-
 check_stage-markdown = $(call markdown_check_cmds,stage-markdown)
+
+$(call gen_deps,stage-markdown,stage-pyyaml)
 $(call gen_python_module_rules,stage-markdown,\
                                markdown,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-markdown)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-markdown,stage-pyyaml)
+final-markdown_shebang_fixups := bin/markdown_py
+
+define install_final-markdown
+$(call python_module_install_cmds,final-markdown,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-markdown_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
 
 check_final-markdown = $(call markdown_check_cmds,final-markdown)
+
+$(call gen_deps,final-markdown,stage-pyyaml)
 $(call gen_python_module_rules,final-markdown,\
                                markdown,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-markdown)
+                               $(finaldir))
