@@ -50,26 +50,21 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-idna = $(call idna_check_cmds,stage-idna)
+
 $(call gen_deps,stage-idna,stage-flit_core)
 $(call gen_check_deps,stage-idna,stage-pytest)
-
-check_stage-idna = $(call idna_check_cmds,stage-idna)
-$(call gen_python_module_rules,stage-idna,\
-                               idna,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-idna)
+$(call gen_python_module_rules,stage-idna,idna,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-idna = $(call idna_check_cmds,final-idna)
+
 $(call gen_deps,final-idna,stage-flit_core)
 $(call gen_check_deps,final-idna,stage-pytest)
-
-check_final-idna = $(call idna_check_cmds,final-idna)
 $(call gen_python_module_rules,final-idna,\
                                idna,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-idna)
+                               $(finaldir))
