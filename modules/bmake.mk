@@ -92,9 +92,16 @@ config_final-bmake       = $(call bmake_config_cmds,final-bmake,\
                                                     $(bmake_final_config_args))
 build_final-bmake        = $(call bmake_build_cmds,final-bmake)
 clean_final-bmake        = $(call bmake_clean_cmds,final-bmake)
-install_final-bmake      = $(call bmake_install_cmds,final-bmake,\
-                                                     $(PREFIX),\
-                                                     $(finaldir))
+
+final-bmake_shebang_fixups := share/mk/meta2deps.py
+
+define install_final-bmake
+$(call bmake_install_cmds,final-bmake,$(PREFIX),$(finaldir))
+$(call fixup_shebang,$(addprefix $(finaldir)$(PREFIX)/,\
+                                 $(final-bmake_shebang_fixups)),\
+                     $(PREFIX)/bin/python)
+endef
+
 uninstall_final-bmake    = $(call bmake_uninstall_cmds,final-bmake,\
                                                        $(PREFIX),\
                                                        $(finaldir))
