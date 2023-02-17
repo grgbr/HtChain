@@ -57,26 +57,18 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-pytz = $(call pytz_check_cmds,stage-pytz)
+
 $(call gen_deps,stage-pytz,stage-wheel)
 $(call gen_check_deps,stage-pytz,stage-pytest)
-
-check_stage-pytz = $(call pytz_check_cmds,stage-pytz)
-$(call gen_python_module_rules,stage-pytz,\
-                               pytz,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-pytz)
+$(call gen_python_module_rules,stage-pytz,pytz,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-pytz = $(call pytz_check_cmds,final-pytz)
+
 $(call gen_deps,final-pytz,stage-wheel)
 $(call gen_check_deps,final-pytz,stage-pytest)
-
-check_final-pytz = $(call pytz_check_cmds,final-pytz)
-$(call gen_python_module_rules,final-pytz,\
-                               pytz,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-pytz)
+$(call gen_python_module_rules,final-pytz,pytz,$(PREFIX),$(finaldir))
