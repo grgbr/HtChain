@@ -179,9 +179,58 @@ config_final-python    = $(call python_config_cmds,final-python,\
                                                    $(python_final_config_args))
 build_final-python     = $(call python_build_cmds,final-python)
 clean_final-python     = $(call python_clean_cmds,final-python)
-install_final-python   = $(call python_install_cmds,final-python,\
-                                                    $(PREFIX),\
-                                                    $(finaldir))
+
+final-python_shebang_fixups := \
+	$(addprefix $(python_site_path_comp)/,\
+	            ../smtpd.py \
+	            pip/_vendor/distro/distro.py \
+	            ../cgi.py \
+	            ../turtledemo/yinyang.py \
+	            ../turtledemo/forest.py \
+	            ../turtledemo/peace.py \
+	            ../turtledemo/__main__.py \
+	            ../turtledemo/bytedesign.py \
+	            ../turtledemo/penrose.py \
+	            ../turtledemo/tree.py \
+	            ../turtledemo/fractalcurves.py \
+	            ../turtledemo/paint.py \
+	            ../turtledemo/sorting_animate.py \
+	            ../turtledemo/planet_and_moon.py \
+	            ../turtledemo/lindenmayer.py \
+	            ../turtledemo/minimal_hanoi.py \
+	            ../turtledemo/clock.py \
+	            ../smtplib.py \
+	            ../tabnanny.py \
+	            ../idlelib/idle_test/example_noext \
+	            ../idlelib/pyshell.py \
+	            ../cProfile.py \
+	            ../quopri.py \
+	            ../pdb.py \
+	            ../profile.py \
+	            ../lib2to3/pgen2/token.py \
+	            ../lib2to3/tests/pytree_idempotency.py \
+	            ../lib2to3/tests/data/false_encoding.py \
+	            ../tarfile.py \
+	            ../platform.py \
+	            ../test/bisect_cmd.py \
+	            ../test/curses_tests.py \
+	            ../test/regrtest.py \
+	            ../test/re_tests.py \
+	            ../timeit.py \
+	            ../pydoc.py \
+	            ../trace.py \
+	            ../uu.py \
+	            ../webbrowser.py \
+	            ../encodings/rot_13.py \
+	            ../base64.py)
+
+define install_final-python
+$(call python_install_cmds,final-python,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-python_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
 uninstall_final-python = $(call python_uninstall_cmds,final-python,\
                                                       $(PREFIX),\
                                                       $(finaldir))
