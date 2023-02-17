@@ -56,9 +56,6 @@ $(call gen_dir_rules,python-dateutil)
 ################################################################################
 
 $(call gen_deps,stage-python-dateutil,stage-six stage-wheel)
-
-check_stage-python-dateutil = $(call python-dateutil_check_cmds,\
-                                     stage-python-dateutil)
 $(call gen_python_module_rules,stage-python-dateutil,\
                                python-dateutil,\
                                $(stagedir))
