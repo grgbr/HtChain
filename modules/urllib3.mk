@@ -53,6 +53,8 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-urllib3 = $(call urllib3_check_cmds,stage-urllib3)
+
 $(call gen_deps,stage-urllib3,stage-wheel)
 $(call gen_check_deps,stage-urllib3,\
                       stage-urllib3 \
@@ -65,17 +67,13 @@ $(call gen_check_deps,stage-urllib3,\
                       stage-flaky \
                       stage-pysocks \
                       stage-mock)
-
-check_stage-urllib3 = $(call urllib3_check_cmds,stage-urllib3)
-$(call gen_python_module_rules,stage-urllib3,\
-                               urllib3,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-urllib3)
+$(call gen_python_module_rules,stage-urllib3,urllib3,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
+
+check_final-urllib3 = $(call urllib3_check_cmds,final-urllib3)
 
 $(call gen_deps,final-urllib3,stage-wheel)
 $(call gen_check_deps,final-urllib3,\
@@ -89,10 +87,4 @@ $(call gen_check_deps,final-urllib3,\
                       stage-flaky \
                       stage-pysocks \
                       stage-mock)
-
-check_final-urllib3 = $(call urllib3_check_cmds,final-urllib3)
-$(call gen_python_module_rules,final-urllib3,\
-                               urllib3,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-urllib3)
+$(call gen_python_module_rules,final-urllib3,urllib3,$(PREFIX),$(finaldir))
