@@ -51,32 +51,29 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-serializinghtml,stage-wheel)
-$(call gen_check_deps,stage-sphinxcontrib-serializinghtml,\
-                      stage-pytest stage-sphinx)
-
 check_stage-sphinxcontrib-serializinghtml = \
 	$(call sphinxcontrib-serializinghtml_check_cmds,\
 	       stage-sphinxcontrib-serializinghtml)
+
+$(call gen_deps,stage-sphinxcontrib-serializinghtml,stage-wheel)
+$(call gen_check_deps,stage-sphinxcontrib-serializinghtml,\
+                      stage-pytest stage-sphinx)
 $(call gen_python_module_rules,stage-sphinxcontrib-serializinghtml,\
                                sphinxcontrib-serializinghtml,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinxcontrib-serializinghtml)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-serializinghtml,stage-wheel)
-$(call gen_check_deps,final-sphinxcontrib-serializinghtml,\
-                      stage-pytest stage-sphinx)
-
 check_final-sphinxcontrib-serializinghtml = \
 	$(call sphinxcontrib-serializinghtml_check_cmds,\
 	       final-sphinxcontrib-serializinghtml)
+
+$(call gen_deps,final-sphinxcontrib-serializinghtml,stage-wheel)
+$(call gen_check_deps,final-sphinxcontrib-serializinghtml,\
+                      stage-pytest stage-sphinx)
 $(call gen_python_module_rules,final-sphinxcontrib-serializinghtml,\
                                sphinxcontrib-serializinghtml,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinxcontrib-serializinghtml)
+                               $(finaldir))
