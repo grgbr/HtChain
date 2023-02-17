@@ -52,26 +52,27 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-wheel = $(call wheel_check_cmds,stage-wheel)
+
 $(call gen_deps,stage-wheel,stage-python)
 $(call gen_check_deps,stage-wheel,stage-pytest)
-
-check_stage-wheel = $(call wheel_check_cmds,stage-wheel)
-$(call gen_python_module_rules,stage-wheel,\
-                               wheel,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-wheel)
+$(call gen_python_module_rules,stage-wheel,wheel,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-wheel,stage-python)
-$(call gen_check_deps,final-wheel,stage-pytest)
+final-wheel_shebang_fixups := bin/wheel
+
+define install_final-wheel
+$(call python_module_install_cmds,final-wheel,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-wheel_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
 
 check_final-wheel = $(call wheel_check_cmds,final-wheel)
-$(call gen_python_module_rules,final-wheel,\
-                               wheel,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-wheel)
+
+$(call gen_deps,final-wheel,stage-python)
+$(call gen_check_deps,final-wheel,stage-pytest)
+$(call gen_python_module_rules,final-wheel,wheel,$(PREFIX),$(finaldir))
