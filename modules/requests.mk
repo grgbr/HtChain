@@ -62,6 +62,8 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-requests = $(call requests_check_cmds,stage-requests)
+
 $(call gen_deps,stage-requests,stage-urllib3 \
                                stage-idna \
                                stage-certifi \
@@ -71,17 +73,13 @@ $(call gen_check_deps,stage-requests,stage-pytest-cov \
                                      stage-pytest-httpbin \
                                      stage-pytest-mock \
                                      stage-pysocks)
-
-check_stage-requests = $(call requests_check_cmds,stage-requests)
-$(call gen_python_module_rules,stage-requests,\
-                               requests,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-requests)
+$(call gen_python_module_rules,stage-requests,requests,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
+
+check_final-requests = $(call requests_check_cmds,final-requests)
 
 $(call gen_deps,final-requests,stage-urllib3 \
                                stage-idna \
@@ -92,10 +90,4 @@ $(call gen_check_deps,final-requests,stage-pytest-cov \
                                      stage-pytest-httpbin \
                                      stage-pytest-mock \
                                      stage-pysocks)
-
-check_final-requests = $(call requests_check_cmds,final-requests)
-$(call gen_python_module_rules,final-requests,\
-                               requests,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-requests)
+$(call gen_python_module_rules,final-requests,requests,$(PREFIX),$(finaldir))
