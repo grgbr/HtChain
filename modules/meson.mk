@@ -32,6 +32,11 @@ $(call gen_xtract_rules,meson,xtract_meson)
 
 $(call gen_dir_rules,meson)
 
+meson_shebang_fixups := bin/meson \
+                        $(addprefix $(python_site_path_comp)/,\
+                                    mesonbuild/scripts/cmake_run_ctgt.py \
+                                    mesonbuild/rewriter.py)
+
 define meson_run_tests
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
@@ -44,6 +49,7 @@ endef
 # $(1): targets base name / module name
 #
 # Disabled tests:
+# * qt and sdl2 since not supported / installed
 # * platform-linux/6 subdir include order: requires a glib2 development install
 # * platform-linux/9 compiler checks with dependencies: requires a glib2
 #                                                       development install
@@ -91,6 +97,15 @@ endef
 # Staging definitions
 ################################################################################
 
+define install_stage-meson
+$(call python_module_install_cmds,stage-meson,$(stagedir))
+$(call fixup_shebang,\
+       $(addprefix $(stagedir)/,$(meson_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
+check_stage-meson = $(call meson_check_cmds,stage-meson)
+
 $(call gen_deps,stage-meson,stage-ninja stage-wheel)
 $(call gen_check_deps,stage-meson,\
                       stage-pytest-xdist \
@@ -98,13 +113,20 @@ $(call gen_check_deps,stage-meson,\
                       stage-doxygen \
                       stage-flex \
                       stage-gettext)
-
-check_stage-meson = $(call meson_check_cmds,stage-meson)
-$(call gen_python_module_rules,stage-meson,meson,$(stagedir),,check_stage-meson)
+$(call gen_python_module_rules,stage-meson,meson,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
+
+define install_final-meson
+$(call python_module_install_cmds,final-meson,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(meson_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
+check_final-meson = $(call meson_check_cmds,final-meson)
 
 $(call gen_deps,final-meson,stage-ninja stage-wheel)
 $(call gen_check_deps,final-meson,\
@@ -113,10 +135,4 @@ $(call gen_check_deps,final-meson,\
                       stage-doxygen \
                       stage-flex \
                       stage-gettext)
-
-check_final-meson = $(call meson_check_cmds,final-meson)
-$(call gen_python_module_rules,final-meson,\
-                               meson,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-meson)
+$(call gen_python_module_rules,final-meson,meson,$(PREFIX),$(finaldir))
