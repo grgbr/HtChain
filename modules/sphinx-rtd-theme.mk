@@ -51,30 +51,27 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-sphinx-rtd-theme = $(call sphinx-rtd-theme_check_cmds,\
+                                      stage-sphinx-rtd-theme)
+
 $(call gen_deps,stage-sphinx-rtd-theme,stage-sphinx)
 $(call gen_check_deps,stage-sphinx-rtd-theme,\
                       stage-readthedocs-sphinx-ext stage-pytest)
-
-check_stage-sphinx-rtd-theme = $(call sphinx-rtd-theme_check_cmds,\
-                                      stage-sphinx-rtd-theme)
 $(call gen_python_module_rules,stage-sphinx-rtd-theme,\
                                sphinx-rtd-theme,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinx-rtd-theme)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-sphinx-rtd-theme = $(call sphinx-rtd-theme_check_cmds,\
+                                      final-sphinx-rtd-theme)
+
 $(call gen_deps,final-sphinx-rtd-theme,stage-sphinx)
 $(call gen_check_deps,final-sphinx-rtd-theme,\
                       stage-readthedocs-sphinx-ext stage-pytest)
-
-check_final-sphinx-rtd-theme = $(call sphinx-rtd-theme_check_cmds,\
-                                      final-sphinx-rtd-theme)
 $(call gen_python_module_rules,final-sphinx-rtd-theme,\
                                sphinx-rtd-theme,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinx-rtd-theme)
+                               $(finaldir))
