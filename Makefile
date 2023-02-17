@@ -104,6 +104,8 @@ debdir          := $(outdir)/debian
 stampdir        := $(outdir)/stamp
 # Location where to find various script utilities
 scriptdir       := $(TOPDIR)/scripts
+# Location where to find various testing utilities
+testdir         := $(TOPDIR)/test
 # HtChain version
 version         := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
 # HtChain package version string
@@ -375,6 +377,18 @@ stage: $(stage_targets)
 	$(call rmrf,$(stagedir)/share/man)
 	$(scriptdir)/strip.sh $(stagedir)
 
+.PHONY: check-stage-paths
+check-stage-paths:
+	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(stagedir) $(stagedir)
+	$(testdir)/check_rpath.sh $(if $(V),--verbose) \
+	                          $(stagedir) \
+	                          '^$(stagedir)/lib.*'
+
+.PHONY: check-stage
+check-stage: check-stage-paths $(addprefix check-,$(stage_targets))
+
+check: check-stage-paths
+
 .PHONY: clobber-stage
 clobber-stage:
 	$(foreach d,$(wildcard $(stampdir)/stage-*),$(call rmrf,$(d))$(newline))
@@ -388,6 +402,18 @@ list-final:
 
 .PHONY: final
 final: $(final_targets)
+
+.PHONY: check-final-paths
+check-final-paths:
+	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(finaldir) $(PREFIX)
+	$(testdir)/check_rpath.sh $(if $(V),--verbose) \
+	                          $(finaldir) \
+	                          '^$(PREFIX)/lib.*'
+
+.PHONY: check-final
+check-final: check-final-paths $(addprefix check-,$(final_targets))
+
+check: check-final-paths
 
 .PHONY: clobber-final
 clobber-final:
