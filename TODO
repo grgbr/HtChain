@@ -1,9 +1,3 @@
-Review:
-=======
-
-* cython: !!!TODO: run test suite (optional gdb) !!!
-* gcc
-
 Fix:
 ====
 * fix guile linking to system-wide libgmp !!
@@ -31,9 +25,17 @@ Fix:
 * fix versioning scheme (include branch name, etc...)
 * fix flex dependencies ?? (see top level comments), make sure we dont need to
   run autoreconf (since configure.ac is patched)
+* meson: fix cmake dependency test failure
+* requests: fix failing tests
+* cython: fix failing tests and run test suite (optional gdb) !!!
+* gcc: review testsuite
 
 TODO:
+=====
+
 * help message(s) !!
+* complete documentation
+* include major version into default final prefix
 * include htchain version into default package version for toolchain (mainly gcc suite)
 * doxygen: xapian support for doxygen search engine ?
 * curl: enable support for: libidn2, libpsl, libgsasl and ldap ?
