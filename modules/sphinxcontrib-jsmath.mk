@@ -49,30 +49,27 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-jsmath,stage-wheel)
-$(call gen_check_deps,stage-sphinxcontrib-jsmath,stage-pytest stage-sphinx)
-
 check_stage-sphinxcontrib-jsmath = \
 	$(call sphinxcontrib-jsmath_check_cmds,\
 	       stage-sphinxcontrib-jsmath)
+
+$(call gen_deps,stage-sphinxcontrib-jsmath,stage-wheel)
+$(call gen_check_deps,stage-sphinxcontrib-jsmath,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,stage-sphinxcontrib-jsmath,\
                                sphinxcontrib-jsmath,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinxcontrib-jsmath)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-jsmath,stage-wheel)
-$(call gen_check_deps,final-sphinxcontrib-jsmath,stage-pytest stage-sphinx)
-
 check_final-sphinxcontrib-jsmath = \
 	$(call sphinxcontrib-jsmath_check_cmds,\
 	       final-sphinxcontrib-jsmath)
+
+$(call gen_deps,final-sphinxcontrib-jsmath,stage-wheel)
+$(call gen_check_deps,final-sphinxcontrib-jsmath,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,final-sphinxcontrib-jsmath,\
                                sphinxcontrib-jsmath,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinxcontrib-jsmath)
+                               $(finaldir))
