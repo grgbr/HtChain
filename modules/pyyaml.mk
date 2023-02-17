@@ -53,24 +53,30 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-pyyaml,stage-wheel stage-cython stage-libyaml)
-
 check_stage-pyyaml = $(call pyyaml_check_cmds,stage-pyyaml)
-$(call gen_python_module_rules,stage-pyyaml,\
-                               pyyaml,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-pyyaml)
+
+$(call gen_deps,stage-pyyaml,stage-wheel stage-cython stage-libyaml)
+$(call gen_python_module_rules,stage-pyyaml,pyyaml,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-pyyaml,stage-wheel stage-cython stage-libyaml)
+final-pyyaml_ext_lib_names := _yaml
+
+final-pyyaml_rpath_fixups = \
+	$(addprefix $(python_site_path_comp)/yaml/,\
+	            $(addsuffix $(python_ext_lib_suffix),\
+	                        $(final-pyyaml_ext_lib_names)))
+
+define install_final-pyyaml
+$(call python_module_install_cmds,final-pyyaml,$(PREFIX),$(finaldir))
+$(call fixup_rpath,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-pyyaml_rpath_fixups)),\
+       $(final_lib_path))
+endef
 
 check_final-pyyaml = $(call pyyaml_check_cmds,final-pyyaml)
-$(call gen_python_module_rules,final-pyyaml,\
-                               pyyaml,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-pyyaml)
+
+$(call gen_deps,final-pyyaml,stage-wheel stage-cython stage-libyaml)
+$(call gen_python_module_rules,final-pyyaml,pyyaml,$(PREFIX),$(finaldir))
