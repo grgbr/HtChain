@@ -44,24 +44,19 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-imagesize,stage-wheel)
-
 check_stage-imagesize = $(call imagesize_check_cmds,stage-imagesize)
-$(call gen_python_module_rules,stage-imagesize,\
-                               imagesize,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-imagesize)
+
+$(call gen_deps,stage-imagesize,stage-wheel)
+$(call gen_python_module_rules,stage-imagesize,imagesize,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-imagesize,stage-wheel)
-
 check_final-imagesize = $(call imagesize_check_cmds,final-imagesize)
+
+$(call gen_deps,final-imagesize,stage-wheel)
 $(call gen_python_module_rules,final-imagesize,\
                                imagesize,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-imagesize)
+                               $(finaldir))
