@@ -49,30 +49,27 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-qthelp,stage-wheel)
-$(call gen_check_deps,stage-sphinxcontrib-qthelp,stage-pytest stage-sphinx)
-
 check_stage-sphinxcontrib-qthelp = \
 	$(call sphinxcontrib-qthelp_check_cmds,\
 	       stage-sphinxcontrib-qthelp)
+
+$(call gen_deps,stage-sphinxcontrib-qthelp,stage-wheel)
+$(call gen_check_deps,stage-sphinxcontrib-qthelp,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,stage-sphinxcontrib-qthelp,\
                                sphinxcontrib-qthelp,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinxcontrib-qthelp)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-qthelp,stage-wheel)
-$(call gen_check_deps,final-sphinxcontrib-qthelp,stage-pytest stage-sphinx)
-
 check_final-sphinxcontrib-qthelp = \
 	$(call sphinxcontrib-qthelp_check_cmds,\
 	       final-sphinxcontrib-qthelp)
+
+$(call gen_deps,final-sphinxcontrib-qthelp,stage-wheel)
+$(call gen_check_deps,final-sphinxcontrib-qthelp,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,final-sphinxcontrib-qthelp,\
                                sphinxcontrib-qthelp,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinxcontrib-qthelp)
+                               $(finaldir))
