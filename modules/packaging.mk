@@ -46,25 +46,18 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-packaging = $(call packaging_check_cmds,stage-packaging)
+
 $(call gen_deps,stage-packaging,stage-flit_core)
 $(call gen_check_deps,stage-packaging,stage-pytest stage-pretend)
-
-check_stage-packaging = $(call packaging_check_cmds,stage-packaging)
-$(call gen_python_module_rules,stage-packaging,\
-                               packaging,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-packaging)
+$(call gen_python_module_rules,stage-packaging,packaging,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-packaging = $(call packaging_check_cmds,final-packaging)
+
 $(call gen_deps,final-packaging,stage-flit_core)
 $(call gen_check_deps,final-packaging,stage-pytest stage-pretend)
-
-check_final-packaging = $(call packaging_check_cmds,final-packaging)
-$(call gen_python_module_rules,final-packaging,packaging,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-packaging)
+$(call gen_python_module_rules,final-packaging,packaging,$(PREFIX),$(finaldir))
