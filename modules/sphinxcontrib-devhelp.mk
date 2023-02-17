@@ -48,30 +48,27 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-devhelp,stage-wheel)
-$(call gen_check_deps,stage-sphinxcontrib-devhelp,stage-pytest stage-sphinx)
-
 check_stage-sphinxcontrib-devhelp = \
 	$(call sphinxcontrib-devhelp_check_cmds,\
 	       stage-sphinxcontrib-devhelp)
+
+$(call gen_deps,stage-sphinxcontrib-devhelp,stage-wheel)
+$(call gen_check_deps,stage-sphinxcontrib-devhelp,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,stage-sphinxcontrib-devhelp,\
                                sphinxcontrib-devhelp,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinxcontrib-devhelp)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-devhelp,stage-wheel)
-$(call gen_check_deps,final-sphinxcontrib-devhelp,stage-pytest stage-sphinx)
-
 check_final-sphinxcontrib-devhelp = \
 	$(call sphinxcontrib-devhelp_check_cmds,\
 	       final-sphinxcontrib-devhelp)
+
+$(call gen_deps,final-sphinxcontrib-devhelp,stage-wheel)
+$(call gen_check_deps,final-sphinxcontrib-devhelp,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,final-sphinxcontrib-devhelp,\
                                sphinxcontrib-devhelp,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinxcontrib-devhelp)
+                               $(finaldir))
