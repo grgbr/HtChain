@@ -53,26 +53,32 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-pygments = $(call pygments_check_cmds,stage-pygments)
+
 $(call gen_deps,stage-pygments,stage-wheel)
 $(call gen_check_deps,stage-pygments,stage-pytest stage-wcag-contrast-ratio)
-
-check_stage-pygments = $(call pygments_check_cmds,stage-pygments)
 $(call gen_python_module_rules,stage-pygments,\
                                pygments,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-pygments)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-pygments,stage-wheel)
+final-pygments_shebang_fixups := bin/pygmentize
+
+define install_final-pygments
+$(call python_module_install_cmds,final-pygments,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-pygments_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
 $(call gen_check_deps,final-pygments,stage-pytest stage-wcag-contrast-ratio)
 
+$(call gen_deps,final-pygments,stage-wheel)
 check_final-pygments = $(call pygments_check_cmds,final-pygments)
 $(call gen_python_module_rules,final-pygments,\
                                pygments,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-pygments)
+                               $(finaldir))
