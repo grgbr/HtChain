@@ -64,6 +64,8 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-sphinx = $(call sphinx_check_cmds,stage-sphinx)
+
 $(call gen_deps,stage-sphinx,stage-alabaster \
                              stage-babel \
                              stage-certifi \
@@ -90,17 +92,25 @@ $(call gen_check_deps,stage-sphinx,\
                       stage-html5lib \
                       stage-hypothesis \
                       stage-cython)
-
-check_stage-sphinx = $(call sphinx_check_cmds,stage-sphinx)
-$(call gen_python_module_rules,stage-sphinx,\
-                               sphinx,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinx)
+$(call gen_python_module_rules,stage-sphinx,sphinx,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
+
+final-sphinx_shebang_fixups := bin/sphinx-build \
+                               bin/sphinx-apidoc \
+                               bin/sphinx-autogen \
+                               bin/sphinx-quickstart
+
+define install_final-sphinx
+$(call python_module_install_cmds,final-sphinx,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-sphinx_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
+check_final-sphinx = $(call sphinx_check_cmds,final-sphinx)
 
 $(call gen_deps,final-sphinx,stage-alabaster \
                              stage-babel \
@@ -127,10 +137,4 @@ $(call gen_check_deps,final-sphinx,stage-pytest \
                                    stage-html5lib \
                                    stage-hypothesis \
                                    stage-cython)
-
-check_final-sphinx = $(call sphinx_check_cmds,final-sphinx)
-$(call gen_python_module_rules,final-sphinx,\
-                               sphinx,\
-                               $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinx)
+$(call gen_python_module_rules,final-sphinx,sphinx,$(PREFIX),$(finaldir))
