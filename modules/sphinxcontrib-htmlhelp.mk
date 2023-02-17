@@ -49,32 +49,29 @@ endef
 # Staging definitions
 ################################################################################
 
-$(call gen_deps,stage-sphinxcontrib-htmlhelp,stage-wheel)
-$(call gen_check_deps,stage-sphinxcontrib-htmlhelp,\
-                      stage-pytest stage-sphinx stage-html5lib)
-
 check_stage-sphinxcontrib-htmlhelp = \
 	$(call sphinxcontrib-htmlhelp_check_cmds,\
 	       stage-sphinxcontrib-htmlhelp)
+
+$(call gen_deps,stage-sphinxcontrib-htmlhelp,stage-wheel)
+$(call gen_check_deps,stage-sphinxcontrib-htmlhelp,\
+                      stage-pytest stage-sphinx stage-html5lib)
 $(call gen_python_module_rules,stage-sphinxcontrib-htmlhelp,\
                                sphinxcontrib-htmlhelp,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-sphinxcontrib-htmlhelp)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
-$(call gen_deps,final-sphinxcontrib-htmlhelp,stage-wheel)
-$(call gen_check_deps,final-sphinxcontrib-htmlhelp,\
-                      stage-pytest stage-sphinx stage-html5lib)
-
 check_final-sphinxcontrib-htmlhelp = \
 	$(call sphinxcontrib-htmlhelp_check_cmds,\
 	       final-sphinxcontrib-htmlhelp)
+
+$(call gen_deps,final-sphinxcontrib-htmlhelp,stage-wheel)
+$(call gen_check_deps,final-sphinxcontrib-htmlhelp,\
+                      stage-pytest stage-sphinx stage-html5lib)
 $(call gen_python_module_rules,final-sphinxcontrib-htmlhelp,\
                                sphinxcontrib-htmlhelp,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-sphinxcontrib-htmlhelp)
+                               $(finaldir))
