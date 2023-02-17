@@ -54,22 +54,31 @@ endef
 # Staging definitions
 ################################################################################
 #
+#check_stage-xmlschema = $(call xmlschema_check_cmds,stage-xmlschema)
+#
 #$(call gen_deps,stage-xmlschema,stage-elementpath)
 #$(call gen_check_deps,stage-xmlschema,stage-pytest \
 #                                      stage-jinja2 \
 #                                      stage-coverage \
 #                                      stage-lxml)
-#
-#check_stage-xmlschema = $(call xmlschema_check_cmds,stage-xmlschema)
-#$(call gen_python_module_rules,stage-xmlschema,\
-#                               xmlschema,\
-#                               $(stagedir),\
-#                               ,\
-#                               check_stage-xmlschema)
+#$(call gen_python_module_rules,stage-xmlschema,xmlschema,$(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
+
+final-xmlschema_shebang_fixups := bin/xmlschema-xml2json \
+                                  bin/xmlschema-json2xml \
+                                  bin/xmlschema-validate
+
+define install_final-xmlschema
+$(call python_module_install_cmds,final-xmlschema,$(PREFIX),$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-xmlschema_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
+check_final-xmlschema = $(call xmlschema_check_cmds,final-xmlschema)
 
 $(call gen_deps,final-xmlschema,stage-elementpath)
 $(call gen_check_deps,final-xmlschema,\
@@ -77,9 +86,4 @@ $(call gen_check_deps,final-xmlschema,\
                       stage-jinja2 \
                       stage-coverage \
                       stage-lxml)
-
-check_final-xmlschema = $(call xmlschema_check_cmds,final-xmlschema)
-$(call gen_python_module_rules,final-xmlschema,xmlschema,\
-                                                $(PREFIX),\
-                                                $(finaldir),\
-                                                check_final-xmlschema)
+$(call gen_python_module_rules,final-xmlschema,xmlschema,$(PREFIX),$(finaldir))
