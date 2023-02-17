@@ -60,9 +60,4 @@ $(call gen_dir_rules,pytest-xdist)
 ################################################################################
 
 $(call gen_deps,stage-pytest-xdist,stage-pytest stage-execnet)
-
-$(call gen_python_module_rules,stage-pytest-xdist,\
-                               pytest-xdist,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-pytest-xdist)
+$(call gen_python_module_rules,stage-pytest-xdist,pytest-xdist,$(stagedir))
