@@ -61,25 +61,23 @@ endef
 # Staging definitions
 ################################################################################
 
+check_stage-jinja2 = $(call jinja2_check_cmds,stage-jinja2)
+
 $(call gen_deps,stage-jinja2,stage-wheel stage-markupsafe)
 $(call gen_check_deps,stage-jinja2,stage-jinja2 stage-pytest)
-
-check_stage-jinja2 = $(call jinja2_check_cmds,stage-jinja2)
 $(call gen_python_module_rules,stage-jinja2,\
                                jinja2,\
-                               $(stagedir),\
-                               ,\
-                               check_stage-jinja2)
+                               $(stagedir))
 
 ################################################################################
 # Final definitions
 ################################################################################
 
+check_final-jinja2 = $(call jinja2_check_cmds,final-jinja2)
+
 $(call gen_deps,final-jinja2,stage-wheel stage-markupsafe)
 $(call gen_check_deps,final-jinja2,stage-jinja2 stage-pytest)
-
-check_final-jinja2 = $(call jinja2_check_cmds,final-jinja2)
-$(call gen_python_module_rules,final-jinja2,jinja2,\
+$(call gen_python_module_rules,final-jinja2,\
+                               jinja2,\
                                $(PREFIX),\
-                               $(finaldir),\
-                               check_final-jinja2)
+                               $(finaldir))
