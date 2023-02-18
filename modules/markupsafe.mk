@@ -56,6 +56,20 @@ $(call gen_python_module_rules,stage-markupsafe,\
 # Final definitions
 ################################################################################
 
+final-markupsafe_ext_lib_names := _speedups
+
+final-markupsafe_rpath_fixups = \
+	$(addprefix $(python_site_path_comp)/markupsafe/,\
+	            $(addsuffix $(python_ext_lib_suffix),\
+	                        $(final-markupsafe_ext_lib_names)))
+
+define install_final-markupsafe
+$(call python_module_install_cmds,final-markupsafe,$(PREFIX),$(finaldir))
+$(call fixup_rpath,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-markupsafe_rpath_fixups)),\
+       $(final_lib_path))
+endef
+
 check_final-markupsafe = $(call markupsafe_check_cmds,final-markupsafe)
 
 $(call gen_deps,final-markupsafe,stage-wheel)
