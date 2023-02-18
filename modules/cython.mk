@@ -64,7 +64,7 @@ $(call gen_python_module_rules,stage-cython,\
 # Final definitions
 ################################################################################
 
-final-cython_shebang_fixups := \
+final-cython_shebang_fixups = \
 	bin/cython \
 	bin/cythonize \
 	bin/cygdb \

@@ -75,21 +75,21 @@ $(call gen_python_module_rules,stage-cheetah3,\
 # Final definitions
 ################################################################################
 
-final-cheetah3_shebang_fixups := bin/cheetah \
-                                 bin/cheetah-compile \
-                                 bin/cheetah-analyze \
-                                 $(addprefix $(python_site_path_comp)/,\
-                                             Cheetah/Filters.py \
-                                             Cheetah/Version.py \
-                                             Cheetah/DirectiveAnalyzer.py \
-                                             Cheetah/Templates/SkeletonPage.py \
-                                             Cheetah/Tests/Performance.py \
-                                             Cheetah/Tests/Test.py \
-                                             Cheetah/Tests/CheetahWrapper.py \
-                                             Cheetah/NameMapper.py \
-                                             Cheetah/Tools/SiteHierarchy.py \
-                                             Cheetah/Servlet.py \
-                                             Cheetah/CheetahWrapper.py)
+final-cheetah3_shebang_fixups = bin/cheetah \
+                                bin/cheetah-compile \
+                                bin/cheetah-analyze \
+                                $(addprefix $(python_site_path_comp)/,\
+                                            Cheetah/Filters.py \
+                                            Cheetah/Version.py \
+                                            Cheetah/DirectiveAnalyzer.py \
+                                            Cheetah/Templates/SkeletonPage.py \
+                                            Cheetah/Tests/Performance.py \
+                                            Cheetah/Tests/Test.py \
+                                            Cheetah/Tests/CheetahWrapper.py \
+                                            Cheetah/NameMapper.py \
+                                            Cheetah/Tools/SiteHierarchy.py \
+                                            Cheetah/Servlet.py \
+                                            Cheetah/CheetahWrapper.py)
 
 final-cheetah3_ext_lib_names := _namemapper
 

@@ -180,7 +180,7 @@ config_final-python    = $(call python_config_cmds,final-python,\
 build_final-python     = $(call python_build_cmds,final-python)
 clean_final-python     = $(call python_clean_cmds,final-python)
 
-final-python_shebang_fixups := \
+final-python_shebang_fixups = \
 	$(addprefix $(python_site_path_comp)/,\
 	            ../smtpd.py \
 	            pip/_vendor/distro/distro.py \

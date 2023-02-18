@@ -32,10 +32,10 @@ $(call gen_xtract_rules,meson,xtract_meson)
 
 $(call gen_dir_rules,meson)
 
-meson_shebang_fixups := bin/meson \
-                        $(addprefix $(python_site_path_comp)/,\
-                                    mesonbuild/scripts/cmake_run_ctgt.py \
-                                    mesonbuild/rewriter.py)
+meson_shebang_fixups = bin/meson \
+                       $(addprefix $(python_site_path_comp)/,\
+                                   mesonbuild/scripts/cmake_run_ctgt.py \
+                                   mesonbuild/rewriter.py)
 
 define meson_run_tests
 cd $(builddir)/$(strip $(1)) && \
