@@ -15,12 +15,6 @@ UNZIP   := unzip
 ECHOE   := /bin/echo -e
 SED     := sed
 
-empty :=
-
-comma := ,
-
-space := $(empty) $(empty)
-
 mach_bits      := $(shell $(scriptdir)/mach_bits.sh \
                           '$(BUILD_CC) $(BUILD_CFLAGS)')
 mach_is_64bits := $(filter 64,$(mach_bits))

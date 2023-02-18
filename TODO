@@ -35,8 +35,6 @@ TODO:
 
 * help message(s) !!
 * complete documentation
-* include major version into default final prefix
-* include htchain version into default package version for toolchain (mainly gcc suite)
 * doxygen: xapian support for doxygen search engine ?
 * curl: enable support for: libidn2, libpsl, libgsasl and ldap ?
 * openssl imagesize sphinx urllib3: replace SSL_CERT_DIR usage by a link from

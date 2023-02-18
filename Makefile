@@ -1,6 +1,5 @@
 OUTDIR   := $(CURDIR)/out
 FETCHDIR := $(OUTDIR)/fetch
-PREFIX   := /opt/htchain
 DESTDIR  :=
 PKGNAME  := HtChain
 DEBDIST  :=
@@ -61,11 +60,14 @@ TOPDIR            := $(CURDIR)
 override OUTDIR   := $(strip $(OUTDIR))
 override PATCHDIR := $(strip $(TOPDIR)/patches)
 override FETCHDIR := $(strip $(FETCHDIR))
-override PREFIX   := $(strip $(PREFIX))
 override DESTDIR  := $(strip $(DESTDIR))
 override DEBDIST  := $(strip $(DEBDIST))
 override DEBORIG  := $(strip $(DEBORIG))
 override DEBMAIL  := $(strip $(DEBMAIL))
+
+empty :=
+comma := ,
+space := $(empty) $(empty)
 
 ifeq ($(strip $(JOBS)),)
 # Compute number of available CPUs.
@@ -102,15 +104,20 @@ finaldir        := $(outdir)/final
 debdir          := $(outdir)/debian
 # Base timestamps directory location
 stampdir        := $(outdir)/stamp
-# Location where to find various script utilities
-scriptdir       := $(TOPDIR)/scripts
 # Location where to find various testing utilities
 testdir         := $(TOPDIR)/test
+# Location where to find various script utilities
+scriptdir       := $(TOPDIR)/scripts
 # HtChain version
 version         := $(shell $(scriptdir)/localversion.sh "$(TOPDIR)")
 # HtChain package version string
 pkgvers         := $(PKGNAME) $(version)
 pkgurl          := $(PREFIX)/share/doc/$(PKGNAME)/README.Bugs
+
+# Final insatll prefix. Default value include version to support multiple
+# HtChain installs.
+PREFIX          ?= /opt/htchain/htchain-$(word 1,$(subst .,$(space),$(version)))
+override PREFIX := $(strip $(PREFIX))
 
 o_flags     := -O%
 ssp_flags   := -fstack-protector% -fstack-clash-protection
@@ -425,6 +432,10 @@ clobber-final:
 .PHONY: list
 list:
 	@$(foreach t,$(sort $(all_targets)),echo $(t);)
+
+.PHONY: show-version
+show-version:
+	@echo $(version)
 
 .PHONY: all
 all: final
