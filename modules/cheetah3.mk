@@ -91,11 +91,21 @@ final-cheetah3_shebang_fixups := bin/cheetah \
                                              Cheetah/Servlet.py \
                                              Cheetah/CheetahWrapper.py)
 
+final-cheetah3_ext_lib_names := _namemapper
+
+final-cheetah3_rpath_fixups = \
+	$(addprefix $(python_site_path_comp)/Cheetah/,\
+	            $(addsuffix $(python_ext_lib_suffix),\
+	                        $(final-cheetah3_ext_lib_names)))
+
 define install_final-cheetah3
 $(call python_module_install_cmds,final-cheetah3,$(PREFIX),$(finaldir))
 $(call fixup_shebang,\
        $(addprefix $(finaldir)$(PREFIX)/,$(final-cheetah3_shebang_fixups)),\
        $(PREFIX)/bin/python)
+$(call fixup_rpath,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-cheetah3_rpath_fixups)),\
+       $(final_lib_path))
 endef
 
 check_final-cheetah3 = $(call cheetah3_check_cmds,final-cheetah3)
