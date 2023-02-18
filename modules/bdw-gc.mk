@@ -142,6 +142,16 @@ config_final-bdw-gc       = $(call bdw-gc_config_cmds,\
 build_final-bdw-gc        = $(call bdw-gc_build_cmds,final-bdw-gc)
 clean_final-bdw-gc        = $(call bdw-gc_clean_cmds,final-bdw-gc)
 install_final-bdw-gc      = $(call bdw-gc_install_cmds,final-bdw-gc,$(finaldir))
+
+final-bdw-gc_rpath_fixups := lib/libgccpp.so lib/libgctba.so
+
+define install_final-bdw-gc
+$(call bdw-gc_install_cmds,final-bdw-gc,$(finaldir))
+$(call fixup_rpath,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-bdw-gc_rpath_fixups)),\
+       $(final_lib_path))
+endef
+
 uninstall_final-bdw-gc    = $(call bdw-gc_uninstall_cmds,final-bdw-gc,\
                                                          $(PREFIX),\
                                                          $(finaldir))
