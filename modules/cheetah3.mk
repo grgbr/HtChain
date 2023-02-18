@@ -110,7 +110,7 @@ endef
 
 check_final-cheetah3 = $(call cheetah3_check_cmds,final-cheetah3)
 
-$(call gen_deps,final-cheetah3,stage-markdown stage-pygments)
+$(call gen_deps,final-cheetah3,stage-markdown stage-pygments stage-chrpath)
 $(call gen_check_deps,final-cheetah3,stage-cheetah3)
 $(call gen_python_module_rules,final-cheetah3,\
                                cheetah3,\

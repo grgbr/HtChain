@@ -100,7 +100,7 @@ endef
 
 check_final-cython = $(call cython_check_cmds,final-cython)
 
-$(call gen_deps,final-cython,stage-python)
+$(call gen_deps,final-cython,stage-python stage-chrpath)
 $(call gen_python_module_rules,final-cython,\
                                cython,\
                                $(PREFIX),\

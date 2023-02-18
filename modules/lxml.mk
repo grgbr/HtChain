@@ -89,6 +89,9 @@ endef
 
 check_final-lxml = $(call lxml_check_cmds,final-lxml)
 
-$(call gen_deps,final-lxml,stage-wheel stage-libxml2 stage-libxslt)
+$(call gen_deps,final-lxml,stage-wheel \
+                           stage-libxml2 \
+                           stage-libxslt \
+                           stage-chrpath)
 $(call gen_check_deps,final-lxml,stage-pytest)
 $(call gen_python_module_rules,final-lxml,lxml,$(PREFIX),$(finaldir))

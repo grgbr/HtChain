@@ -78,5 +78,8 @@ endef
 
 check_final-pyyaml = $(call pyyaml_check_cmds,final-pyyaml)
 
-$(call gen_deps,final-pyyaml,stage-wheel stage-cython stage-libyaml)
+$(call gen_deps,final-pyyaml,stage-wheel \
+                             stage-cython \
+                             stage-libyaml \
+                             stage-chrpath)
 $(call gen_python_module_rules,final-pyyaml,pyyaml,$(PREFIX),$(finaldir))

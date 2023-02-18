@@ -133,7 +133,7 @@ bdw-gc_final_config_args := $(bdw-gc_common_config_args) \
                             --enable-docs \
                             $(call final_config_flags,$(rpath_flags))
 
-$(call gen_deps,final-bdw-gc,stage-gcc)
+$(call gen_deps,final-bdw-gc,stage-gcc stage-chrpath)
 
 config_final-bdw-gc       = $(call bdw-gc_config_cmds,\
                                    final-bdw-gc,\

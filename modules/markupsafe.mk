@@ -72,7 +72,7 @@ endef
 
 check_final-markupsafe = $(call markupsafe_check_cmds,final-markupsafe)
 
-$(call gen_deps,final-markupsafe,stage-wheel)
+$(call gen_deps,final-markupsafe,stage-wheel stage-chrpath)
 $(call gen_check_deps,final-markupsafe,stage-markupsafe stage-pytest)
 $(call gen_python_module_rules,final-markupsafe,\
                                markupsafe,\
