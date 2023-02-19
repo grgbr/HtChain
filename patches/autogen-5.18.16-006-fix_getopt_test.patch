@@ -1,0 +1,16 @@
+# When built with --with-packager options, getopt.test fails because of a wrong
+# sed statement used to remove packager string at final result comparison time.
+#
+# Refine the statement to prevent from removing the whole line containing the
+# packager string.
+--- a/autoopts/test/getopt.test	2023-02-19 16:49:23.444800073 +0100
++++ b/autoopts/test/getopt.test	2023-02-19 16:44:25.204254248 +0100
+@@ -42,7 +42,7 @@
+     failure "could not compile ${testname}1-getopt.c"
+ 
+   ${SED} "${sed_omit_license}"'
+-	/Packaged by /d
++	s@Packaged by[^)]*)@@
+ 	s@^Report .* bugs to.*"@\\n"@
+ 	s@^Please send bug.*"@\\n"@
+ 	s@\\n\\n\\n\\$@\\n\\n\\@

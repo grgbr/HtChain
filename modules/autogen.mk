@@ -37,6 +37,18 @@ $(call untar,$(srcdir)/autogen,\
              --strip-components=1)
 cd $(srcdir)/autogen && \
 patch -p1 < $(PATCHDIR)/autogen-5.18.16-000-guile_3.patch
+cd $(srcdir)/autogen && \
+patch -p1 < $(PATCHDIR)/autogen-5.18.16-001-fix_ag_macros_m4_syntax.patch
+cd $(srcdir)/autogen && \
+patch -p1 < $(PATCHDIR)/autogen-5.18.16-002-catch_race_error.patch
+cd $(srcdir)/autogen && \
+patch -p1 < $(PATCHDIR)/autogen-5.18.16-003-fix_gcc9_wrestrict.patch
+cd $(srcdir)/autogen && \
+patch -p1 < $(PATCHDIR)/autogen-5.18.16-004-fix_sprintf_overflow.patch
+cd $(srcdir)/autogen && \
+patch -p1 < $(PATCHDIR)/autogen-5.18.16-005-avoid_gcc_code_analysis_bug.patch
+cd $(srcdir)/autogen && \
+patch -p1 < $(PATCHDIR)/autogen-5.18.16-006-fix_getopt_test.patch
 endef
 $(call gen_xtract_rules,autogen,xtract_autogen)
 
@@ -99,13 +111,17 @@ endef
 
 # $(1): targets base name / module name
 define autogen_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         check \
+         PATH='$(stagedir)/bin:$(PATH)' \
+         LD_LIBRARY_PATH='$(stage_lib_path)'
 endef
 
 autogen_common_config_args := --enable-silent-rules \
                               --disable-rpath \
                               --enable-shared \
                               --enable-static \
+                              --enable-timeout=78 \
                               --with-libxml2 \
                               --with-packager='$(PKGNAME)' \
                               --with-packager-version='$(version)' \
