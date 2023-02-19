@@ -93,7 +93,10 @@ endef
 
 # $(1): targets base name / module name
 define bison_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         check \
+         PATH='$(stagedir)/bin:$(PATH)' \
+         LD_LIBRARY_PATH='$(stage_lib_path)'
 endef
 
 bison_common_config_args := --enable-silent-rules \
