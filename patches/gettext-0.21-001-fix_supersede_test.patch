@@ -1,0 +1,25 @@
+# Supersede tests fail when /nonexistent directory exists and are not accessible
+# (on Debian for example). Fix this by adding the EACCES errno code to the list
+# of acceptable error code into testing assertions.
+--- a/gettext-tools/gnulib-tests/test-supersede-open.h	2023-02-19 17:42:18.843899816 +0100
++++ b/gettext-tools/gnulib-tests/test-supersede-open.h	2023-02-19 17:42:44.579600254 +0100
+@@ -247,7 +247,7 @@
+                           supersede_if_exists, supersede_if_does_not_exist,
+                           &action);
+         ASSERT (fd < 0);
+-        ASSERT (errno == ENOENT);
++        ASSERT (errno == ENOENT || errno == EACCES);
+ 
+         ASSERT (stat (linkname, &statbuf) < 0);
+ 
+--- a/gettext-tools/gnulib-tests/test-supersede-fopen.h	2023-02-19 17:43:42.030931539 +0100
++++ b/gettext-tools/gnulib-tests/test-supersede-fopen.h	2023-02-19 17:44:11.562587808 +0100
+@@ -250,7 +250,7 @@
+                            supersede_if_exists, supersede_if_does_not_exist,
+                            &action);
+         ASSERT (fp == NULL);
+-        ASSERT (errno == ENOENT);
++        ASSERT (errno == ENOENT || errno == EACCES);
+ 
+         ASSERT (stat (linkname, &statbuf) < 0);
+ 

@@ -31,6 +31,8 @@ $(call untar,$(srcdir)/gettext,\
              --strip-components=1)
 cd $(srcdir)/gettext && \
 patch -p1 < $(PATCHDIR)/gettext-0.21-000-update_test_for_changed_libunistring_line_breaking_behaviour.patch
+cd $(srcdir)/gettext && \
+patch -p1 < $(PATCHDIR)/gettext-0.21-001-fix_supersede_test.patch
 endef
 $(call gen_xtract_rules,gettext,xtract_gettext)
 
@@ -77,7 +79,9 @@ endef
 
 # $(1): targets base name / module name
 define gettext_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         check \
+         PATH='$(stagedir)/bin:$(PATH)'
 endef
 
 gettext_common_config_args := --enable-silent-rules \
@@ -153,7 +157,8 @@ $(call gen_deps,final-gettext,stage-bzip2 \
                               stage-pkg-config \
                               stage-perl \
                               stage-python \
-                              stage-chrpath)
+                              stage-chrpath \
+                              stage-texinfo)
 
 config_final-gettext    = $(call gettext_config_cmds,\
                                  final-gettext,\
