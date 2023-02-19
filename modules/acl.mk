@@ -137,7 +137,7 @@ acl_final_config_args := $(acl_common_config_args) \
                          $(final_config_flags) \
                          LT_SYS_LIBRARY_PATH='$(stagedir)/lib'
 
-$(call gen_deps,final-acl,stage-attr)
+$(call gen_deps,final-acl,stage-attr stage-gettext)
 $(call gen_check_deps,final-acl,stage-perl)
 
 config_final-acl       = $(call acl_config_cmds,final-acl,\
