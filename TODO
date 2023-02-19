@@ -1,3 +1,15 @@
+Test review:
+============
+
+final-cython fails
+final-docutils fails
+final-gcc fails
+final-libffi fails
+final-libtool fails
+final-meson fails
+final-python (because of missing gdb) fails
+all stage test ??
+
 Fix:
 ====
 * fix guile linking to system-wide libgmp !!
