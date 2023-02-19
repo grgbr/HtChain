@@ -77,7 +77,9 @@ endef
 
 # $(1): targets base name / module name
 define make_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         check \
+         LD_LIBRARY_PATH='$(stage_lib_path)'
 endef
 
 ################################################################################
@@ -115,13 +117,15 @@ endef
 
 make_final_config_args := --enable-silent-rules \
                           --enable-nls \
+                          --with-guile \
                           $(call final_config_flags,$(rpath_flags))
 
 $(call gen_deps,final-make,stage-gcc \
                            stage-texinfo \
                            stage-perl \
                            stage-pkg-config \
-                           stage-gettext)
+                           stage-gettext \
+                           stage-guile)
 
 config_final-make       = $(call make_config_cmds,final-make,\
                                                   $(PREFIX),\
