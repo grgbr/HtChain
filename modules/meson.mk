@@ -101,7 +101,7 @@ define install_stage-meson
 $(call python_module_install_cmds,stage-meson,$(stagedir))
 $(call fixup_shebang,\
        $(addprefix $(stagedir)/,$(meson_shebang_fixups)),\
-       $(PREFIX)/bin/python)
+       $(stagedir)/bin/python)
 endef
 
 check_stage-meson = $(call meson_check_cmds,stage-meson)
