@@ -102,9 +102,20 @@ $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
 # $(1): targets base name / module name
+#
+# Setup TMPDIR environment variable to make testing targets generate output into
+# it.
+# In addition, as bsdtar tests make assumption of a 0022 umask we must give the
+# test runner script (found into makefiles) a way to set the proper expected
+# umask. The bsdtar tests fail otherwise. This is done by overriding the
+# AM_TESTS_ENVIRONMENT make variable.
 define libarchive_check_cmds
-+env LD_LIBRARY_PATH="$(stage_lib_path)" \
- $(MAKE) --directory $(builddir)/$(strip $(1)) check
+$(call mkdir,$(builddir)/$(strip $(1))/tmp)
++env LD_LIBRARY_PATH='$(stage_lib_path)' \
+ $(MAKE) --directory $(builddir)/$(strip $(1)) \
+         check \
+         TMPDIR='$(builddir)/$(strip $(1))/tmp' \
+         AM_TESTS_ENVIRONMENT='umask 0022;'
 endef
 
 libarchive_common_config_args := --enable-silent-rules \
