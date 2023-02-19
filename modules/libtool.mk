@@ -126,7 +126,7 @@ $(call gen_dir_rules,stage-libtool)
 libtool_final_config_args := $(libtool_common_config_args) \
                              $(call final_config_flags,-DNDEBUG% $(rpath_flags))
 
-$(call gen_deps,final-libtool,stage-automake stage-m4)
+$(call gen_deps,final-libtool,stage-automake stage-m4 stage-libtool)
 
 config_final-libtool    = $(call libtool_config_cmds,\
                                  final-libtool,\
