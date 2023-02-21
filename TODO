@@ -2,7 +2,6 @@ Test review:
 ============
 
 final-cython fails
-final-docutils fails
 final-gcc fails
 final-libffi fails
 final-libtool fails

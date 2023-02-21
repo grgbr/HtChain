@@ -32,6 +32,8 @@ $(call rmrf,$(srcdir)/docutils)
 $(call untar,$(srcdir)/docutils,\
              $(FETCHDIR)/$(docutils_dist_name),\
              --strip-components=1)
+cd $(srcdir)/docutils && \
+patch -p1 < $(PATCHDIR)/docutils-0.19-000-sphinx_6_support.patch
 endef
 $(call gen_xtract_rules,docutils,xtract_docutils)
 
@@ -43,7 +45,16 @@ cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
+    LC_ALL=C \
 $(stage_python) -s $(builddir)/$(strip $(1))/test/alltests.py --verbose
+cd $(builddir)/$(strip $(1)) && \
+env PATH="$(stagedir)/bin:$(PATH)" \
+    LD_LIBRARY_PATH="$(stage_lib_path)" \
+    PYTHONPATH="$(builddir)/$(strip $(1))" \
+    LC_ALL=C \
+$(stage_python) -s \
+                $(builddir)/$(strip $(1))/tools/test/test_buildhtml.py \
+                --verbose
 endef
 
 ################################################################################
@@ -52,7 +63,7 @@ endef
 
 check_stage-docutils = $(call docutils_check_cmds,stage-docutils)
 
-$(call gen_deps,stage-docutils,stage-wheel)
+$(call gen_deps,stage-docutils,stage-wheel stage-lxml stage-pygments)
 $(call gen_python_module_rules,stage-docutils,docutils,$(stagedir))
 
 ################################################################################
@@ -81,7 +92,7 @@ endef
 
 check_final-docutils = $(call docutils_check_cmds,final-docutils)
 
-$(call gen_deps,final-docutils,stage-wheel)
+$(call gen_deps,final-docutils,stage-wheel stage-lxml stage-pygments)
 $(call gen_python_module_rules,final-docutils,\
                                docutils,\
                                $(PREFIX),\

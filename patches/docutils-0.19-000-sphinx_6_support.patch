@@ -1,0 +1,188 @@
+Index: docutils-0.19/test/test_parsers/test_rst/test_directives/test_code.py
+===================================================================
+--- docutils-0.19.orig/test/test_parsers/test_rst/test_directives/test_code.py
++++ docutils-0.19/test/test_parsers/test_rst/test_directives/test_code.py
+@@ -145,28 +145,35 @@ totest['code-parsing'] = [
+             my_function
+         <inline classes="punctuation">
+             ():
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+              8 \n\
+-            \n\
++        <inline classes="whitespace">
++                \n\
+         <inline classes="literal string doc">
+             \'\'\'Test the lexer.
+         <inline classes="ln">
+              9 \n\
+         <inline classes="literal string doc">
+                 \'\'\'
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             10 \n\
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             11 \n\
++        <inline classes="whitespace">
+             \n\
+         <inline classes="comment single">
+             # and now for something completely different
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             12 \n\
++        <inline classes="whitespace">
+             \n\
+         <inline classes="name builtin">
+             print
+Index: docutils-0.19/test/test_parsers/test_rst/test_directives/test_code_long.py
+===================================================================
+--- docutils-0.19.orig/test/test_parsers/test_rst/test_directives/test_code_long.py
++++ docutils-0.19/test/test_parsers/test_rst/test_directives/test_code_long.py
+@@ -48,28 +48,35 @@ totest['code-parsing-long'] = [
+             my_function
+         <inline classes="punctuation">
+             ():
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+              8 \n\
+-            \n\
++        <inline classes="whitespace">
++                \n\
+         <inline classes="literal string doc">
+             \'\'\'Test the lexer.
+         <inline classes="ln">
+              9 \n\
+         <inline classes="literal string doc">
+                 \'\'\'
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             10 \n\
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             11 \n\
++        <inline classes="whitespace">
+             \n\
+         <inline classes="comment single">
+             # and now for something completely different
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             12 \n\
++        <inline classes="whitespace">
+             \n\
+         <inline classes="name builtin">
+             print
+Index: docutils-0.19/test/test_parsers/test_rst/test_directives/test_include.py
+===================================================================
+--- docutils-0.19.orig/test/test_parsers/test_rst/test_directives/test_include.py
++++ docutils-0.19/test/test_parsers/test_rst/test_directives/test_include.py
+@@ -1053,7 +1053,8 @@ Included code
+         <inline classes="generic heading">
+             -----------
+         \n\
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         This file is used by \n\
+         <inline classes="literal string">
+             ``test_include.py``
+@@ -1083,9 +1084,11 @@ Included code
+         \n\
+         <inline classes="ln">
+             3 \n\
+-        \n\
++        <inline classes="whitespace">
++            \n\
+         <inline classes="ln">
+             4 \n\
++        <inline classes="whitespace">
+         This file is used by \n\
+         <inline classes="literal string">
+             ``test_include.py``
+@@ -1112,10 +1115,18 @@ TAB expansion with included code:
+         <inline classes="name variable">
+             `up`
+         .
++        <inline classes="whitespace">
++            \n\
+                 <- leading raw tab.
+-        \n\
++        <inline classes="whitespace">
++            \n\
++            \n\
+         Newlines
++        <inline classes="whitespace">
++            \n\
+         are
++        <inline classes="whitespace">
++            \n\
+         normalized.
+ """ % include_literal],
+ ["""\
+@@ -1140,10 +1151,18 @@ Custom TAB expansion with included code:
+         <inline classes="name variable">
+             `up`
+         .
++        <inline classes="whitespace">
++            \n\
+           <- leading raw tab.
+-        \n\
++        <inline classes="whitespace">
++            \n\
++            \n\
+         Newlines
++        <inline classes="whitespace">
++            \n\
+         are
++        <inline classes="whitespace">
++            \n\
+         normalized.
+ """ % include_literal],
+ ["""\
+@@ -1168,10 +1187,18 @@ Custom TAB expansion with included code:
+         <inline classes="name variable">
+             `up`
+         .
++        <inline classes="whitespace">
++            \n\
+         \t<- leading raw tab.
+-        \n\
++        <inline classes="whitespace">
++            \n\
++            \n\
+         Newlines
++        <inline classes="whitespace">
++            \n\
+         are
++        <inline classes="whitespace">
++            \n\
+         normalized.
+ """ % include_literal],
+ ["""\
+@@ -1187,7 +1214,9 @@ Including includes/include14.txt
+         Including more/include6.txt as rst-code from includes/include14.txt:
+     <literal_block classes="code rst" source="%s" xml:space="preserve">
+         In includes/more/include6.txt
+-        \n\
++        <inline classes="whitespace">
++            \n\
++            \n\
+         <inline classes="punctuation">
+             ..
+          \n\
