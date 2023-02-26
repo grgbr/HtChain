@@ -53,6 +53,8 @@ endef
 # * platform-linux/6 subdir include order: requires a glib2 development install
 # * platform-linux/9 compiler checks with dependencies: requires a glib2
 #                                                       development install
+# * skip "platform-linux/13 cmake dependency" run_project_tests.py test since
+#   flaky: see https://github.com/mesonbuild/meson/issues/10104
 define meson_check_cmds
 $(call meson_run_tests,$(1),run_meson_command_tests.py)
 $(call meson_run_tests,$(1),\
@@ -83,7 +85,6 @@ $(call meson_run_tests,$(1),\
                               "platform-linux/10 large file support" \
                               "platform-linux/11 runpath rpath ldlibrarypath" \
                               "platform-linux/12 subprojects in subprojects" \
-                              "platform-linux/13 cmake dependency" \
                               "platform-linux/14 static dynamic linkage" \
                               "platform-linux/15 ld binary" \
                               python3 \
