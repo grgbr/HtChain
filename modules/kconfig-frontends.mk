@@ -47,8 +47,13 @@ $(call gen_dir_rules,kconfig-frontends)
 # $(1): targets base name / module name
 # $(2): build / install prefix
 # $(3): configure arguments
+#
+# $(srcdir)/kconfig-frontends/scripts/.autostuff must be created beforehand.
+# autoreconf run will fail otherwise: see debian rules located into
+# <kconfig-frontends>/debian/rules file.
 define kconfig-frontends_config_cmds
 if [ ! -f "$(srcdir)/kconfig-frontends/configure" ]; then \
+	mkdir -p $(srcdir)/kconfig-frontends/scripts/.autostuff; \
 	cd $(srcdir)/kconfig-frontends && \
 	PATH="$(stagedir)/bin:$(PATH)" \
 	$(stagedir)/bin/autoreconf --install --force; \
