@@ -4,7 +4,8 @@ Test review:
 final-cython fails
 final-gcc fails
 final-libtool fails
-final-python (because of missing gdb) fails
+final-python fails (test_find_library_with_ld fails)
+gdb test fails
 all stage test ??
 
 Fix:
@@ -49,7 +50,6 @@ TODO:
 * openssl imagesize sphinx urllib3: replace SSL_CERT_DIR usage by a link from
   <stagedir and finaldir>/etc/ssl/certs to system-wide /etc/ssl/certs
 * nghttp2 ?
-* gdb
 * pandoc
 * gtk-doc: for util-linux
 * po4a: for util-linux
@@ -60,3 +60,5 @@ TODO:
 * certifi: apply debian patch https://salsa.debian.org/debian/python-certifi/-/blob/debian/master/debian/patches/0001-Use-Debian-provided-etc-ssl-certs-ca-certificates.crt.patch
            to get certificates from system-wide ca-certificates package
 	   (/etc/ssl/certs)
+* gdb: enable support for libipt, --with-xxhash, --with-babeltrace,
+              --enable-source-highlight

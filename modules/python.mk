@@ -94,7 +94,9 @@ endef
 
 # $(1): targets base name / module name
 define python_check_cmds
-$(MAKE) -j1 --directory $(builddir)/$(strip $(1)) test
++env PATH='$(stagedir)/bin:$(PATH)' \
+     LD_LIBRARY_PATH='$(stage_lib_path)' \
+     $(MAKE) -j1 --directory $(builddir)/$(strip $(1)) test
 endef
 
 python_common_config_args := --enable-shared \
@@ -133,6 +135,7 @@ $(call gen_deps,stage-python,stage-readline \
                              stage-sqlite \
                              stage-bzip2 \
                              stage-xz-utils)
+$(call gen_check_deps,stage-python,stage-gdb)
 
 config_stage-python    = $(call python_config_cmds,stage-python,\
                                                    $(stagedir),\
@@ -173,6 +176,7 @@ $(call gen_deps,final-python,stage-readline \
                              stage-bzip2 \
                              stage-xz-utils \
                              stage-tcl)
+$(call gen_check_deps,final-python,stage-gdb)
 
 config_final-python    = $(call python_config_cmds,final-python,\
                                                    $(PREFIX),\
