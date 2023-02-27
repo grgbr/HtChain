@@ -3,6 +3,45 @@
 #
 # Read the <gdb>/gdb/README file for in-depth explanations about how to build
 # gdb !
+#
+# Review tests failures:
+# =====================
+#
+#$ find out/current/build/stage-gdb/gdb  -name "*.sum" -exec grep 'unexpected failures' {} \; -print
+## of unexpected failures	1
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.reverse/finish-precsave/gdb.sum
+## of unexpected failures	6
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.mi/mi-breakpoint-multiple-locations/gdb.sum
+## of unexpected failures	11
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.mi/mi-reverse/gdb.sum
+## of unexpected failures	2
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.opt/clobbered-registers-O2/gdb.sum
+## of unexpected failures	1
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/valgrind-disp-step/gdb.sum
+## of unexpected failures	41
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/ctf-ptype/gdb.sum
+## of unexpected failures	56
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/ctf-constvars/gdb.sum
+## of unexpected failures	1
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/valgrind-infcall/gdb.sum
+## of unexpected failures	2
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/longjmp/gdb.sum
+## of unexpected failures	1
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/valgrind-bt/gdb.sum
+## of unexpected failures	1
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.cp/no-dmgl-verbose/gdb.sum
+## of unexpected failures	2
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.python/py-breakpoint/gdb.sum
+## of unexpected failures	3
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus-nested/gdb.sum
+## of unexpected failures	2
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus-virtual/gdb.sum
+## of unexpected failures	5
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus/gdb.sum
+## of unexpected failures	32
+#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus-method/gdb.sum
+## of unexpected failures	167
+#out/current/build/stage-gdb/gdb/testsuite/gdb.sum
 ################################################################################
 
 gdb_dist_url  := https://ftp.gnu.org/gnu/gdb/gdb-12.1.tar.xz
@@ -57,7 +96,8 @@ $(call gen_dir_rules,gdb)
 # $(3): configure arguments
 define gdb_config_cmds
 cd $(builddir)/$(strip $(1)) && \
-$(srcdir)/gdb/configure --prefix='$(strip $(2))' $(3) $(verbose)
+env PATH='$(stagedir)/bin:$(PATH)' \
+    $(srcdir)/gdb/configure --prefix='$(strip $(2))' $(3) $(verbose)
 endef
 
 # $(1): targets base name / module name
@@ -106,33 +146,55 @@ endef
 
 # $(1): targets base name / module name
 define gdb_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) \
-         check \
-         PATH='$(stagedir)/bin:$(PATH)' \
-         LD_LIBRARY_PATH='$(stage_lib_path)'
++env PATH='$(stagedir)/bin:$(PATH)' \
+     LD_LIBRARY_PATH='$(stage_lib_path)' \
+     $(MAKE) --directory $(builddir)/$(strip $(1)) check-gdb
 endef
 
+# Note how pkg-config is given to --with-guile option: this is expected (see
+# --help option to <gdb>/gdb/configure script).
 gdb_common_config_args := --enable-silent-rules \
-                          --enable-ld=yes \
-                          --enable-gprofng=yes \
-                            --enable-threads=posix \
-                            --disable-assert
+                          --with-pkgversion='$(pkgvers)' \
+                          --with-bugurl='$(pkgurl)' \
+                          --enable-plugins \
+                          --disable-gdbtk \
+                          --enable-threading \
+                          --enable-64-bit-bfd \
+                          --enable-tui \
+                          --with-curses \
+                          --with-system-readline \
+                          --with-system-zlib \
+                          --with-expat \
+                          --with-lzma \
+                          --with-libgmp-prefix='$(stagedir)' \
+                          --with-mpfr-prefix='$(stagedir)' \
+                          --with-python='$(stage_python)' \
+                          --with-guile='$(stage_pkg-config)' \
+                          --enable-unit-tests=yes \
+                          --with-gnu-ld=yes \
+                          --with-tcl \
+                          --without-x \
+                          --disable-assert
 
 ################################################################################
 # Staging definitions
 ################################################################################
 
 gdb_stage_config_args := $(gdb_common_config_args) \
-                           --disable-nls \
-                           MISSING='true' \
-                           $(filter-out FLEX=% LEX=%,$(stage_config_flags))
+                         --disable-nls \
+                         MAKINFO='true' \
+                         $(stage_config_flags)
 
-$(call gen_deps,stage-gdb,stage-gcc stage-m4)
-$(call gen_check_deps,stage-gdb,stage-perl)
+$(call gen_deps,stage-gdb,stage-zlib \
+                          stage-python \
+                          stage-guile \
+                          stage-tcl \
+                          stage-flex)
+$(call gen_check_deps,stage-gdb,stage-dejagnu)
 
 config_stage-gdb       = $(call gdb_config_cmds,stage-gdb,\
-                                                    $(stagedir),\
-                                                    $(gdb_stage_config_args))
+                                                $(stagedir),\
+                                                $(gdb_stage_config_args))
 build_stage-gdb        = $(call gdb_build_cmds,stage-gdb)
 clean_stage-gdb        = $(call gdb_clean_cmds,stage-gdb)
 install_stage-gdb      = $(call gdb_install_cmds,stage-gdb)
@@ -152,29 +214,27 @@ $(call gen_dir_rules,stage-gdb)
 # Final definitions
 ################################################################################
 
-# Disable RPATH at configure time to prevent from embedding $(stage_lib_path)
-# into binary RPATH.
 gdb_final_config_args := $(gdb_common_config_args) \
-                           --enable-nls \
-                           --disable-rpath \
-                           $(final_config_flags)
+                         --enable-nls \
+                         $(final_config_flags)
 
-$(call gen_deps,final-gdb,stage-gcc \
-                            stage-m4 \
-                            stage-flex \
-                            stage-readline \
-                            stage-gettext)
-$(call gen_check_deps,final-gdb,stage-perl)
+$(call gen_deps,final-gdb,stage-zlib \
+                          stage-python \
+                          stage-guile \
+                          stage-tcl \
+                          stage-flex)
+$(call gen_check_deps,final-gdb,stage-dejagnu)
+
 
 config_final-gdb       = $(call gdb_config_cmds,final-gdb,\
-                                                    $(PREFIX),\
-                                                    $(gdb_final_config_args))
+                                                $(PREFIX),\
+                                                $(gdb_final_config_args))
 build_final-gdb        = $(call gdb_build_cmds,final-gdb)
 clean_final-gdb        = $(call gdb_clean_cmds,final-gdb)
 install_final-gdb      = $(call gdb_install_cmds,final-gdb,$(finaldir))
 uninstall_final-gdb    = $(call gdb_uninstall_cmds,final-gdb,\
-                                                 $(PREFIX),\
-                                                 $(finaldir))
+                                                   $(PREFIX),\
+                                                   $(finaldir))
 check_final-gdb        = $(call gdb_check_cmds,final-gdb)
 
 $(call gen_config_rules_with_dep,final-gdb,gdb,config_final-gdb)
