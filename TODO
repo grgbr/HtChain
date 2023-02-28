@@ -1,7 +1,6 @@
 Test review:
 ============
 
-final-cython fails
 final-gcc fails
 final-libtool fails
 gdb test fails
@@ -35,7 +34,6 @@ Fix:
   run autoreconf (since configure.ac is patched)
 * meson: fix cmake dependency test failure
 * requests: fix failing tests
-* cython: fix failing tests and run test suite (optional gdb) !!!
 * gcc: review testsuite
 
 TODO:
