@@ -101,34 +101,45 @@ env PATH='$(stagedir)/bin:$(PATH)' \
 endef
 
 # $(1): targets base name / module name
+# $(2): optional make arguments
 #
-# Give make an LD_LIBRARY_PATH since running a temporary build-side gdb
-# requiring various libraries (such as libtextstyle.so) which are not yet
-# definitely installed at final stage.
+# Give make a HOME enviroment variable so that guile interpreter / compiler may
+# generate files into build directory according to its needs without polluting
+# user's HOME (compile cache is usually located under
+# $XDG_CACHE_HOME/guile/ccache).
+# See https://www.gnu.org/software/guile/manual/html_node/Compilation.html for
+# more informations.
 define gdb_build_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) all \
-         LD_LIBRARY_PATH='$(_stage_lib_path)' \
+         HOME='$(builddir)/$(strip $(1))/.home' \
+         $(2) \
          $(verbose)
 endef
 
 # $(1): targets base name / module name
 define gdb_clean_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
-	clean \
-	$(verbose)
+         clean \
+         HOME='$(builddir)/$(strip $(1))/.home' \
+         $(verbose)
 endef
 
 # $(1): targets base name / module name
 # $(2): optional install destination directory
+# $(3): optional make arguments
 #
-# Give make an LD_LIBRARY_PATH since running a temporary build-side gdb
-# requiring various libraries (such as libtextstyle.so) which are not yet
-# definitely installed at final stage.
+# Give make a HOME enviroment variable so that guile interpreter / compiler may
+# generate files into build directory according to its needs without polluting
+# user's HOME (compile cache is usually located under
+# $XDG_CACHE_HOME/guile/ccache).
+# See https://www.gnu.org/software/guile/manual/html_node/Compilation.html for
+# more informations.
 define gdb_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
-         LD_LIBRARY_PATH='$(_stage_lib_path)' \
+         HOME='$(builddir)/$(strip $(1))/.home' \
          $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
+         $(3) \
          $(verbose)
 endef
 
@@ -139,6 +150,7 @@ define gdb_uninstall_cmds
 -+$(MAKE) --keep-going \
           --directory $(builddir)/$(strip $(1)) \
           uninstall \
+          HOME='$(builddir)/$(strip $(1))/.home' \
           $(if $(3),DESTDIR='$(3)') \
           $(verbose)
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
@@ -148,6 +160,7 @@ endef
 define gdb_check_cmds
 +env PATH='$(stagedir)/bin:$(PATH)' \
      LD_LIBRARY_PATH='$(stage_lib_path)' \
+     HOME='$(builddir)/$(strip $(1))/.home' \
      $(MAKE) --directory $(builddir)/$(strip $(1)) check-gdb
 endef
 
@@ -182,7 +195,7 @@ gdb_common_config_args := --enable-silent-rules \
 
 gdb_stage_config_args := $(gdb_common_config_args) \
                          --disable-nls \
-                         MAKINFO='true' \
+                         MAKEINFO='/bin/true' \
                          $(stage_config_flags)
 
 $(call gen_deps,stage-gdb,stage-zlib \
@@ -195,9 +208,16 @@ $(call gen_check_deps,stage-gdb,stage-dejagnu)
 config_stage-gdb       = $(call gdb_config_cmds,stage-gdb,\
                                                 $(stagedir),\
                                                 $(gdb_stage_config_args))
-build_stage-gdb        = $(call gdb_build_cmds,stage-gdb)
+define build_stage-gdb
+$(call gdb_build_cmds,stage-gdb,MAKEINFO='/bin/true')
+endef
+
 clean_stage-gdb        = $(call gdb_clean_cmds,stage-gdb)
-install_stage-gdb      = $(call gdb_install_cmds,stage-gdb)
+
+define install_stage-gdb
+$(call gdb_install_cmds,stage-gdb,,MAKEINFO='/bin/true')
+endef
+
 uninstall_stage-gdb    = $(call gdb_uninstall_cmds,stage-gdb,$(stagedir))
 check_stage-gdb        = $(call gdb_check_cmds,stage-gdb)
 
