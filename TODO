@@ -4,7 +4,6 @@ Test review:
 final-cython fails
 final-gcc fails
 final-libtool fails
-final-python fails (test_find_library_with_ld fails)
 gdb test fails
 all stage test ??
 
@@ -13,7 +12,6 @@ Fix:
 * fix guile linking to system-wide libgmp !!
 * fix flex dependencies ?? (see top level comments), make sure we dont need to
   run autoreconf (since configure.ac is patched)
-* fix remaining staging directory rpath from final area (python, etc...)
 * pytz: fix pytest warnings
 * cpan-gettext: implement final support
   see ExtUtils::MakeMaker doc: https://perldoc.perl.org/ExtUtils::MakeMaker

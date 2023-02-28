@@ -92,11 +92,32 @@ $(call rmf,$(strip $(3))$(strip $(2))/share/man/man1/python$(python_vers_maj)*)
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
+python_check_env := PATH="$(stagedir)/bin:$(PATH)" \
+                    LD_LIBRARY_PATH="$(stage_lib_path):$(build_lib_search_path)"
+
 # $(1): targets base name / module name
+#
+# Testsuite is carried out by calling the <python>/Tools/scripts/run_tests.py
+# script from the top-level build directory Makefile. It is called with make
+# variable RUNSHARED as environment variable and given the EXTRATESTOPTS make
+# variable content as arguments.
+#
+# To get help informations about available tests and options, set EXTRATESTOPTS
+# like so:
+#     EXTRATESTOPTS='--help'
+#
+# To run the test_ctypes test in verbose mode, set EXTRATESTOPTS like so:
+#     EXTRATESTOPTS='--verbose3 test_ctypes'
+#
+# test_ctypes fails to find the system wide C library since the used gcc is
+# built using an alternate prefix pointing to $(stagedir). Give the testsuite a
+# way to find it by setting RUNSHARED make variable so that the run_tests.py
+# script is executed with the right PATH and LD_LIBRARY_PATH environment
+# variables (see python_check_env macro definition).
 define python_check_cmds
-+env PATH='$(stagedir)/bin:$(PATH)' \
-     LD_LIBRARY_PATH='$(stage_lib_path)' \
-     $(MAKE) -j1 --directory $(builddir)/$(strip $(1)) test
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         test \
+         RUNSHARED='$(python_check_env)'
 endef
 
 python_common_config_args := --enable-shared \

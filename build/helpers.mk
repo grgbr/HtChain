@@ -23,6 +23,11 @@ arch_is_x86_64 := $(filter x86_64%,$(arch))
 libc_vers      := $(strip $(shell ldd --version | \
                                   awk -F'[()]' '/^ldd/ { print $$3 }'))
 
+# Probe for BUILD_CC default library search path (required to find system wide
+# libc).
+build_lib_search_path := $(shell $(BUILD_CC) -print-search-dirs | \
+                                 sed -n 's/^libraries:[[:blank:]]\+=//p')
+
 define newline
 $(empty)
 $(empty)
