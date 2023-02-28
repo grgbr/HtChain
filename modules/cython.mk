@@ -56,6 +56,7 @@ endef
 check_stage-cython = $(call cython_check_cmds,stage-cython)
 
 $(call gen_deps,stage-cython,stage-wheel)
+$(call gen_check_deps,stage-cython,stage-gdb stage-pygments)
 $(call gen_python_module_rules,stage-cython,\
                                cython,\
                                $(stagedir))
@@ -101,6 +102,7 @@ endef
 check_final-cython = $(call cython_check_cmds,final-cython)
 
 $(call gen_deps,final-cython,stage-python stage-chrpath)
+$(call gen_check_deps,final-cython,stage-gdb stage-pygments)
 $(call gen_python_module_rules,final-cython,\
                                cython,\
                                $(PREFIX),\
