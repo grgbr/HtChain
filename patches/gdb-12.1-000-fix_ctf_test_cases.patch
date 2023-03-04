@@ -1,0 +1,189 @@
+From 908a926ec4ecd48571aafb560d97b927b6f94b5e Mon Sep 17 00:00:00 2001
+From: Tom de Vries <tdevries@suse.de>
+Date: Wed, 12 Oct 2022 17:02:15 +0200
+Subject: [PATCH] [gdb/testsuite] Fix ctf test-cases on openSUSE Tumbleweed
+
+When running test-case gdb.base/ctf-constvars.exp on openSUSE Tumbleweed (with
+system gcc version 12, providing gcc -gctf support, enabling the ctf test-cases
+in the gdb testsuite), I run into:
+...
+(gdb) print vox^M
+'vox' has unknown type; cast it to its declared type^M
+(gdb) FAIL: gdb.base/ctf-constvars.exp: print vox
+...
+
+There are two causes for this:
+- the linker flags are missing --ctf-variables, so the information for variable
+  vox is missing (reported in PR29468), and
+- the executable contains some dwarf2 due to some linked-in glibc objects,
+  so the ctf info is ignored (reported in PR29160).
+
+By using:
+- -Wl,--ctf-variable,
+- -Wl,--strip-debug, and
+we can make the test-case and some similar test-cases pass.
+
+Tested on x86_64-linux.
+
+Bug: https://sourceware.org/bugzilla/show_bug.cgi?id=29160
+Bug: https://sourceware.org/bugzilla/show_bug.cgi?id=29468
+---
+ gdb/testsuite/gdb.base/ctf-constvars.exp  | 9 +++++++--
+ gdb/testsuite/gdb.base/ctf-ptype.exp      | 8 ++++++--
+ gdb/testsuite/gdb.base/cvexpr.exp         | 6 +++++-
+ gdb/testsuite/gdb.base/whatis.exp         | 7 ++++++-
+ gdb/testsuite/gdb.ctf/cross-tu-cyclic.exp | 9 +++++++--
+ gdb/testsuite/gdb.ctf/funcreturn.exp      | 8 ++++++--
+ gdb/testsuite/gdb.ctf/multi.exp           | 9 +++++++--
+ 7 files changed, 44 insertions(+), 12 deletions(-)
+
+diff --git a/gdb/testsuite/gdb.base/ctf-constvars.exp b/gdb/testsuite/gdb.base/ctf-constvars.exp
+index 6255e9ed02b..a5e7fe0b015 100644
+--- a/gdb/testsuite/gdb.base/ctf-constvars.exp
++++ b/gdb/testsuite/gdb.base/ctf-constvars.exp
+@@ -32,9 +32,14 @@ if [skip_ctf_tests] {
+ standard_testfile .c
+ 
+ # Using `-gctf` generates full-fledged CTF debug information.
+-set opts "additional_flags=-gctf"
++set opts {}
++lappend opts additional_flags=-gctf
++lappend opts ldflags=-Wl,--strip-debug
++lappend opts ldflags=-Wl,--ctf-variables
++lappend opts nowarnings
++
+ if { [prepare_for_testing "failed to prepare" ${testfile} \
+-	  [list $srcfile] [list $opts nowarnings]] } {
++	  [list $srcfile] $opts] } {
+     return 0
+ }
+ 
+diff --git a/gdb/testsuite/gdb.base/ctf-ptype.exp b/gdb/testsuite/gdb.base/ctf-ptype.exp
+index 48d39e56c7b..28deabb6ac5 100644
+--- a/gdb/testsuite/gdb.base/ctf-ptype.exp
++++ b/gdb/testsuite/gdb.base/ctf-ptype.exp
+@@ -26,10 +26,14 @@ set gcc_compiled [is_c_compiler_gcc]
+ standard_testfile .c
+ 
+ # Using `-gctf` generates full-fledged CTF debug information.
+-set opts "additional_flags=-gctf"
++set opts {}
++lappend opts additional_flags=-gctf
++lappend opts ldflags=-Wl,--strip-debug
++lappend opts ldflags=-Wl,--ctf-variables
++lappend opts nowarnings
+ 
+ if { [prepare_for_testing "failed to prepare" ${testfile} \
+-	  [list $srcfile] [list $opts nowarnings]] } {
++	  [list $srcfile] $opts] } {
+     return 0
+ }
+ 
+diff --git a/gdb/testsuite/gdb.base/cvexpr.exp b/gdb/testsuite/gdb.base/cvexpr.exp
+index d8437b94c61..272efaff97c 100644
+--- a/gdb/testsuite/gdb.base/cvexpr.exp
++++ b/gdb/testsuite/gdb.base/cvexpr.exp
+@@ -491,10 +491,14 @@ proc do_test {dir options} {
+     #
+ }
+ 
++set ctf_opts {}
++lappend ctf_opts additional_flags=-gctf
++lappend ctf_opts ldflags=-Wl,--strip-debug
++
+ # Build up the set of debug formats for which we will run this test.
+ set specs { {dwarf {debug}} }
+ if ![skip_ctf_tests] {
+-    lappend specs {ctf {"additional_flags=-gt"}}
++    lappend specs [list ctf $ctf_opts]
+ }
+ 
+ # Setup and run the test for each debug format.
+diff --git a/gdb/testsuite/gdb.base/whatis.exp b/gdb/testsuite/gdb.base/whatis.exp
+index c19c149f012..5a3ff536bd9 100644
+--- a/gdb/testsuite/gdb.base/whatis.exp
++++ b/gdb/testsuite/gdb.base/whatis.exp
+@@ -585,10 +585,15 @@ proc do_test {dir options} {
+ 	"whatis applied to function with 'void' parameter type"
+ }
+ 
++set ctf_opts {}
++lappend ctf_opts additional_flags=-gctf
++lappend ctf_opts ldflags=-Wl,--strip-debug
++lappend ctf_opts ldflags=-Wl,--ctf-variables
++
+ # Build up the set of debug formats for which we will run this test.
+ set specs { {dwarf {debug}} }
+ if ![skip_ctf_tests] {
+-    lappend specs {ctf {"additional_flags=-gt"}}
++    lappend specs [list ctf $ctf_opts]
+ }
+ 
+ # Setup and run the test for each debug format.
+diff --git a/gdb/testsuite/gdb.ctf/cross-tu-cyclic.exp b/gdb/testsuite/gdb.ctf/cross-tu-cyclic.exp
+index a43e36bbe68..ca11b739ed8 100644
+--- a/gdb/testsuite/gdb.ctf/cross-tu-cyclic.exp
++++ b/gdb/testsuite/gdb.ctf/cross-tu-cyclic.exp
+@@ -24,10 +24,15 @@ standard_testfile cross-tu-cyclic-1.c  cross-tu-cyclic-2.c \
+ 	cross-tu-cyclic-3.c  cross-tu-cyclic-4.c
+ 
+ # Using `-gctf` generates full-fledged CTF debug information.
+-set opts "additional_flags=-gctf -Wl,--export-dynamic"
++set opts {}
++lappend opts additional_flags=-gctf
++lappend opts ldflags=-Wl,--export-dynamic
++lappend opts ldflags=-Wl,--strip-debug
++lappend opts nowarning
++
+ if { [prepare_for_testing "failed to prepare" ${testfile} \
+ 	  [list $srcfile $srcfile2 $srcfile3 $srcfile4] \
+-	  [list $opts nowarnings]] } {
++	  $opts] } {
+     return 0
+ }
+ 
+diff --git a/gdb/testsuite/gdb.ctf/funcreturn.exp b/gdb/testsuite/gdb.ctf/funcreturn.exp
+index ea01e860a84..1267cab2b75 100644
+--- a/gdb/testsuite/gdb.ctf/funcreturn.exp
++++ b/gdb/testsuite/gdb.ctf/funcreturn.exp
+@@ -30,10 +30,14 @@ set gcc_compiled [is_c_compiler_gcc]
+ standard_testfile whatis.c
+ 
+ # Using `-gctf` generates full-fledged CTF debug information.
+-set opts "additional_flags=-gctf -Wl,--export-dynamic"
++set opts {}
++lappend opts additional_flags=-gctf
++lappend opts ldflags=-Wl,--export-dynamic
++lappend opts ldflags=-Wl,--strip-debug
++lappend opts nowarning
+ 
+ if { [prepare_for_testing "failed to prepare" ${testfile} \
+-	  [list $srcfile] [list $opts nowarnings]] } {
++	  [list $srcfile] $opts] } {
+     return 0
+ }
+ 
+diff --git a/gdb/testsuite/gdb.ctf/multi.exp b/gdb/testsuite/gdb.ctf/multi.exp
+index 07fd10a884c..93fcbb660a2 100644
+--- a/gdb/testsuite/gdb.ctf/multi.exp
++++ b/gdb/testsuite/gdb.ctf/multi.exp
+@@ -23,10 +23,15 @@ if [skip_ctf_tests] {
+ standard_testfile ctf-a.c ctf-b.c ctf-c.c
+ 
+ # Using `-gctf` generates full-fledged CTF debug information.
+-set opts "additional_flags=-gctf -Wl,--export-dynamic"
++set opts {}
++lappend opts additional_flags=-gctf
++lappend opts ldflags=-Wl,--export-dynamic
++lappend opts ldflags=-Wl,--strip-debug
++lappend opts nowarning
++
+ if { [prepare_for_testing "failed to prepare" ${testfile} \
+ 	  [list $srcfile $srcfile2 $srcfile3] \
+-	  [list $opts nowarnings]] } {
++	  $opts] } {
+     return 0
+ }
+ 
+-- 
+2.31.1

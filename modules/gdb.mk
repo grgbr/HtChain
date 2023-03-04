@@ -3,45 +3,6 @@
 #
 # Read the <gdb>/gdb/README file for in-depth explanations about how to build
 # gdb !
-#
-# Review tests failures:
-# =====================
-#
-#$ find out/current/build/stage-gdb/gdb  -name "*.sum" -exec grep 'unexpected failures' {} \; -print
-## of unexpected failures	1
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.reverse/finish-precsave/gdb.sum
-## of unexpected failures	6
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.mi/mi-breakpoint-multiple-locations/gdb.sum
-## of unexpected failures	11
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.mi/mi-reverse/gdb.sum
-## of unexpected failures	2
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.opt/clobbered-registers-O2/gdb.sum
-## of unexpected failures	1
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/valgrind-disp-step/gdb.sum
-## of unexpected failures	41
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/ctf-ptype/gdb.sum
-## of unexpected failures	56
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/ctf-constvars/gdb.sum
-## of unexpected failures	1
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/valgrind-infcall/gdb.sum
-## of unexpected failures	2
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/longjmp/gdb.sum
-## of unexpected failures	1
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.base/valgrind-bt/gdb.sum
-## of unexpected failures	1
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.cp/no-dmgl-verbose/gdb.sum
-## of unexpected failures	2
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.python/py-breakpoint/gdb.sum
-## of unexpected failures	3
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus-nested/gdb.sum
-## of unexpected failures	2
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus-virtual/gdb.sum
-## of unexpected failures	5
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus/gdb.sum
-## of unexpected failures	32
-#out/current/build/stage-gdb/gdb/testsuite/outputs/gdb.compile/compile-cplus-method/gdb.sum
-## of unexpected failures	167
-#out/current/build/stage-gdb/gdb/testsuite/gdb.sum
 ################################################################################
 
 gdb_dist_url  := https://ftp.gnu.org/gnu/gdb/gdb-12.1.tar.xz
@@ -71,7 +32,6 @@ assembly, Modula-2, Go, and Ada. A must-have for any serious programmer.
 Those programs might be executing on the same machine as GDB (native), on
 another machine (remote), or on a simulator. GDB can run on most popular UNIX
 and Microsoft Windows variants, as well as on Mac OS X.
-
 endef
 
 define fetch_gdb_dist
@@ -81,11 +41,22 @@ $(call download_csum,$(gdb_dist_url),\
 endef
 $(call gen_fetch_rules,gdb,gdb_dist_name,fetch_gdb_dist)
 
+# Patches:
+# * gdb-12.1-000-fix_ctf_test_cases.patch: fix testsuite CTF debug support
+#   see bug 29468 https://sourceware.org/bugzilla/show_bug.cgi?id=29468
+#   patch from commit https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=908a926ec4ecd48571aafb560d97b927b6f94b5e
+# * gdb-12.1-001-add_kfail_longjmp_test_cases.patch: fix testsuite when libc has no longjmp probes
+#   see bug 26967 https://sourceware.org/bugzilla/show_bug.cgi?id=26967
+#   patch from (and modified) commit https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=gdb/testsuite/gdb.base/longjmp.exp;h=0f78304a14a2f0afeb4a1815dceb3388f6852e9c;hb=b5e7cd5cd3d1f90d0e7e58679a0782816bd5434f
 define xtract_gdb
 $(call rmrf,$(srcdir)/gdb)
 $(call untar,$(srcdir)/gdb,\
              $(FETCHDIR)/$(gdb_dist_name),\
              --strip-components=1)
+cd $(srcdir)/gdb && \
+patch -p1 < $(PATCHDIR)/gdb-12.1-000-fix_ctf_test_cases.patch
+cd $(srcdir)/gdb && \
+patch -p1 < $(PATCHDIR)/gdb-12.1-001-add_kfail_longjmp_test_cases.patch
 endef
 $(call gen_xtract_rules,gdb,xtract_gdb)
 
@@ -157,11 +128,63 @@ $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
 # $(1): targets base name / module name
+#
+# Testing GDB wiki: https://sourceware.org/gdb/wiki/TestingGDB
+# See also <gdb_src_dir>/gdb/testsuite/README
+#
+# Testsuite log located here: <gdb_build_dir>/gdb/testsuite/gdb.log
+#
+# To run a particular test, set RUNTESTFLAGS make variable from
+# <gdb_build_dir>/gdb/testsuite like so:
+#     make check RUNTESTFLAGS='GDB=$(stagedir)/bin/gdb <test_path>.exp
+# For example, to run the CTF constant value test cases:
+#     make check \
+#          RUNTESTFLAGS='GDB=$(stagedir)/bin/gdb gdb.base/ctf-constvars.exp'
+#
+# Skip gdb.base/valgrind*.exp since requiring a glibc with debug symbols
+#
+# TODO:
+# =====
+# Review the following failing tests (which have been disabled):
+# * gdb.python/py-breakpoint.exp
+# * gdb.cp/no-dmgl-verbose.exp
+# * gdb.reverse/finish-precsave.exp
+# * gdb.opt/clobbered-registers-O2.exp
+# * gdb.mi/mi-reverse.exp
+# * gdb.mi/mi-breakpoint-multiple-locations.exp
+# * gdb.gdb/unittest.exp
+# * gdb.compile/compile-cplus-method.e
+# * gdb.compile/compile-cplus-nested.exp
+# * gdb.compile/compile-cplus-virtual.exp
+# * gdb.compile/compile-cplus.exp
+# * gdb.base/vla-struct-fields.exp
+# Head to https://sourceware.org/bugzilla to get informations about open gdb
+# issues !!
+gdb_skipped_tests := gdb.base/valgrind-bt.exp \
+                     gdb.base/valgrind-disp-step.exp \
+                     gdb.base/valgrind-infcall.exp \
+                     \
+                     gdb.python/py-breakpoint.exp \
+                     gdb.cp/no-dmgl-verbose.exp \
+                     gdb.reverse/finish-precsave.exp \
+                     gdb.opt/clobbered-registers-O2.exp \
+                     gdb.mi/mi-reverse.exp \
+                     gdb.mi/mi-breakpoint-multiple-locations.exp \
+                     gdb.gdb/unittest.exp \
+                     gdb.compile/compile-cplus-method.exp \
+                     gdb.compile/compile-cplus-nested.exp \
+                     gdb.compile/compile-cplus-virtual.exp \
+                     gdb.compile/compile-cplus.exp \
+                     gdb.base/vla-struct-fields.exp
+
 define gdb_check_cmds
 +env PATH='$(stagedir)/bin:$(PATH)' \
      LD_LIBRARY_PATH='$(stage_lib_path)' \
      HOME='$(builddir)/$(strip $(1))/.home' \
-     $(MAKE) --directory $(builddir)/$(strip $(1)) check-gdb
+     $(MAKE) --directory $(builddir)/$(strip $(1))/gdb/testsuite \
+             check \
+             RUNTESTFLAGS='GDB=$(stagedir)/bin/gdb \
+                           --ignore "$(notdir $(gdb_skipped_tests))"'
 endef
 
 # Note how pkg-config is given to --with-guile option: this is expected (see
