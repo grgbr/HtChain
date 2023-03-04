@@ -204,6 +204,7 @@ gdb_common_config_args := --enable-silent-rules \
                           --with-lzma \
                           --with-libgmp-prefix='$(stagedir)' \
                           --with-mpfr-prefix='$(stagedir)' \
+                          --with-libipt-prefix='$(stagedir)' \
                           --with-python='$(stage_python)' \
                           --with-guile='$(stage_pkg-config)' \
                           --enable-unit-tests=yes \
@@ -225,7 +226,8 @@ $(call gen_deps,stage-gdb,stage-zlib \
                           stage-python \
                           stage-guile \
                           stage-tcl \
-                          stage-flex)
+                          stage-flex \
+                          stage-libipt)
 $(call gen_check_deps,stage-gdb,stage-dejagnu)
 
 config_stage-gdb       = $(call gdb_config_cmds,stage-gdb,\
@@ -265,7 +267,8 @@ $(call gen_deps,final-gdb,stage-zlib \
                           stage-python \
                           stage-guile \
                           stage-tcl \
-                          stage-flex)
+                          stage-flex \
+                          stage-libipt)
 $(call gen_check_deps,final-gdb,stage-dejagnu)
 
 
