@@ -80,8 +80,10 @@ $(call meson_run_tests,$(1),\
                               "platform-linux/3 linker script" \
                               "platform-linux/4 extdep static lib" \
                               "platform-linux/5 dependency versions" \
+                              "platform-linux/6 subdir include order" \
                               "platform-linux/7 library versions" \
                               "platform-linux/8 subproject library install" \
+                              "platform-linux/9 compiler checks with dependencies" \
                               "platform-linux/10 large file support" \
                               "platform-linux/11 runpath rpath ldlibrarypath" \
                               "platform-linux/12 subprojects in subprojects" \
@@ -113,7 +115,8 @@ $(call gen_check_deps,stage-meson,\
                       stage-cmake \
                       stage-doxygen \
                       stage-flex \
-                      stage-gettext)
+                      stage-gettext \
+                      stage-glib)
 $(call gen_python_module_rules,stage-meson,meson,$(stagedir))
 
 ################################################################################
@@ -135,5 +138,6 @@ $(call gen_check_deps,final-meson,\
                       stage-cmake \
                       stage-doxygen \
                       stage-flex \
-                      stage-gettext)
+                      stage-gettext \
+                      stage-glib)
 $(call gen_python_module_rules,final-meson,meson,$(PREFIX),$(finaldir))
