@@ -46,10 +46,6 @@ define libipt_config_cmds
 endef
 
 # $(1): targets base name / module name
-#
-# Give make an LD_LIBRARY_PATH since running a temporary build-side libipt
-# requiring various libraries (such as libtextstyle.so) which are not yet
-# definitely installed at final stage.
 define libipt_build_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          all \
@@ -65,10 +61,6 @@ endef
 
 # $(1): targets base name / module name
 # $(2): optional install destination directory
-#
-# Give make an LD_LIBRARY_PATH since running a temporary build-side libipt
-# requiring various libraries (such as libtextstyle.so) which are not yet
-# definitely installed at final stage.
 define libipt_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
