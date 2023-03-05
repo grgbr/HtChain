@@ -1,0 +1,14 @@
+# test_spawn_fd_assignment_clash fails when /nonexistent directory exists and
+# are not accessible (on Debian for example). Fix this by renaming the
+# filesystem entry to another pathname.
+--- a/glib/tests/spawn-singlethread.c	2023-03-05 22:27:36.906361520 +0100
++++ b/glib/tests/spawn-singlethread.c	2023-03-05 22:27:59.938078006 +0100
+@@ -527,7 +527,7 @@
+ #define N_FDS 10
+   gint source_fds[N_FDS];
+   gint target_fds[N_FDS];
+-  const gchar *argv[] = { "/nonexistent", NULL };
++  const gchar *argv[] = { "/nonexistent_but_debian", NULL };
+   gboolean retval;
+   GError *local_error = NULL;
+   struct stat statbuf;

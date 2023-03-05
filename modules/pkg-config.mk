@@ -83,7 +83,6 @@ endef
 
 # --disable-host-tool: do not install link pkg-config with $host- prefix
 pkg-config_common_args := --enable-silent-rules \
-                          --with-internal-glib \
                           --disable-host-tool \
 
 ################################################################################
@@ -94,6 +93,7 @@ pkg-config_stage_config_args := \
 	$(pkg-config_common_args) \
 	--with-sysroot='$(stagedir)' \
 	--with-pc-path='$(stagedir)/lib/pkgconfig:$(stagedir)/share/pkgconfig' \
+	--with-internal-glib \
 	--disable-nls \
 	MAKEINFO=true \
 	PYTHON=':' \
@@ -131,11 +131,12 @@ $(call gen_dir_rules,stage-pkg-config)
 pkg-config_final_config_args := \
 	$(pkg-config_common_args) \
 	--with-sysroot='$(PREFIX)' \
+	--without-internal-glib \
 	--with-pc-path='$(PREFIX)/lib/pkgconfig:$(PREFIX)/share/pkgconfig' \
 	--enable-nls \
 	$(call final_config_flags,$(rpath_flags))
 
-$(call gen_deps,final-pkg-config,stage-gcc stage-python)
+$(call gen_deps,final-pkg-config,stage-gcc stage-python stage-glib)
 
 config_final-pkg-config    = $(call pkg-config_config_cmds,\
                                     final-pkg-config,\
