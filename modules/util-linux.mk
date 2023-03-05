@@ -91,7 +91,9 @@ util-linux_common_config_args := \
 	--without-udev \
 	--without-systemd \
 	--enable-libuuid \
-	--enable-libuuid-force-uuidd
+	--enable-libuuid-force-uuidd \
+	--enable-libblkid \
+	--enable-libmount
 
 ################################################################################
 # Staging definitions
