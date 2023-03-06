@@ -80,9 +80,14 @@ endef
 # $XDG_CACHE_HOME/guile/ccache).
 # See https://www.gnu.org/software/guile/manual/html_node/Compilation.html for
 # more informations.
+#
+# Also enforce pkg-config tool to use thanks to PKG_CONFIG since internal
+# <gdb>/gdb/configure script run at build time ignores our PKG_CONFIG setting
+# given to the top-level configure script.
 define gdb_build_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) all \
          HOME='$(builddir)/$(strip $(1))/.home' \
+         PKG_CONFIG='$(stage_pkg-config)' \
          $(2) \
          $(verbose)
 endef
@@ -92,6 +97,7 @@ define gdb_clean_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          clean \
          HOME='$(builddir)/$(strip $(1))/.home' \
+         PKG_CONFIG='$(stage_pkg-config)' \
          $(verbose)
 endef
 
@@ -109,6 +115,7 @@ define gdb_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          install \
          HOME='$(builddir)/$(strip $(1))/.home' \
+         PKG_CONFIG='$(stage_pkg-config)' \
          $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
          $(3) \
          $(verbose)
@@ -122,6 +129,7 @@ define gdb_uninstall_cmds
           --directory $(builddir)/$(strip $(1)) \
           uninstall \
           HOME='$(builddir)/$(strip $(1))/.home' \
+          PKG_CONFIG='$(stage_pkg-config)' \
           $(if $(3),DESTDIR='$(3)') \
           $(verbose)
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
@@ -202,10 +210,12 @@ gdb_common_config_args := --enable-silent-rules \
                           --with-system-zlib \
                           --with-expat \
                           --with-lzma \
+                          --with-debuginfod \
                           --with-libgmp-prefix='$(stagedir)' \
                           --with-mpfr-prefix='$(stagedir)' \
                           --with-libipt-prefix='$(stagedir)' \
                           --with-libxxhash-prefix='$(stagedir)' \
+                          --with-babeltrace-prefix='$(stagedir)' \
                           --with-python='$(stage_python)' \
                           --with-guile='$(stage_pkg-config)' \
                           --enable-unit-tests=yes \
@@ -229,7 +239,8 @@ $(call gen_deps,stage-gdb,stage-zlib \
                           stage-tcl \
                           stage-flex \
                           stage-libipt \
-                          stage-libxxhash)
+                          stage-libxxhash \
+                          stage-babeltrace)
 $(call gen_check_deps,stage-gdb,stage-dejagnu)
 
 config_stage-gdb       = $(call gdb_config_cmds,stage-gdb,\
@@ -271,7 +282,8 @@ $(call gen_deps,final-gdb,stage-zlib \
                           stage-tcl \
                           stage-flex \
                           stage-libipt \
-                          stage-libxxhash)
+                          stage-libxxhash \
+                          stage-babeltrace)
 $(call gen_check_deps,final-gdb,stage-dejagnu)
 
 
