@@ -55,10 +55,9 @@ TODO:
 * certifi: apply debian patch https://salsa.debian.org/debian/python-certifi/-/blob/debian/master/debian/patches/0001-Use-Debian-provided-etc-ssl-certs-ca-certificates.crt.patch
            to get certificates from system-wide ca-certificates package
 	   (/etc/ssl/certs)
-* gdb:
-  enable support for --enable-source-highlight
-  review remaining failing tests
+* gdb: review remaining failing tests
 * babeltrace: depends on SWIG 2.0+ to enable python support
 * glib: enable documentation generation
 * debuginfod: deps from gcc gdb curl (test?) binutils
 * elfutils: build with debuginfod server support (depends on libmicrohttpd)
+* boost: run tests and generate documentation

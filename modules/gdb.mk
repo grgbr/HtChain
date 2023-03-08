@@ -88,6 +88,7 @@ define gdb_build_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) all \
          HOME='$(builddir)/$(strip $(1))/.home' \
          PKG_CONFIG='$(stage_pkg-config)' \
+         PATH='$(stagedir)/bin:$(PATH)' \
          $(2) \
          $(verbose)
 endef
@@ -98,6 +99,7 @@ define gdb_clean_cmds
          clean \
          HOME='$(builddir)/$(strip $(1))/.home' \
          PKG_CONFIG='$(stage_pkg-config)' \
+         PATH='$(stagedir)/bin:$(PATH)' \
          $(verbose)
 endef
 
@@ -116,6 +118,7 @@ define gdb_install_cmds
          install \
          HOME='$(builddir)/$(strip $(1))/.home' \
          PKG_CONFIG='$(stage_pkg-config)' \
+         PATH='$(stagedir)/bin:$(PATH)' \
          $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
          $(3) \
          $(verbose)
@@ -130,6 +133,7 @@ define gdb_uninstall_cmds
           uninstall \
           HOME='$(builddir)/$(strip $(1))/.home' \
           PKG_CONFIG='$(stage_pkg-config)' \
+          PATH='$(stagedir)/bin:$(PATH)' \
           $(if $(3),DESTDIR='$(3)') \
           $(verbose)
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
@@ -204,6 +208,7 @@ gdb_common_config_args := --enable-silent-rules \
                           --disable-gdbtk \
                           --enable-threading \
                           --enable-64-bit-bfd \
+                          --enable-source-highlight \
                           --enable-tui \
                           --with-curses \
                           --with-system-readline \
@@ -240,6 +245,7 @@ $(call gen_deps,stage-gdb,stage-zlib \
                           stage-flex \
                           stage-libipt \
                           stage-libxxhash \
+                          stage-source-highlight \
                           stage-babeltrace)
 $(call gen_check_deps,stage-gdb,stage-dejagnu)
 
@@ -274,6 +280,7 @@ $(call gen_dir_rules,stage-gdb)
 
 gdb_final_config_args := $(gdb_common_config_args) \
                          --enable-nls \
+                         --disable-rpath \
                          $(final_config_flags)
 
 $(call gen_deps,final-gdb,stage-zlib \
@@ -283,6 +290,7 @@ $(call gen_deps,final-gdb,stage-zlib \
                           stage-flex \
                           stage-libipt \
                           stage-libxxhash \
+                          stage-source-highlight \
                           stage-babeltrace)
 $(call gen_check_deps,final-gdb,stage-dejagnu)
 
