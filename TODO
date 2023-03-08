@@ -9,7 +9,6 @@ Fix:
 ====
 * fix flex dependencies ?? (see top level comments), make sure we dont need to
   run autoreconf (since configure.ac is patched)
-* pytz: fix pytest warnings
 * cpan-gettext: implement final support
   see ExtUtils::MakeMaker doc: https://perldoc.perl.org/ExtUtils::MakeMaker
 * ncurses : fix libtinfo.so.6: version `NCURSES6_TINFO_6.2.current' not found
@@ -25,13 +24,7 @@ Fix:
     found')
   * understand why (f)lex library tests are skipped (`no system-wide lex library
     found')
-* packaging: fix DeprecationWarning: Creating a LegacyVersion message while
-  running unit tests / make check...
 * fix versioning scheme (include branch name, etc...)
-* fix flex dependencies ?? (see top level comments), make sure we dont need to
-  run autoreconf (since configure.ac is patched)
-* meson: fix cmake dependency test failure
-* requests: fix failing tests
 * gcc: review testsuite
 
 TODO:

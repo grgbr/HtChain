@@ -50,10 +50,7 @@ endef
 #
 # Disabled tests:
 # * qt and sdl2 since not supported / installed
-# * platform-linux/6 subdir include order: requires a glib2 development install
-# * platform-linux/9 compiler checks with dependencies: requires a glib2
-#                                                       development install
-# * skip "platform-linux/13 cmake dependency" run_project_tests.py test since
+# * "platform-linux/13 cmake dependency" run_project_tests.py test since
 #   flaky: see https://github.com/mesonbuild/meson/issues/10104
 define meson_check_cmds
 $(call meson_run_tests,$(1),run_meson_command_tests.py)
