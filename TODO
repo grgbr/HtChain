@@ -7,7 +7,6 @@ all stage test ??
 
 Fix:
 ====
-* fix guile linking to system-wide libgmp !!
 * fix flex dependencies ?? (see top level comments), make sure we dont need to
   run autoreconf (since configure.ac is patched)
 * pytz: fix pytest warnings

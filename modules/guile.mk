@@ -87,7 +87,8 @@ guile_common_config_args := --enable-silent-rules \
                             --enable-shared \
                             --enable-static \
                             --enable-year2038 \
-                            --with-threads
+                            --with-threads \
+                            --with-libgmp-prefix='$(stagedir)'
 
 ################################################################################
 # Staging definitions
