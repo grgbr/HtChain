@@ -200,10 +200,10 @@ $(filter-out $(1),$(2))
 endef
 
 define log
-@printf "=== %22.22s=== %30.30s %16.16s==\n" \
-        "$(strip $(1)) ====================" \
-        "$(strip $(2)) ============================" \
-        "[$(debdist)] ============="
+@printf "### %22.22s### %30.30s %16.16s##\n" \
+        "$(strip $(1)) ####################" \
+        "$(strip $(2)) ############################" \
+        "[$(debdist)] #############"
 endef
 
 # Replace shebang of scripts given in argument

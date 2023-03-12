@@ -2,10 +2,13 @@
 # confliting with internal project makefiles.
 MAKEOVERRIDES :=
 
-bstrap_targets =
-stage_targets  =
-final_targets  =
-all_targets    = $(bstrap_targets) $(stage_targets) $(final_targets)
+bstrap_targets        =
+stage_targets         =
+final_targets         =
+all_targets           = $(bstrap_targets) $(stage_targets) $(final_targets)
+stage_check_targets   =
+final_check_targets   =
+check_targets         = $(stage_check_targets) $(final_check_targets)
 
 .PHONY: setup
 setup: setup-sigs
@@ -243,12 +246,13 @@ $(eval $(call uninstall_rules,$(1),$(2)))
 endef
 
 define check_rules
+stage_check_targets += $(patsubst %,check-%,$(filter stage-%,$(strip $(1))))
+final_check_targets += $(patsubst %,check-%,$(filter final-%,$(strip $(1))))
+
 .PHONY: check-$(strip $(1))
 check-$(strip $(1)): $(stampdir)/$(strip $(1))/built
 	$$(call log,$(1),checking)
 	$$($(strip $(2)))
-
-check: check-$(strip $(1))
 endef
 
 # $(1): module name

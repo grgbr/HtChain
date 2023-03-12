@@ -1,8 +1,11 @@
 Test review:
 ============
 
+final-boost
+final-curl
+final-glib: 292/357 glib:gio / gschema-compile
+final-cmake: boost
 final-gcc fails
-final-libtool fails
 all stage test ??
 
 Fix:
@@ -30,6 +33,9 @@ Fix:
 TODO:
 =====
 
+* rustc
+* libbdb and make perl depend on it
+* yang / pyang
 * help message(s) !!
 * complete documentation
 * doxygen: xapian support for doxygen search engine ?
@@ -40,10 +46,7 @@ TODO:
 * pandoc
 * gtk-doc: for util-linux
 * po4a: for util-linux
-* yang / pyang
 * asciidoc: for util-linux
-* rustc
-* libbdb and make perl depend on it
 * certifi: apply debian patch https://salsa.debian.org/debian/python-certifi/-/blob/debian/master/debian/patches/0001-Use-Debian-provided-etc-ssl-certs-ca-certificates.crt.patch
            to get certificates from system-wide ca-certificates package
 	   (/etc/ssl/certs)

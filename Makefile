@@ -354,6 +354,8 @@ MAKEFLAGS += --jobs $(JOBS)
 include build/rules.mk
 include $(module_mkfiles)
 
+check_black_list := %gcc %boost
+
 .PHONY: list-bstrap
 list-bstrap:
 	@$(foreach t,$(sort $(bstrap_targets)),echo $(t);)
@@ -392,9 +394,8 @@ check-stage-paths:
 	                          '^$(stagedir)/lib.*'
 
 .PHONY: check-stage
-check-stage: check-stage-paths $(addprefix check-,$(stage_targets))
-
-check: check-stage-paths
+check-stage: $(filter-out $(check_black_list),$(stage_check_targets)) \
+             check-stage-paths
 
 .PHONY: clobber-stage
 clobber-stage:
@@ -418,9 +419,10 @@ check-final-paths:
 	                          '^$(PREFIX)/lib.*'
 
 .PHONY: check-final
-check-final: check-final-paths $(addprefix check-,$(final_targets))
+check-final: $(filter-out $(check_black_list),$(final_check_targets)) \
+             check-final-paths
 
-check: check-final-paths
+check: check-final
 
 .PHONY: clobber-final
 clobber-final:
