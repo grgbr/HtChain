@@ -118,7 +118,7 @@ endef
 make_final_config_args := --enable-silent-rules \
                           --enable-nls \
                           --with-guile \
-                          $(call final_config_flags,$(rpath_flags))
+                          $(final_config_flags)
 
 $(call gen_deps,final-make,stage-gcc \
                            stage-texinfo \

@@ -134,7 +134,7 @@ pkg-config_final_config_args := \
 	--without-internal-glib \
 	--with-pc-path='$(PREFIX)/lib/pkgconfig:$(PREFIX)/share/pkgconfig' \
 	--enable-nls \
-	$(call final_config_flags,$(rpath_flags))
+	$(final_config_flags)
 
 $(call gen_deps,final-pkg-config,stage-gcc stage-python stage-glib)
 
