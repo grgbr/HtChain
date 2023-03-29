@@ -13,7 +13,7 @@ gdb_brief     := GNU Debugger
 gdb_home      := https://www.sourceware.org/gdb/
 
 define gdb_desc
-GDB, the GNU Project debugger, allows you to see what is going on `inside\'
+GDB, the GNU Project debugger, allows you to see what is going on inside
 another program while it executes -- or what another program was doing at the
 moment it crashed.
 

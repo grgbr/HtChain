@@ -6,7 +6,7 @@ sphinxcontrib-serializinghtml_dist_url  := https://files.pythonhosted.org/packag
 sphinxcontrib-serializinghtml_dist_sum  := c5aabe4d29fd0455c269f8054089fdd61e1de5c35aa407740fc3baae4cfb3235d9fd5515c0489b0becd12abc8f18d0f42aa169ed315c00f30ba87e64ce851667
 sphinxcontrib-serializinghtml_dist_name := $(notdir $(sphinxcontrib-serializinghtml_dist_url))
 sphinxcontrib-serializinghtml_vers      := $(patsubst sphinxcontrib-serializinghtml-%.tar.gz,%,$(sphinxcontrib-serializinghtml_dist_name))
-sphinxcontrib-serializinghtml_brief     := Sphinx_ extension which outputs "serialized" HTML files (json and pickle)
+sphinxcontrib-serializinghtml_brief     := Sphinx_ extension which outputs serialized HTML files (json and pickle)
 sphinxcontrib-serializinghtml_home      := https://www.sphinx-doc.org/
 
 define sphinxcontrib-serializinghtml_desc

@@ -10,7 +10,7 @@ libipt_brief     := Intel Processor Trace Decoder Library
 libipt_home      := https://github.com/intel/libipt
 
 define libipt_desc
-Intel's reference implementation for decoding Intel PT.
+Intel\'s reference implementation for decoding Intel PT.
 
 Go to https://software.intel.com/en-us/intel-platform-analysis-library for
 sample code that uses the library.
