@@ -2,8 +2,8 @@
 # Sphinx Read the Docs theme Python modules
 ################################################################################
 
-sphinx-rtd-theme_dist_url  := https://files.pythonhosted.org/packages/5e/99/bce1a116ce6cfdcfeffe0a8e30139134dd5dda1269ae8a2995b7c5156d71/sphinx_rtd_theme-1.1.1.tar.gz
-sphinx-rtd-theme_dist_sum  := c3e6e3a9d25b9c48a9830e696ca5c8f0c185a0328c76032cbe6dcfb93cda7ad9a724ec4e0e2a99079db28f35aa61ef2f569b87ce98a01c47a9701a6070bc395e
+sphinx-rtd-theme_dist_url  := https://files.pythonhosted.org/packages/35/b4/40faec6790d4b08a6ef878feddc6ad11c3872b75f52273f1418c39f67cd6/sphinx_rtd_theme-1.2.0.tar.gz
+sphinx-rtd-theme_dist_sum  := dd407c648c5512a79e31a106825c6f9ec4696b14d950830ab36faf912ea804b48b3a5d09c6a144e9cead773e4c057cbc809d7582deea1b253ce71b756f7f6b10
 sphinx-rtd-theme_dist_name := $(notdir $(sphinx-rtd-theme_dist_url))
 sphinx-rtd-theme_vers      := $(patsubst sphinx_rtd_theme-%.tar.gz,%,$(sphinx-rtd-theme_dist_name))
 sphinx-rtd-theme_brief     := Sphinx_ theme from readthedocs.org
@@ -54,7 +54,7 @@ endef
 check_stage-sphinx-rtd-theme = $(call sphinx-rtd-theme_check_cmds,\
                                       stage-sphinx-rtd-theme)
 
-$(call gen_deps,stage-sphinx-rtd-theme,stage-sphinx)
+$(call gen_deps,stage-sphinx-rtd-theme,stage-sphinx stage-sphinxcontrib-jquery)
 $(call gen_check_deps,stage-sphinx-rtd-theme,\
                       stage-readthedocs-sphinx-ext stage-pytest)
 $(call gen_python_module_rules,stage-sphinx-rtd-theme,\
@@ -68,7 +68,7 @@ $(call gen_python_module_rules,stage-sphinx-rtd-theme,\
 check_final-sphinx-rtd-theme = $(call sphinx-rtd-theme_check_cmds,\
                                       final-sphinx-rtd-theme)
 
-$(call gen_deps,final-sphinx-rtd-theme,stage-sphinx)
+$(call gen_deps,final-sphinx-rtd-theme,stage-sphinx stage-sphinxcontrib-jquery)
 $(call gen_check_deps,final-sphinx-rtd-theme,\
                       stage-readthedocs-sphinx-ext stage-pytest)
 $(call gen_python_module_rules,final-sphinx-rtd-theme,\
