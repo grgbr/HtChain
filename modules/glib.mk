@@ -160,6 +160,7 @@ $(call gen_deps,final-glib,stage-meson \
                            stage-attr \
                            stage-util-linux \
                            stage-pcre2 \
+                           stage-gettext \
                            stage-elfutils)
 
 config_final-glib       = $(call glib_config_cmds,final-glib,\

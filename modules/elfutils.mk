@@ -45,12 +45,14 @@ endef
 # $(1): targets base name / module name
 define elfutils_build_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) all \
+         PATH='$(stagedir)/bin:$(PATH)' \
          $(verbose)
 endef
 
 # $(1): targets base name / module name
 define elfutils_clean_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
+    PATH='$(stagedir)/bin:$(PATH)' \
 	clean \
 	$(verbose)
 endef
@@ -59,6 +61,7 @@ endef
 # $(2): optional install destination directory
 define elfutils_install_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         PATH='$(stagedir)/bin:$(PATH)' \
          install \
          $(if $(strip $(2)),DESTDIR='$(strip $(2))') \
          $(verbose)
@@ -70,6 +73,7 @@ endef
 define elfutils_uninstall_cmds
 -+$(MAKE) --keep-going \
           --directory $(builddir)/$(strip $(1)) \
+          PATH='$(stagedir)/bin:$(PATH)' \
           uninstall \
           $(if $(3),DESTDIR='$(3)') \
           $(verbose)
