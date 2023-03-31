@@ -542,7 +542,11 @@ $(OUTDIR)/$(DEBDIST)/build $(OUTDIR)/$(DEBDIST)/stamp:
 shell: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
 	$(call dock_run_cmd,$(DEBDIST))
 
-_goals := $(filter-out $(OUTDIR)% $(TOPDIR)% shell,$(MAKECMDGOALS))
+.PHONY: test-deps
+test-deps: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
+	$(call dock_run_cmd,$(DEBDIST),$(TOPDIR)/scripts/test_deps.sh)
+
+_goals := $(filter-out $(OUTDIR)% $(TOPDIR)% shell test-deps,$(MAKECMDGOALS))
 
 .PHONY: $(_goals)
 $(_goals): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
