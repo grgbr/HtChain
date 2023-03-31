@@ -196,6 +196,7 @@ $(call gen_deps,final-python,stage-readline \
                              stage-sqlite \
                              stage-bzip2 \
                              stage-xz-utils \
+                             stage-python \
                              stage-tcl)
 $(call gen_check_deps,final-python,stage-gdb)
 
