@@ -1,7 +1,7 @@
 # Debian 11.x (bullseye)
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
-              graphviz
+              graphviz libnsl2
 
 # procps: required by bmake build / check targets
 # netbase: required by perl check target
