@@ -56,3 +56,4 @@ TODO:
 * debuginfod: deps from gcc gdb curl (test?) binutils
 * elfutils: build with debuginfod server support (depends on libmicrohttpd)
 * boost: run tests and generate documentation
+* Dockerfile use private registry
