@@ -1,4 +1,4 @@
-# Ubuntu 22.04 (jammy)
+# Kali rolling
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
               graphviz 
@@ -21,4 +21,4 @@ DEBSRCDEPS := lsb-release \
               rustc \
               latexmk texlive-latex-extra texlive-font-utils
 
-DOCKIMG    := ubuntu:jammy
+DOCKIMG    := kalilinux/kali-rolling
