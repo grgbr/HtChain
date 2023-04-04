@@ -491,14 +491,9 @@ docker run \
        --volume $(HOME):$(HOME):ro \
        --volume $(TOPDIR):$(TOPDIR):ro \
        --volume $(OUTDIR):$(OUTDIR):rw \
+	   --workdir $(TOPDIR) \
        --tty=true \
        --interactive=true \
-       --env="HTCHAIN_UID=$$(id -u)" \
-       --env="HTCHAIN_USER=$$(id -un)" \
-       --env="HTCHAIN_GID=$$(id -g)" \
-       --env="HTCHAIN_GROUP=$$(id -gn)" \
-       --env="HTCHAIN_HOME=$(HOME)" \
-       --entrypoint='$(TOPDIR)/scripts/dock_start.sh' \
        "htchain:$(strip $(1))" \
        $(2)
 endef
@@ -520,20 +515,20 @@ $(call dock_run_cmd,\
             V=$(V))
 endef
 
-$(OUTDIR)/$(DEBDIST)/stamp/docker-ready: $(OUTDIR)/$(DEBDIST)/build/Dockerfile \
+$(OUTDIR)/$(DEBDIST)/stamp/docker-ready: $(TOPDIR)/Dockerfile \
                                          | $(OUTDIR)/$(DEBDIST)/stamp
 	docker build \
 	       --file '$(<)' \
 	       --tag 'htchain:$(DEBDIST)' \
+		   --build-arg DOCKIMG="$(DOCKIMG)" \
+		   --build-arg DEBSRCDEPS="$(DEBSRCDEPS)" \
+		   --build-arg HTCHAIN_UID="$(shell id -u)" \
+		   --build-arg HTCHAIN_USER="$(shell id -un)" \
+		   --build-arg HTCHAIN_GID="$(shell id -g)" \
+		   --build-arg HTCHAIN_GROUP="$(shell id -gn)" \
+		   --build-arg HTCHAIN_HOME="$(HOME)" \
 	       $(TOPDIR)
 	$(call touch,$(@))
-
-$(OUTDIR)/$(DEBDIST)/build/Dockerfile: $(TOPDIR)/Dockerfile.in \
-                                       $(TOPDIR)/debian/$(DEBDIST).mk \
-	                               | $(OUTDIR)/$(DEBDIST)/build
-	sed --expression='s/@@DOCKIMG@@/$(DOCKIMG)/g' \
-	    --expression='s/@@DEBSRCDEPS@@/$(DEBSRCDEPS)/g' \
-	    $(<) > $(@)
 
 $(OUTDIR)/$(DEBDIST)/build $(OUTDIR)/$(DEBDIST)/stamp:
 	$(call mkdir,$(@))
