@@ -32,7 +32,7 @@ def make_fetch(dist):
                         stderr=subprocess.STDOUT)
     end = datetime.datetime.now()
     status = (r.returncode == 0)
-    log_status(f"[[{dist}] fetch {' ' * mlen}",status, end-start)
+    log_status(f"[{dist}] fetch {' ' * mlen}",status, end-start)
     if not status:
             tmp_log = r.stdout.decode().splitlines()
             with(open(f"{TOPDIR}/out/{dist}-fetch-fail.log", "w")) as f:
