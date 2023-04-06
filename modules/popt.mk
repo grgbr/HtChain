@@ -103,7 +103,7 @@ popt_stage_config_args := $(popt_common_config_args) \
                           MISSING='true' \
                           $(stage_config_flags)
 
-$(call gen_deps,stage-popt,stage-glib stage-flex)
+$(call gen_deps,stage-popt,stage-glib stage-flex stage-gettext)
 
 config_stage-popt       = $(call popt_config_cmds,stage-popt,\
                                                   $(stagedir),\
@@ -134,7 +134,7 @@ popt_final_config_args := $(popt_common_config_args) \
                           --enable-nls \
                           $(final_config_flags)
 
-$(call gen_deps,final-popt,stage-glib stage-flex stage-doxygen)
+$(call gen_deps,final-popt,stage-glib stage-flex stage-doxygen stage-gettext)
 
 config_final-popt       = $(call popt_config_cmds,final-popt,\
                                                   $(PREFIX),\

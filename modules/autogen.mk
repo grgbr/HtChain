@@ -136,7 +136,11 @@ autogen_stage_config_args := $(autogen_common_config_args) \
                              $(stage_config_flags)
 
 $(call gen_deps,stage-autogen,\
-                stage-guile stage-libxml2 stage-automake stage-libtool)
+                stage-guile \
+                stage-libxml2 \
+                stage-automake \
+                stage-libtool \
+                stage-chrpath)
 
 config_stage-autogen       = $(call autogen_config_cmds,\
                                     stage-autogen,\
@@ -183,7 +187,11 @@ autogen_final_config_args := $(autogen_common_config_args) \
                              $(final_config_flags)
 
 $(call gen_deps,final-autogen,\
-                stage-guile stage-libxml2 stage-automake stage-libtool)
+                stage-guile \
+                stage-libxml2 \
+                stage-automake \
+                stage-libtool \
+                stage-chrpath)
 
 config_final-autogen       = $(call autogen_config_cmds,\
                                     final-autogen,\
