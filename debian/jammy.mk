@@ -19,6 +19,7 @@ DEBSRCDEPS := lsb-release \
               git \
               ca-certificates \
               rustc \
+              cargo \
               latexmk texlive-latex-extra texlive-font-utils
 
 DOCKIMG    := ubuntu:jammy
