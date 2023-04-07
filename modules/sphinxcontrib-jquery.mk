@@ -51,7 +51,7 @@ check_stage-sphinxcontrib-jquery = \
 	$(call sphinxcontrib-jquery_check_cmds,\
 	       stage-sphinxcontrib-jquery)
 
-$(call gen_deps,stage-sphinxcontrib-jquery,stage-wheel)
+$(call gen_deps,stage-sphinxcontrib-jquery,stage-wheel stage-flit_core)
 $(call gen_check_deps,stage-sphinxcontrib-jquery,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,stage-sphinxcontrib-jquery,\
                                sphinxcontrib-jquery,\
@@ -65,7 +65,7 @@ check_final-sphinxcontrib-jquery = \
 	$(call sphinxcontrib-jquery_check_cmds,\
 	       final-sphinxcontrib-jquery)
 
-$(call gen_deps,final-sphinxcontrib-jquery,stage-wheel)
+$(call gen_deps,final-sphinxcontrib-jquery,stage-wheel stage-flit_core)
 $(call gen_check_deps,final-sphinxcontrib-jquery,stage-pytest stage-sphinx)
 $(call gen_python_module_rules,final-sphinxcontrib-jquery,\
                                sphinxcontrib-jquery,\
