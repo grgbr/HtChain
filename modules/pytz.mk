@@ -59,7 +59,7 @@ endef
 
 check_stage-pytz = $(call pytz_check_cmds,stage-pytz)
 
-$(call gen_deps,stage-pytz,stage-wheel)
+$(call gen_deps,stage-pytz,stage-wheel stage-flit_core)
 $(call gen_check_deps,stage-pytz,stage-pytest)
 $(call gen_python_module_rules,stage-pytz,pytz,$(stagedir))
 
@@ -69,6 +69,6 @@ $(call gen_python_module_rules,stage-pytz,pytz,$(stagedir))
 
 check_final-pytz = $(call pytz_check_cmds,final-pytz)
 
-$(call gen_deps,final-pytz,stage-wheel)
+$(call gen_deps,final-pytz,stage-wheel stage-flit_core)
 $(call gen_check_deps,final-pytz,stage-pytest)
 $(call gen_python_module_rules,final-pytz,pytz,$(PREFIX),$(finaldir))
