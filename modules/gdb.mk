@@ -246,6 +246,7 @@ $(call gen_deps,stage-gdb,stage-zlib \
                           stage-libipt \
                           stage-libxxhash \
                           stage-source-highlight \
+                          stage-expect \
                           stage-babeltrace)
 $(call gen_check_deps,stage-gdb,stage-dejagnu)
 
@@ -291,6 +292,7 @@ $(call gen_deps,final-gdb,stage-zlib \
                           stage-libipt \
                           stage-libxxhash \
                           stage-source-highlight \
+                          stage-expect \
                           stage-babeltrace)
 $(call gen_check_deps,final-gdb,stage-dejagnu)
 
