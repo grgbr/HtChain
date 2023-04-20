@@ -128,8 +128,10 @@ $(call gen_dir_rules,stage-babeltrace)
 # Disable glibtest since may fail because of an existing system-wide development
 # glib install conflicting with the one into stagedir. The right glib is
 # selected anyway thanks to $(final_config_flags).
+# Bypass elfutils version check (bt_cv_lib_elfutils).
 babeltrace_final_config_args := $(babeltrace_common_config_args) \
                                 --disable-glibtest \
+                                bt_cv_lib_elfutils=yes \
                                 $(final_config_flags)
 
 $(call gen_deps,final-babeltrace,stage-glib stage-flex stage-popt)

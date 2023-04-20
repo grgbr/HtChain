@@ -89,6 +89,7 @@ endef
 # $(2): build / install prefix
 # $(3): optional install destination directory
 define boost_install_cmds
+$(MKDIR) --parents --mode=755 $(strip $(3))$(strip $(2))
 $(RSYNC) --archive \
          $(installdir)/$(strip $(1))/ \
          $(strip $(3))$(strip $(2)) \
