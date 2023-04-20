@@ -1,9 +1,17 @@
 #!/bin/bash -e
 
+if [ ! -f /.dockerenv ]; then
+    >&2 echo "$0 must be run in docker."
+    >&2 echo "Re-run it as following command:"
+    >&2 echo "make DEBDIST=jammy test-deps"
+	exit 1
+fi
+
 scriptdir=$(dirname $(type -p $0))
+outdir=$(realpath $scriptdir/../out)
 . $scriptdir/localversion.sh
 
-debdist=`lsb_release -cs`
+debdist=`. /etc/os-release && echo "$VERSION_CODENAME"`
 
 docker_pkg_depends_test()
 {
@@ -66,5 +74,5 @@ docker_pkg_depends_test()
 	echo -e "Missing:\033[0;31m${missing}\033[0m"
 }
 
-sudo apt-get install -y $scriptdir/../out/${debdist}/htchain_${VERSION}*.deb
+sudo apt-get install -y $outdir/${debdist}/htchain_${VERSION}*.deb
 docker_pkg_depends_test ${MAJOR}
