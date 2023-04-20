@@ -48,14 +48,20 @@ def test(stage, dist):
     for m in modules:
         print(f"[{dist}] build {m:{mlen}}", end='\r', flush=True)
         start = datetime.datetime.now()
-        r = subprocess.run(['make',
-                            '--output-sync=recurse',
-                            f'DEBDIST={dist}',
-                            f'clobber-{stage}',
-                            m],
-                            cwd=TOPDIR,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT)
+        r  = subprocess.run(['make',
+                             '--output-sync=recurse',
+                             f'DEBDIST={dist}',
+                             f'clobber-{stage}'],
+                             cwd=TOPDIR,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+        r += subprocess.run(['make',
+                             '--output-sync=recurse',
+                             f'DEBDIST={dist}',
+                             m],
+                             cwd=TOPDIR,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
         end = datetime.datetime.now()
         status = (r.returncode == 0)
         log_status(f"[{dist}] build {m:{mlen}}",status, end-start)
