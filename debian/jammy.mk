@@ -1,7 +1,7 @@
 # Ubuntu 22.04 (jammy)
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
-              graphviz 
+              graphviz libnsl2
 
 DEBSRCDEPS := lsb-release \
               curl \

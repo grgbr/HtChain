@@ -1,7 +1,7 @@
 # Ubuntu 20.04 (focal)
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
-              graphviz 
+              graphviz libnsl2
 
 DEBSRCDEPS := lsb-release \
               curl \
