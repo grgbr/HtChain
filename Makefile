@@ -462,6 +462,7 @@ $(debfile): $(final_targets) \
 	$(MKDIR) --mode=755 $(debdir)/DEBIAN
 	umask=0022 && \
 	sed --expression='s/@@DEBVERS@@/$(version)/g' \
+	    --expression='s/@@DEBVERSMAJOR@@/$(word 1,$(subst ., ,$(version)))/g' \
 	    --expression='s/@@DEBDIST@@/$(debdist)/g' \
 	    --expression='s/@@DEBORIG@@/$(DEBORIG)/g' \
 	    --expression='s/@@DEBARCH@@/$(debarch)/g' \

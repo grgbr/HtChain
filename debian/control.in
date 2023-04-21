@@ -1,5 +1,5 @@
-Source: htchain
-Package: htchain
+Source: htchain-@@DEBVERSMAJOR@@
+Package: htchain-@@DEBVERSMAJOR@@
 Version: @@DEBVERS@@
 Distribution: @@DEBDIST@@
 Origin: @@DEBORIG@@
@@ -9,5 +9,4 @@ Priority: optional
 Maintainer: HtChain maintainer <@@DEBMAIL@@>
 Depends: @@DEBBINDEPS@@
 Description: host toolchain
- Une description
- sur plusieurs lignes...
+ Build host toolchain base on gcc-@@DEBVERSMAJOR@@

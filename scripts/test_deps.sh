@@ -30,7 +30,7 @@ docker_pkg_depends_test()
 			lib=`readelf -d ${i} 2>/dev/null | grep "Shared library" | cut -f 2 -d "[" | cut -f 1 -d "]" | sort -u`
 			lib=`dpkg -S ${lib} 2>/dev/null | cut -f 1 -d ":" | sort -u`
 			case $lib in
-				*htchain*);;
+				*htchain-${maj}*);;
 				*)        libs+="$lib ";;
 			esac
 		fi
@@ -74,5 +74,5 @@ docker_pkg_depends_test()
 	echo -e "Missing:\033[0;31m${missing}\033[0m"
 }
 
-sudo apt-get install -y $outdir/${debdist}/htchain_${VERSION}*.deb
+sudo apt-get install -y $outdir/${debdist}/htchain-${MAJOR}_${VERSION}*.deb
 docker_pkg_depends_test ${MAJOR}
