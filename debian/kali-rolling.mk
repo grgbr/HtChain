@@ -1,7 +1,7 @@
 # Kali rolling
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
-              graphviz libnsl2
+              graphviz libnsl2 libcrypt1
 
 DEBSRCDEPS := lsb-release \
               curl \

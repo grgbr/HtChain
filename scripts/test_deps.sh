@@ -63,7 +63,7 @@ docker_pkg_depends_test()
 	echo ===== Check deps in htchain-${maj}
 	missing=
 	# dep=`apt-cache depends htchain-${flavour}-${maj}`
-	dep=`apt-cache depends htchain`
+	dep=`apt-cache depends htchain-${maj}`
 	for i in `echo ${list[@]} | sed 's/\"//g'`; do
 		dep=`echo -e "${dep}" | sed "s/$i/${esc}[0;32m$i${esc}[0m/g"`
 		if [[ ${dep} != *"$i"* ]]; then

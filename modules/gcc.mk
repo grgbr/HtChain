@@ -130,10 +130,14 @@ gcc_common_x86_64_args := --with-arch=native \
                           --with-fpmath=avx \
                           --disable-softfloat
 
+# --enable-checking= (with = + empty): force enable checking but is = is missing
+# the config set it to "yes" and not "release" setting mode. Moreover for 
+# stage1 checking for LTO the configuration must be (See PR62077)
+# release,misc,gimple,rtlflag,tree and release for other.
 gcc_common_args        := --enable-silent-rules \
                           --enable-shared \
                           --enable-clocale=gnu \
-                          --enable-checkings=yes \
+                          --enable-checking= \
                           --disable-multilib \
                           --with-gnu-as \
                           --with-gnu-ld \
@@ -325,7 +329,11 @@ gcc_final_config_args := \
 	LD_FOR_TARGET='$(stage_ld)' \
 	MAKEINFO='$(stage_makeinfo)'
 
+# LD_LIBRARY_PATH:
+# make all run selftest that need libisl.so.23. This lib is in ubuntu:jammy and
+# debian but notin ubuntu:focal and early. Force ld library path to staging lib.
 gcc_final_make_args   := \
+	LD_LIBRARY_PATH='$(stage_lib_path)' \
 	CPPFLAGS='$(final_cppflags)' \
 	CFLAGS='$(call xclude_flags,$(lto_flags),$(final_cflags))' \
 	CXXFLAGS='$(call xclude_flags,$(lto_flags),$(final_cxxflags))' \
@@ -351,7 +359,7 @@ $(call gen_check_deps,final-gcc,stage-autogen stage-dejagnu)
 config_final-gcc    = $(call gcc_config_cmds,final-gcc,\
                                              $(PREFIX),\
                                              $(gcc_final_config_args))
-build_final-gcc     = $(call gcc_build_cmds,final-gcc)
+build_final-gcc     = $(call gcc_build_cmds,final-gcc,$(gcc_final_make_args))
 clean_final-gcc     = $(call gcc_clean_cmds,final-gcc)
 install_final-gcc   = $(call gcc_install_cmds,final-gcc,\
                                               $(PREFIX),\

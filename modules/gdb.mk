@@ -300,7 +300,10 @@ $(call gen_check_deps,final-gdb,stage-dejagnu)
 config_final-gdb       = $(call gdb_config_cmds,final-gdb,\
                                                 $(PREFIX),\
                                                 $(gdb_final_config_args))
-build_final-gdb        = $(call gdb_build_cmds,final-gdb)
+# LD_LIBRARY_PATH add path to staging lib for conftest execution in
+# sub-directory
+build_final-gdb        = $(call gdb_build_cmds,final-gdb,\
+                                            LD_LIBRARY_PATH='$(stage_lib_path)')
 clean_final-gdb        = $(call gdb_clean_cmds,final-gdb)
 install_final-gdb      = $(call gdb_install_cmds,final-gdb,$(finaldir))
 uninstall_final-gdb    = $(call gdb_uninstall_cmds,final-gdb,\

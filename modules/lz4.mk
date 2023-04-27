@@ -206,9 +206,17 @@ lz4_final_make_args := \
 $(call gen_deps,final-lz4,stage-gcc)
 
 config_final-lz4    = $(call lz4_config_cmds,final-lz4)
-build_final-lz4     = $(call lz4_build_cmds,final-lz4,\
-                                            $(PREFIX),\
-                                            $(lz4_final_make_args) manuals)
+# LD_LIBRARY_PATH:
+# lz4 build gen_manual and use it in final context so stdc++ is not found.
+# Force build manual before with LD_LIBRARY_PATH set to staging lib dir.
+define build_final-lz4
++$(MAKE) --directory $(builddir)/final-lz4 \
+         manuals \
+         LD_LIBRARY_PATH='$(stage_lib_path)' \
+         PREFIX='$(PREFIX)' \
+         $(lz4_final_make_args)
+$(call lz4_build_cmds,final-lz4, $(PREFIX), $(lz4_final_make_args))
+endef
 clean_final-lz4     = $(call lz4_clean_cmds,final-lz4,\
                                             $(PREFIX),\
                                             $(lz4_final_make_args))
