@@ -1,7 +1,7 @@
 # Ubuntu 18.04 (bionic)
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
-              graphviz libnsl2
+              graphviz libc6
 
 DEBSRCDEPS := lsb-release \
               curl \

@@ -48,7 +48,7 @@ endef
 
 # $(1): targets base name / module name
 define texinfo_build_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) all $(verbose)
++$(MAKE) --directory $(builddir)/$(strip $(1)) all $(verbose) $(2)
 endef
 
 # $(1): targets base name / module name
@@ -142,7 +142,11 @@ config_final-texinfo    = $(call texinfo_config_cmds,\
                                  final-texinfo,\
                                  $(PREFIX),\
                                  $(texinfo_final_config_args))
-build_final-texinfo     = $(call texinfo_build_cmds,final-texinfo)
+# LD_LIBRARY_PATH:
+# texinfo (info) build makedoc and use it in final context so libtinfo.so.6 
+# is not found.
+build_final-texinfo     = $(call texinfo_build_cmds,final-texinfo,\
+                                 LD_LIBRARY_PATH='$(stage_lib_path)')
 clean_final-texinfo     = $(call texinfo_clean_cmds,final-texinfo)
 
 final-texinfo_perl_fixups := bin/texi2any bin/pod2texi

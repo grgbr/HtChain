@@ -89,13 +89,14 @@ endef
 
 flex_common_config_args := --enable-silent-rules \
                            --enable-threads=posix \
-                           --disable-assert
+                           --disable-assert \
+                           ac_cv_func_reallocarray=no
 
 ################################################################################
 # Staging definitions
 ################################################################################
 
-flex_stage_config_args := --enable-silent-rules \
+flex_stage_config_args := $(flex_common_config_args) \
                           --disable-nls \
                           MISSING='true' \
                           $(filter-out FLEX=% LEX=%,$(stage_config_flags))
@@ -124,7 +125,7 @@ $(call gen_dir_rules,stage-flex)
 # Final definitions
 ################################################################################
 
-flex_final_config_args := --enable-silent-rules \
+flex_final_config_args := $(flex_common_config_args) \
                           --enable-nls \
                           MISSING='true' \
                           YACC="$(stage_yacc)" \
