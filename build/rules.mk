@@ -261,6 +261,23 @@ define gen_check_rules
 $(eval $(call check_rules,$(1),$(2)))
 endef
 
+define no_check_rules
+.PHONY: check-$(strip $(1))
+check-$(strip $(1)): $(stampdir)/$(strip $(1))/built
+	$$(call log,$(1),checking)
+ifeq ($(strip $(2)),)
+	@printf "No check rull for $(strip $(1))\n"
+else
+	@printf "$(strip $(2))\n"
+endif
+endef
+
+# $(1): module name
+# $(2): Custom message
+define gen_no_check_rules
+$(eval $(call no_check_rules,$(1),$(2)))
+endef
+
 define dir_rules
 $(stampdir)/$(strip $(1)) $(builddir)/$(strip $(1)) $(installdir)/$(strip $(1)):
 	@$(call mkdir,$$(@))

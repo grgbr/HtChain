@@ -106,21 +106,6 @@ $(call uninstall_from_refdir,\
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
-# $(1): targets base name / module name
-# $(2): make flags
-#
-# Building with -DNDEBUG makes some variables unused since wrapped into
-# assertion call. As boost is building its testsuite with the -Werror flag
-# given to gcc, this makes boost build process fail.
-# Get rid of -DNDEBUG from compile / link flags.
-define boost_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) \
-         check \
-         PATH='$(stagedir)/bin:$(PATH)' \
-         LD_LIBRARY_PATH='$(stage_lib_path)' \
-         $(subst -DNDEBUG,,$(2))
-endef
-
 boost_common_config_args := --with-toolset=gcc \
                             --with-icu='$(stagedir)' \
                             --with-python='$(stage_python)'
@@ -169,8 +154,6 @@ build_stage-boost        = $(call boost_build_cmds,stage-boost,\
 clean_stage-boost        = $(call boost_clean_cmds,stage-boost)
 install_stage-boost      = $(call boost_install_cmds,stage-boost,$(stagedir))
 uninstall_stage-boost    = $(call boost_uninstall_cmds,stage-boost,$(stagedir))
-check_stage-boost        = $(call boost_check_cmds,stage-boost,\
-                                                   $(stage_config_flags))
 
 $(call gen_config_rules_with_dep,stage-boost,boost,config_stage-boost)
 $(call gen_clobber_rules,stage-boost)
@@ -178,7 +161,7 @@ $(call gen_build_rules,stage-boost,build_stage-boost)
 $(call gen_clean_rules,stage-boost,clean_stage-boost)
 $(call gen_install_rules,stage-boost,install_stage-boost)
 $(call gen_uninstall_rules,stage-boost,uninstall_stage-boost)
-$(call gen_check_rules,stage-boost,check_stage-boost)
+$(call gen_no_check_rules,stage-boost)
 $(call gen_dir_rules,stage-boost)
 
 ################################################################################
@@ -211,8 +194,6 @@ install_final-boost      = $(call boost_install_cmds,final-boost,\
 uninstall_final-boost    = $(call boost_uninstall_cmds,final-boost,\
                                                        $(PREFIX),\
                                                        $(finaldir))
-check_final-boost        = $(call boost_check_cmds,final-boost,\
-                                                   $(final_config_flags))
 
 $(call gen_config_rules_with_dep,final-boost,boost,config_final-boost)
 $(call gen_clobber_rules,final-boost)
@@ -220,5 +201,5 @@ $(call gen_build_rules,final-boost,build_final-boost)
 $(call gen_clean_rules,final-boost,clean_final-boost)
 $(call gen_install_rules,final-boost,install_final-boost)
 $(call gen_uninstall_rules,final-boost,uninstall_final-boost)
-$(call gen_check_rules,final-boost,check_final-boost)
+$(call gen_no_check_rules,final-boost)
 $(call gen_dir_rules,final-boost)

@@ -117,7 +117,7 @@ endef
 # $(1): targets base name / module name
 define gcc_check_cmds
 +env PATH="$(stagedir)/bin:$(PATH)" \
- $(MAKE) -j1 --directory $(builddir)/$(strip $(1)) check
+ $(MAKE) -j1 --directory $(builddir)/$(strip $(1)) check $(2)
 endef
 
 # Do not include --enable-cet since failing to build with gcc-7 at bootstrapping
@@ -368,7 +368,8 @@ install_final-gcc   = $(call gcc_install_cmds,final-gcc,\
 uninstall_final-gcc = $(call gcc_uninstall_cmds,final-gcc,\
                                                 $(PREFIX),\
                                                 $(finaldir))
-check_final-gcc     = $(call gcc_check_cmds,final-gcc)
+check_final-gcc     = $(call gcc_check_cmds,final-gcc,\
+                             LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-gcc,gcc,config_final-gcc)
 $(call gen_clobber_rules,final-gcc)

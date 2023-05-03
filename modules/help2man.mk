@@ -99,6 +99,7 @@ $(call gen_build_rules,stage-help2man,build_stage-help2man)
 $(call gen_clean_rules,stage-help2man,clean_stage-help2man)
 $(call gen_install_rules,stage-help2man,install_stage-help2man)
 $(call gen_uninstall_rules,stage-help2man,uninstall_stage-help2man)
+$(call gen_no_check_rules,stage-help2man)
 $(call gen_dir_rules,stage-help2man)
 
 ################################################################################
@@ -133,4 +134,5 @@ $(call gen_build_rules,final-help2man,build_final-help2man)
 $(call gen_clean_rules,final-help2man,clean_final-help2man)
 $(call gen_install_rules,final-help2man,install_final-help2man)
 $(call gen_uninstall_rules,final-help2man,uninstall_final-help2man)
+$(call gen_no_check_rules,final-help2man)
 $(call gen_dir_rules,final-help2man)

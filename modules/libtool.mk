@@ -70,7 +70,7 @@ endef
 define libtool_check_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          check \
-         PATH='$(stagedir)/bin:$(PATH)'
+         PATH='$(stagedir)/bin:$(PATH)' $(2)
 endef
 
 libtool_common_config_args := --enable-silent-rules \
@@ -137,11 +137,18 @@ config_final-libtool    = $(call libtool_config_cmds,\
 # * replace all references to $(stagedir) by references to prefix directory
 #   within libtool script
 # * replace default LTCFLAGS content with standard CFLAGS
+# libtool-check is clone of libtool installed but we no change the htchain path.
+# We need it for test.
 define build_final-libtool
 +$(MAKE) --directory $(builddir)/final-libtool \
          all \
          M4="$(stage_m4)" \
          $(verbose)
+cp $(builddir)/final-libtool/libtool \
+   $(builddir)/final-libtool/libtool-check
+sed -i \
+    -e 's;LTCFLAGS=.*;LTCFLAGS="-g -O2";' \
+    $(builddir)/final-libtool/libtool-check
 sed -i \
     -e 's;$(stagedir);$(PREFIX);g' \
     -e 's;LTCFLAGS=.*;LTCFLAGS="-g -O2";' \
@@ -162,7 +169,8 @@ uninstall_final-libtool = $(call libtool_uninstall_cmds,\
                                  final-libtool,\
                                  $(PREFIX),\
                                  $(finaldir))
-check_final-libtool     = $(call libtool_check_cmds,final-libtool)
+check_final-libtool     = $(call libtool_check_cmds,final-libtool,\
+    LIBTOOL='$(builddir)/final-libtool/libtool-check')
 
 $(call gen_config_rules_with_dep,final-libtool,libtool,config_final-libtool)
 $(call gen_clobber_rules,final-libtool)

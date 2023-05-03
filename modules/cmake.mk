@@ -39,6 +39,8 @@ cd $(srcdir)/cmake && \
 	patch -p1 < $(PATCHDIR)/cmake-3.23.1-000-fix_sphinx_pdf_path.patch
 cd $(srcdir)/cmake && \
 	patch -p1 < $(PATCHDIR)/cmake-3.23.1-001-fix_sphinx_share_paths.patch
+cd $(srcdir)/cmake && \
+	patch -p1 < $(PATCHDIR)/cmake-3.23.1-002-fix_test_git_submodule_protocol_file_allow.patch
 endef
 $(call gen_xtract_rules,cmake,xtract_cmake)
 
@@ -123,14 +125,17 @@ endef
 # check target the following make variables:
 #     CLICOLOR=0 CLICOLOR_FORCE=0
 # See https://gitlab.kitware.com/cmake/cmake/-/issues/22579
+# CC: force cmake use gcc builded in stage dir instead of platform clang
 define cmake_check_cmds
 +env PATH="$(stagedir)/bin:$(PATH)" \
      LD_LIBRARY_PATH="$(stage_lib_path)" \
+     CC='$(stage_cc)' \
+     CXX='$(stage_cxx)' \
  $(MAKE) --jobs 1 \
          --directory $(builddir)/$(strip $(1)) \
          test \
          CLICOLOR=0 CLICOLOR_FORCE=0 \
-         ARGS="-j$(JOBS)"
+         ARGS="-j$(JOBS) --output-on-failure"
 endef
 
 cmake_common_config_args := --datadir="/share/cmake" \

@@ -85,7 +85,7 @@ endef
 
 # $(1): targets base name / module name
 define gdbm_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) check $(2)
 endef
 
 gdbm_common_config_args := --enable-silent-rules \
@@ -147,7 +147,8 @@ install_final-gdbm   = $(call gdbm_install_cmds,final-gdbm,\
 uninstall_final-gdbm = $(call gdbm_uninstall_cmds,final-gdbm,\
                                                   $(PREFIX),\
                                                   $(finaldir))
-check_final-gdbm     = $(call gdbm_check_cmds,final-gdbm)
+check_final-gdbm     = $(call gdbm_check_cmds,final-gdbm,\
+                              LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-gdbm,gdbm,config_final-gdbm)
 $(call gen_clobber_rules,final-gdbm)

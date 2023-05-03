@@ -1,7 +1,7 @@
 # Debian 10.x (buster)
 
 DEBBINDEPS := latexmk texlive-latex-extra texlive-font-utils ca-certificates \
-              graphviz libnsl2
+              graphviz
 
 DEBSRCDEPS := lsb-release \
               curl \
