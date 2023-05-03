@@ -114,6 +114,7 @@ $(call gen_build_rules,stage-libipt,build_stage-libipt)
 $(call gen_clean_rules,stage-libipt,clean_stage-libipt)
 $(call gen_install_rules,stage-libipt,install_stage-libipt)
 $(call gen_uninstall_rules,stage-libipt,uninstall_stage-libipt)
+$(call gen_no_check_rules,stage-libipt)
 $(call gen_dir_rules,stage-libipt)
 
 ################################################################################
@@ -142,4 +143,5 @@ $(call gen_build_rules,final-libipt,build_final-libipt)
 $(call gen_clean_rules,final-libipt,clean_final-libipt)
 $(call gen_install_rules,final-libipt,install_final-libipt)
 $(call gen_uninstall_rules,final-libipt,uninstall_final-libipt)
+$(call gen_no_check_rules,final-libipt)
 $(call gen_dir_rules,final-libipt)

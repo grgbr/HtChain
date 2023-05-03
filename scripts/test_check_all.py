@@ -60,7 +60,7 @@ def main(dist, fetch=False):
             if not make(d, 'debian', mlen):
                 continue
             for m in modules:
-                make(d, m)
+                make(d, m, mlen)
     finally:
         end = datetime.datetime.now()
         print(f"Total in {end - start}:\n  OK  {TEST_OK:d}\n FAIL {TEST_FAIL:d}")

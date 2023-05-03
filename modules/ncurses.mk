@@ -171,6 +171,7 @@ $(call gen_build_rules,stage-ncurses,build_stage-ncurses)
 $(call gen_clean_rules,stage-ncurses,clean_stage-ncurses)
 $(call gen_install_rules,stage-ncurses,install_stage-ncurses)
 $(call gen_uninstall_rules,stage-ncurses,uninstall_stage-ncurses)
+$(call gen_no_check_rules,stage-ncurses,Test must be done manualy)
 $(call gen_dir_rules,stage-ncurses)
 
 ################################################################################
@@ -209,4 +210,5 @@ $(call gen_build_rules,final-ncurses,build_final-ncurses)
 $(call gen_clean_rules,final-ncurses,clean_final-ncurses)
 $(call gen_install_rules,final-ncurses,install_final-ncurses)
 $(call gen_uninstall_rules,final-ncurses,uninstall_final-ncurses)
+$(call gen_no_check_rules,final-ncurses,Test must be done manualy)
 $(call gen_dir_rules,final-ncurses)

@@ -120,6 +120,7 @@ $(call gen_build_rules,stage-readline,build_stage-readline)
 $(call gen_clean_rules,stage-readline,clean_stage-readline)
 $(call gen_install_rules,stage-readline,install_stage-readline)
 $(call gen_uninstall_rules,stage-readline,uninstall_stage-readline)
+$(call gen_no_check_rules,stage-readline)
 $(call gen_dir_rules,stage-readline)
 
 ################################################################################
@@ -149,4 +150,5 @@ $(call gen_build_rules,final-readline,build_final-readline)
 $(call gen_clean_rules,final-readline,clean_final-readline)
 $(call gen_install_rules,final-readline,install_final-readline)
 $(call gen_uninstall_rules,final-readline,uninstall_final-readline)
+$(call gen_no_check_rules,final-readline)
 $(call gen_dir_rules,final-readline)

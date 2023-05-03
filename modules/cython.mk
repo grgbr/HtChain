@@ -35,6 +35,8 @@ $(call rmrf,$(srcdir)/cython)
 $(call untar,$(srcdir)/cython,\
              $(FETCHDIR)/$(cython_dist_name),\
              --strip-components=1)
+cd $(srcdir)/cython && \
+	patch -p1 < $(PATCHDIR)/cython-0.29.33-000-fix_pyximport_build_dir_path.patch
 endef
 $(call gen_xtract_rules,cython,xtract_cython)
 
@@ -45,6 +47,8 @@ define cython_check_cmds
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
+    PYXBLD_DIR="$(builddir)/$(strip $(1))/.pyxbld" \
+    CYTHON_CACHE_DIR="$(builddir)/$(strip $(1))/.cython" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
 $(stage_python) runtests.py -v
 endef

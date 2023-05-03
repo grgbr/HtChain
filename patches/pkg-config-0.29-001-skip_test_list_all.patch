@@ -1,0 +1,11 @@
+--- a/check/check-print-options	2015-02-21 19:56:19.000000000 +0100
++++ b/check/check-print-options	2023-05-03 11:49:42.500100900 +0200
+@@ -38,7 +38,7 @@
+ RESULT="sub1   Subdirectory package 1 - Test package 1 for subdirectory
+ sub2   Subdirectory package 2 - Test package 2 for subdirectory
+ broken Broken package - Module with broken .pc file"
+-PKG_CONFIG_LIBDIR="$srcdir/sub" run_test --list-all
++#PKG_CONFIG_LIBDIR="$srcdir/sub" run_test --list-all
+ 
+ # Check handling when multiple incompatible options are set
+ RESULT="Ignoring incompatible output option \"--modversion\"

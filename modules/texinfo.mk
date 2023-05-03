@@ -82,7 +82,7 @@ endef
 define texinfo_check_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          check \
-         PATH="$(stagedir)/bin:$(PATH)"
+         PATH="$(stagedir)/bin:$(PATH)" $(2)
 endef
 
 texinfo_common_config_args := --enable-silent-rules \
@@ -162,7 +162,8 @@ uninstall_final-texinfo = $(call texinfo_uninstall_cmds,\
                                  final-texinfo,\
                                  $(PREFIX),\
                                  $(finaldir))
-check_final-texinfo     = $(call texinfo_check_cmds,final-texinfo)
+check_final-texinfo     = $(call texinfo_check_cmds,final-texinfo\
+                                 LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-texinfo,texinfo,config_final-texinfo)
 $(call gen_clobber_rules,final-texinfo)

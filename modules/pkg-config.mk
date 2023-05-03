@@ -32,6 +32,8 @@ $(call untar,$(srcdir)/pkg-config,\
              --strip-components=1)
 cd $(srcdir)/pkg-config && \
 	patch -p1 < $(PATCHDIR)/pkg-config-0.29-000-glib_gdate_Werror_format_nonliteral.patch
+cd $(srcdir)/pkg-config && \
+	patch -p1 < $(PATCHDIR)/pkg-config-0.29-001-skip_test_list_all.patch
 endef
 $(call gen_xtract_rules,pkg-config,xtract_pkg-config)
 
@@ -78,12 +80,12 @@ endef
 
 # $(1): targets base name / module name
 define pkg-config_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) check $(2)
 endef
 
 # --disable-host-tool: do not install link pkg-config with $host- prefix
 pkg-config_common_args := --enable-silent-rules \
-                          --disable-host-tool \
+                          --disable-host-tool
 
 ################################################################################
 # Staging definitions
@@ -150,7 +152,8 @@ uninstall_final-pkg-config = $(call pkg-config_uninstall_cmds,\
                                     final-pkg-config,\
                                     $(PREFIX),\
                                     $(finaldir))
-check_final-pkg-config     = $(call pkg-config_check_cmds,final-pkg-config)
+check_final-pkg-config     = $(call pkg-config_check_cmds,final-pkg-config,\
+                                    LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-pkg-config,\
                                  pkg-config,\

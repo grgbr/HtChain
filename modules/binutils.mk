@@ -88,7 +88,8 @@ define binutils_check_cmds
          EXPECT='$(stage_expect)' \
          RUNTEST='$(stage_runtest)' \
          CFLAGS_FOR_TARGET='$(filter-out $(lto_flags),$(stage_cflags))' \
-         CXXFLAGS_FOR_TARGET='$(filter-out $(lto_flags),$(stage_cxxflags))'
+         CXXFLAGS_FOR_TARGET='$(filter-out $(lto_flags),$(stage_cxxflags))' \
+         $(2)
 endef
 
 binutils_x86_64_args := --enable-x86-relax-relocations \
@@ -257,7 +258,8 @@ install_final-binutils   = $(call binutils_install_cmds,final-binutils,\
 uninstall_final-binutils = $(call binutils_uninstall_cmds,final-binutils,\
                                                           $(PREFIX),\
                                                           $(finaldir))
-check_final-binutils     = $(call binutils_check_cmds,final-binutils)
+check_final-binutils     = $(call binutils_check_cmds,final-binutils,\
+                                  LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-binutils,binutils,config_final-binutils)
 $(call gen_clobber_rules,final-binutils)

@@ -48,14 +48,17 @@ $(call gen_dir_rules,sphinx)
 #
 # Disable lualatex tests since not supporting lualatex engine (using xelatex
 # instead).
+# Have 2 --verbose to export full log error
 define sphinx_check_cmds
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
+    PYXBLD_DIR="$(builddir)/$(strip $(1))/.pyxbld" \
+    CYTHON_CACHE_DIR="$(builddir)/$(strip $(1))/.cython" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
     SSL_CERT_DIR="/etc/ssl/certs" \
 $(stagedir)/bin/pytest \
-	--verbose \
+	--verbose --verbose \
 	--deselect "tests/test_build_latex.py::test_build_latex_doc[lualatex-howto]" \
 	--deselect "tests/test_build_latex.py::test_build_latex_doc[lualatex-manual]"
 endef
