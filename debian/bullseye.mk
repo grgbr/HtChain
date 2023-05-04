@@ -26,7 +26,8 @@ DEBSRCDEPS := lsb-release \
               git \
               ca-certificates \
               rustc \
-              latexmk texlive-latex-extra texlive-font-utils
+              latexmk texlive-latex-extra texlive-font-utils \
+              desktop-file-utils
 
 # For testing purposes
 #DEBSRCDEPS += dejagnu

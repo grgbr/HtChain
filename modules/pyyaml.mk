@@ -45,8 +45,7 @@ define pyyaml_check_cmds
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
-    PYXBLD_DIR="$(builddir)/$(strip $(1))/.pyxbld" \
-    CYTHON_CACHE_DIR="$(builddir)/$(strip $(1))/.cython" \
+    HOME="$(builddir)/$(strip $(1))/.home" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
 $(stage_python) setup.py --no-user-cfg test
 endef

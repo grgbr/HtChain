@@ -29,6 +29,8 @@ $(call untar,$(srcdir)/glib,\
              --strip-components=1)
 cd $(srcdir)/glib && \
 patch -p1 < $(PATCHDIR)/glib-2.75.4-000-fix_spawn_singlethread_test_on_debian.patch
+cd $(srcdir)/glib && \
+patch -p1 < $(PATCHDIR)/glib-2.75.4-001-fix_test_env_LD_LIBRARY_PATH.patch
 endef
 $(call gen_xtract_rules,glib,xtract_glib)
 

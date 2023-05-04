@@ -81,7 +81,7 @@ endef
 # $(1): targets base name / module name
 # $(2): make arguments
 define mpfr_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) check $(2)
 endef
 
 mpfr_common_args        := --enable-silent-rules \
@@ -177,7 +177,8 @@ mpfr_final_config_args := $(mpfr_common_args) \
                           --enable-shared \
                           --with-gmp="$(stagedir)" \
                           $(final_config_flags) \
-                          LT_SYS_LIBRARY_PATH="$(stagedir)/lib"
+                          LT_SYS_LIBRARY_PATH="$(stagedir)/lib" \
+                          LD_LIBRARY_PATH='$(stage_lib_path)'
 
 $(call gen_deps,final-mpfr,stage-gmp stage-gcc)
 
@@ -190,7 +191,8 @@ install_final-mpfr   = $(call mpfr_install_cmds,final-mpfr,$(finaldir))
 uninstall_final-mpfr = $(call mpfr_uninstall_cmds,final-mpfr,\
                                                   $(PREFIX),\
                                                   $(finaldir))
-check_final-mpfr     = $(call mpfr_check_cmds,final-mpfr)
+check_final-mpfr     = $(call mpfr_check_cmds,final-mpfr,\
+                              LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-mpfr,mpfr,config_final-mpfr)
 $(call gen_clobber_rules,final-mpfr)
