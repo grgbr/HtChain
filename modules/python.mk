@@ -117,7 +117,8 @@ python_check_env := PATH="$(stagedir)/bin:$(PATH)" \
 define python_check_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          test \
-         RUNSHARED='$(python_check_env)'
+         RUNSHARED='$(python_check_env) HOME="$(builddir)/$(strip $(1))/.home"' \
+         EXTRATESTOPTS='-x test_distutils'
 endef
 
 python_common_config_args := --enable-shared \

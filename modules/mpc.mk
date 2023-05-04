@@ -83,7 +83,7 @@ endef
 
 # $(1): targets base name / module name
 define mpc_check_cmds
-+$(MAKE) --directory $(builddir)/$(strip $(1)) check
++$(MAKE) --directory $(builddir)/$(strip $(1)) check $(2)
 endef
 
 mpc_common_args        := --enable-silent-rules \
@@ -189,7 +189,8 @@ install_final-mpc   = $(call mpc_install_cmds,final-mpc,$(finaldir))
 uninstall_final-mpc = $(call mpc_uninstall_cmds,final-mpc,\
                                                 $(PREFIX),\
                                                 $(finaldir))
-check_final-mpc     = $(call mpc_check_cmds,final-mpc)
+check_final-mpc     = $(call mpc_check_cmds,final-mpc\
+                             LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-mpc,mpc,config_final-mpc)
 $(call gen_clobber_rules,final-mpc)

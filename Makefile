@@ -485,6 +485,7 @@ else  # !($(DEBDIST),)
 # some socket related tests (socket_inet and co.) would complain with the
 # following error message:
 #     `htons problem, should be disallowed, are you running as SU?'
+# /etc/machine-id: glib test need valid machine id, use host machine-id
 define dock_run_cmd
 docker run \
        --rm=true \
@@ -492,6 +493,7 @@ docker run \
        --volume $(HOME):$(HOME):ro \
        --volume $(TOPDIR):$(TOPDIR):ro \
        --volume $(OUTDIR):$(OUTDIR):rw \
+       --volume /etc/machine-id:/etc/machine-id:ro \
 	   --workdir $(TOPDIR) \
        --tty=true \
        --interactive=true \
@@ -517,6 +519,7 @@ $(call dock_run_cmd,\
 endef
 
 $(OUTDIR)/$(DEBDIST)/stamp/docker-ready: $(TOPDIR)/Dockerfile \
+                                         $(TOPDIR)/debian/$(DEBDIST).mk \
                                          | $(OUTDIR)/$(DEBDIST)/stamp
 	docker build \
 	       --file '$(<)' \

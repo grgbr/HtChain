@@ -20,6 +20,7 @@ DEBSRCDEPS := lsb-release \
               ca-certificates \
               rustc \
               cargo \
-              latexmk texlive-latex-extra texlive-font-utils
+              latexmk texlive-latex-extra texlive-font-utils \
+              desktop-file-utils
 
 DOCKIMG    := ubuntu:focal
