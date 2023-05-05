@@ -411,16 +411,20 @@ list-final:
 .PHONY: final
 final: $(final_targets)
 
-.PHONY: check-final-paths
-check-final-paths:
-	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(finaldir) $(PREFIX)
+.PHONY: check-final-rpath
+check-final-rpath:
+	env READELF='$(stage_readelf)' \
 	$(testdir)/check_rpath.sh $(if $(V),--verbose) \
 	                          $(finaldir) \
 	                          '^$(PREFIX)/lib.*'
 
+.PHONY: check-final-shebang
+check-final-shebang:
+	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(finaldir) $(PREFIX)
+
 .PHONY: check-final
 check-final: $(filter-out $(check_black_list),$(final_check_targets)) \
-             check-final-paths
+             check-final-shebang check-final-rpath
 
 check: check-final
 
@@ -489,6 +493,8 @@ else  # !($(DEBDIST),)
 define dock_run_cmd
 docker run \
        --rm=true \
+	   --cap-add=SYS_PTRACE \
+	   --security-opt seccomp=unconfined \
        --sysctl="net.ipv4.ip_unprivileged_port_start=1024" \
        --volume $(HOME):$(HOME):ro \
        --volume $(TOPDIR):$(TOPDIR):ro \

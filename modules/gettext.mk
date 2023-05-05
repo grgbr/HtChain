@@ -169,9 +169,8 @@ clean_final-gettext     = $(call gettext_clean_cmds,final-gettext)
 
 define install_final-gettext
 $(call gettext_install_cmds,final-gettext,$(finaldir))
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/lib/libasprintf.so \
-                 $(verbose)
+$(call fixup_rpath,$(finaldir)$(PREFIX)/lib/libasprintf.so,\
+                   $(final_lib_path))
 endef
 
 uninstall_final-gettext = $(call gettext_uninstall_cmds,\

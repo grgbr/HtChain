@@ -38,7 +38,7 @@ validate_rpath()
 	local path="$1"
 	local match="$2"
 
-	readelf -d $path | awk -F'[][]' \
+	${READELF:-readelf} -d $path | awk -F'[][]' \
 	                       -v elf="$path" \
 	                       -v regex="$match" \
 	                       -v verbose="$verbose" \
@@ -50,8 +50,9 @@ validate_subtree_rpath()
 	local dir="$1"
 	local match="$2"
 	local stat=0
+	local f
 
-	for f in $(find "$dir" -type f); do
+	find "$dir" -type f | while read f; do
 		case "$(file --brief --mime "$f")" in
 		"application/x-executable; charset=binary" | \
 		"application/x-pie-executable; charset=binary" | \

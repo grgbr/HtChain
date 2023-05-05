@@ -170,7 +170,7 @@ uninstall_final-libtool = $(call libtool_uninstall_cmds,\
                                  $(PREFIX),\
                                  $(finaldir))
 check_final-libtool     = $(call libtool_check_cmds,final-libtool,\
-    LIBTOOL='$(builddir)/final-libtool/libtool-check')
+    TESTSUITEFLAGS="LIBTOOL='$(builddir)/final-libtool/libtool-check'")
 
 $(call gen_config_rules_with_dep,final-libtool,libtool,config_final-libtool)
 $(call gen_clobber_rules,final-libtool)

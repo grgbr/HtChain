@@ -190,12 +190,20 @@ gdb_skipped_tests := gdb.base/valgrind-bt.exp \
                      gdb.base/vla-struct-fields.exp
 
 define gdb_check_cmds
+if [ `cat /proc/sys/kernel/yama/ptrace_scope` -ne 0 ]; then \
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; \
+  echo "WARNING: gdb test need /proc/sys/kernel/yama/ptrace_scope equal to 0"; \
+  echo "WARNING: Please use folowing command on host:"; \
+  echo "WARNING: echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope"; \
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; \
+fi
 +env PATH='$(stagedir)/bin:$(PATH)' \
      LD_LIBRARY_PATH='$(stage_lib_path)' \
      HOME='$(builddir)/$(strip $(1))/.home' \
      $(MAKE) --directory $(builddir)/$(strip $(1))/gdb/testsuite \
              check \
              RUNTESTFLAGS='GDB=$(stagedir)/bin/gdb \
+                           GDBSERVER=$(stagedir)/bin/gdbserver \
                            --ignore "$(notdir $(gdb_skipped_tests))"'
 endef
 
@@ -302,7 +310,7 @@ config_final-gdb       = $(call gdb_config_cmds,final-gdb,\
                                                 $(gdb_final_config_args))
 # LD_LIBRARY_PATH add path to staging lib for conftest execution in
 # sub-directory
-build_final-gdb        = $(call gdb_build_cmds,final-gdb,\
+build_final-gdb        = $(call gdb_build_cmds,final-gdb,$(final_config_flags)\
                                             LD_LIBRARY_PATH='$(stage_lib_path)')
 clean_final-gdb        = $(call gdb_clean_cmds,final-gdb)
 install_final-gdb      = $(call gdb_install_cmds,final-gdb,$(finaldir))

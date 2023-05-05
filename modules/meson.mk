@@ -41,6 +41,7 @@ define meson_run_tests
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
+    HOME="$(builddir)/$(strip $(1))/.home" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
     $(call stage_config_flags,%) \
 $(stage_python) $(2)

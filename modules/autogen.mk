@@ -149,20 +149,16 @@ config_stage-autogen       = $(call autogen_config_cmds,\
 build_stage-autogen        = $(call autogen_build_cmds,stage-autogen)
 clean_stage-autogen        = $(call autogen_clean_cmds,stage-autogen)
 
+stage-autogen_rpath_fixups := bin/autogen \
+                              bin/columns \
+                              bin/getdefs \
+                              bin/xml2ag
+
 define install_stage-autogen
 $(call autogen_install_cmds,stage-autogen)
-$(stage_chrpath) --replace "$(stage_lib_path)" \
-                 $(stagedir)/bin/autogen \
-                 $(verbose)
-$(stage_chrpath) --replace "$(stage_lib_path)" \
-                 $(stagedir)/bin/columns \
-                 $(verbose)
-$(stage_chrpath) --replace "$(stage_lib_path)" \
-                 $(stagedir)/bin/getdefs \
-                 $(verbose)
-$(stage_chrpath) --replace "$(stage_lib_path)" \
-                 $(stagedir)/bin/xml2ag \
-                 $(verbose)
+$(call fixup_rpath,$(addprefix $(stagedir)/,\
+                               $(stage-autogen_rpath_fixups)),\
+                   $(final_lib_path))
 endef
 
 uninstall_stage-autogen    = $(call autogen_uninstall_cmds,stage-autogen,\

@@ -54,8 +54,9 @@ define requests_check_cmds
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
+    HOME="$(builddir)/$(strip $(1))/.home" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
-$(stagedir)/bin/pytest --verbose -k "not test_https_warnings"
+$(stagedir)/bin/pytest --verbose --full-trace -vv -k "not test_https_warnings"
 endef
 
 ################################################################################
