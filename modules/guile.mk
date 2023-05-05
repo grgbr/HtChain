@@ -147,17 +147,16 @@ config_final-guile       = $(call guile_config_cmds,final-guile,\
 build_final-guile        = $(call guile_build_cmds,final-guile)
 clean_final-guile        = $(call guile_clean_cmds,final-guile)
 
+final-guile_rpath_fixups := \
+    lib/libguile-$(guile_vers_maj).$(guile_vers_min).so \
+    bin/guile \
+    lib/guile/$(guile_vers_maj).$(guile_vers_min)/extensions/guile-readline.so
+
 define install_final-guile
 $(call guile_install_cmds,final-guile,$(finaldir))
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/lib/libguile-$(guile_vers_maj).$(guile_vers_min).so \
-                 $(verbose)
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/bin/guile \
-                 $(verbose)
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/lib/guile/$(guile_vers_maj).$(guile_vers_min)/extensions/guile-readline.so \
-                 $(verbose)
+$(call fixup_rpath,$(addprefix $(finaldir)$(PREFIX)/,\
+                               $(final-guile_rpath_fixups)),\
+                   $(final_lib_path))
 endef
 
 uninstall_final-guile    = $(call guile_uninstall_cmds,final-guile,\

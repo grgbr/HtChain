@@ -18,15 +18,17 @@ validate_shebang()
 
 	regex="^#\![[:blank:]]*${prefix}/bin/${interp}"
 	if ! head -n 1 $f | grep -q "$regex"; then
-		echo "Checking ${interp} $f ... NOK" >&2
+		echo "Checking ${interp} $f ... NOK" >&2
 		return 1
 	else
 		if [ $verbose -ne 0 ]; then
-			echo "Checking ${interp} $f ... OK" >&2
+			echo "Checking ${interp} $f ... OK" >&2
 		fi
 	fi
 }
 
+# remove /lib/python* path because python file un site-package are not directly
+# call and shebang not used
 list_subtree_files()
 {
 	local dir="$1"
@@ -36,7 +38,8 @@ list_subtree_files()
 	                 -path "*/gtk-doc/*" -o \
 	                 -path "*/man/*" -o \
 	                 -path "*/info/*" -o \
-	                 -path "*/locale/*" \)
+	                 -path "*/locale/*" -o \
+	                 -path "*/lib/python*" \)
 }
 
 validate_subtree_shebang()
@@ -44,13 +47,15 @@ validate_subtree_shebang()
 	local dir="$1"
 	local prefix="$2"
 	local stat=0
+	local f
 
-	for f in $(list_subtree_files "$dir"); do
+	list_subtree_files "$dir" | while read f; do
 		res=""
-		case $(file --brief "$f") in
-		'Python script, ASCII text executable')
+		case $(sed '1s/^#![[:blank:]]\+/#!/' "$f" | \
+		       file --brief --mime-type -) in
+		'text/x-python' | 'text/x-script.python')
 			validate_shebang "$f" "python" "$prefix" || stat=1;;
-		'Perl script text executable')
+		'text/x-perl')
 			validate_shebang "$f" "perl" "$prefix" || stat=1;;
 		esac
 	done

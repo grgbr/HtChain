@@ -132,7 +132,8 @@ $(call gen_dir_rules,stage-babeltrace)
 babeltrace_final_config_args := $(babeltrace_common_config_args) \
                                 --disable-glibtest \
                                 bt_cv_lib_elfutils=yes \
-                                $(final_config_flags)
+                                $(final_config_flags) \
+                                LT_SYS_LIBRARY_PATH="$(stagedir)/lib"
 
 $(call gen_deps,final-babeltrace,stage-glib stage-flex stage-popt)
 

@@ -44,12 +44,14 @@ define docutils_check_cmds
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
+    HOME="$(builddir)/$(strip $(1))/.home" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
     LC_ALL=C \
 $(stage_python) -s $(builddir)/$(strip $(1))/test/alltests.py --verbose
 cd $(builddir)/$(strip $(1)) && \
 env PATH="$(stagedir)/bin:$(PATH)" \
     LD_LIBRARY_PATH="$(stage_lib_path)" \
+    HOME="$(builddir)/$(strip $(1))/.home" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
     LC_ALL=C \
 $(stage_python) -s \
@@ -75,6 +77,7 @@ final-docutils_shebang_fixups := bin/rstpep2html.py \
                                  bin/docutils \
                                  bin/rst2xetex.py \
                                  bin/rst2html4.py \
+                                 bin/rst2html5.py \
                                  bin/rst2xml.py \
                                  bin/rst2man.py \
                                  bin/rst2latex.py \

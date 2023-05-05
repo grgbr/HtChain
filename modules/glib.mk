@@ -171,7 +171,19 @@ config_final-glib       = $(call glib_config_cmds,final-glib,\
                                                   $(glib_final_config_args))
 build_final-glib        = $(call glib_build_cmds,final-glib)
 clean_final-glib        = $(call glib_clean_cmds,final-glib)
-install_final-glib      = $(call glib_install_cmds,final-glib,$(finaldir))
+
+final-glib_shebang_fixups := bin/glib-mkenums \
+                             bin/glib-genmarshal \
+                             bin/gdbus-codegen \
+                             bin/gtester-report
+
+define install_final-glib
+ $(call glib_install_cmds,final-glib,$(finaldir))
+$(call fixup_shebang,\
+       $(addprefix $(finaldir)$(PREFIX)/,$(final-glib_shebang_fixups)),\
+       $(PREFIX)/bin/python)
+endef
+
 uninstall_final-glib    = $(call glib_uninstall_cmds,final-glib,\
                                                      $(PREFIX),\
                                                      $(finaldir))

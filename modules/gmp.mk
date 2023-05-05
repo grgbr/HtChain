@@ -185,9 +185,8 @@ clean_final-gmp     = $(call gmp_clean_cmds,final-gmp)
 # path at post install time
 define install_final-gmp
 $(call gmp_install_cmds,final-gmp,$(finaldir))
-$(stage_chrpath) --replace "$(final_lib_path)" \
-                 $(finaldir)$(PREFIX)/lib/libgmpxx.so \
-                 $(verbose)
+$(call fixup_rpath,$(finaldir)$(PREFIX)/lib/libgmpxx.so,\
+                   $(final_lib_path))
 endef
 
 uninstall_final-gmp = $(call gmp_uninstall_cmds,final-gmp,\

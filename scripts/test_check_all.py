@@ -47,7 +47,8 @@ def main(dist, fetch=False):
     modules = subprocess.check_output(['make', 'list'], cwd=TOPDIR).decode().splitlines()
     modules = [m for m in modules if 'final' in m]
     modules = [f"check-{m}" for m in modules]
-    modules.append('check-final-paths')
+    modules.append('check-final-rpath')
+    modules.append('check-final-shebang')
     mlen    = max([len(i) for i in modules])
     try:
         print(datetime.datetime.now().strftime("%A, %d. %B %Y %I:%M%p"))

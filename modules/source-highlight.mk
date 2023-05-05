@@ -157,7 +157,8 @@ $(call gen_deps,final-source-highlight,\
                 stage-doxygen \
                 stage-texinfo \
                 stage-help2man \
-                stage-boost)
+                stage-boost \
+                stage-chrpath)
 
 config_final-source-highlight    = $(call source-highlight_config_cmds,\
                                           final-source-highlight,\
@@ -171,6 +172,19 @@ install_final-source-highlight   = $(call source-highlight_install_cmds,\
                                           final-source-highlight,\
                                           $(PREFIX),\
                                           $(finaldir))
+
+final-source-highlight_rpath_fixups := lib/libsource-highlight.so.4.0.1 \
+                                       bin/source-highlight-settings \
+                                       bin/source-highlight
+
+define install_final-source-highlight
+$(call source-highlight_install_cmds, final-source-highlight,\
+                                      $(PREFIX),\
+                                      $(finaldir))
+$(call fixup_rpath,$(addprefix $(finaldir)$(PREFIX)/,\
+                               $(final-source-highlight_rpath_fixups)),\
+                   $(final_lib_path))
+endef
 uninstall_final-source-highlight = $(call source-highlight_uninstall_cmds,\
                                           final-source-highlight,\
                                           $(PREFIX),\
