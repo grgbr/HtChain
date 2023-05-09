@@ -302,8 +302,9 @@ $(call gen_deps,final-gdb,stage-zlib \
                           stage-libxxhash \
                           stage-source-highlight \
                           stage-expect \
+                          stage-texinfo \
                           stage-babeltrace)
-$(call gen_check_deps,final-gdb,stage-dejagnu)
+$(call gen_check_deps,final-gdb,stage-dejagnu stage-gdb)
 
 
 config_final-gdb       = $(call gdb_config_cmds,final-gdb,\
