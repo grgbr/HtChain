@@ -190,7 +190,8 @@ gdb_skipped_tests := gdb.base/valgrind-bt.exp \
                      gdb.base/vla-struct-fields.exp
 
 define gdb_check_cmds
-if [ `cat /proc/sys/kernel/yama/ptrace_scope` -ne 0 ]; then \
+if [ -f "/proc/sys/kernel/yama/ptrace_scope" -a \
+     `cat /proc/sys/kernel/yama/ptrace_scope` -ne 0 ]; then \
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; \
   echo "WARNING: gdb test need /proc/sys/kernel/yama/ptrace_scope equal to 0"; \
   echo "WARNING: Please use folowing command on host:"; \

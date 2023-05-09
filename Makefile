@@ -412,14 +412,14 @@ list-final:
 final: $(final_targets)
 
 .PHONY: check-final-rpath
-check-final-rpath:
+check-final-rpath: $(final_targets)
 	env READELF='$(stage_readelf)' \
 	$(testdir)/check_rpath.sh $(if $(V),--verbose) \
 	                          $(finaldir) \
 	                          '^$(PREFIX)/lib.*'
 
 .PHONY: check-final-shebang
-check-final-shebang:
+check-final-shebang: $(final_targets)
 	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(finaldir) $(PREFIX)
 
 .PHONY: check-final
