@@ -54,6 +54,7 @@ endef
 # * "platform-linux/13 cmake dependency" run_project_tests.py test since
 #   flaky: see https://github.com/mesonbuild/meson/issues/10104
 define meson_check_cmds
+$(call mkdir,$(builddir)/$(strip $(1))/.home)
 $(call meson_run_tests,$(1),run_meson_command_tests.py)
 $(call meson_run_tests,$(1),\
                        run_unittests.py \
