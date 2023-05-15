@@ -17,7 +17,7 @@ endef
 
 define fetch_certifi_dist
 $(call download_csum,$(certifi_dist_url),\
-                     $(FETCHDIR)/$(certifi_dist_name),\
+                     $(certifi_dist_name),\
                      $(certifi_dist_sum))
 endef
 $(call gen_fetch_rules,certifi,certifi_dist_name,fetch_certifi_dist)

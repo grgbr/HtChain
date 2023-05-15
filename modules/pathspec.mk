@@ -20,7 +20,7 @@ endef
 
 define fetch_pathspec_dist
 $(call download_csum,$(pathspec_dist_url),\
-                     $(FETCHDIR)/$(pathspec_dist_name),\
+                     $(pathspec_dist_name),\
                      $(pathspec_dist_sum))
 endef
 $(call gen_fetch_rules,pathspec,pathspec_dist_name,fetch_pathspec_dist)

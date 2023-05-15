@@ -26,7 +26,7 @@ endef
 
 define fetch_bzip2_dist
 $(call download_csum,$(bzip2_dist_url),\
-                     $(FETCHDIR)/$(bzip2_dist_name),\
+                     $(bzip2_dist_name),\
                      $(bzip2_dist_sum))
 endef
 $(call gen_fetch_rules,bzip2,bzip2_dist_name,fetch_bzip2_dist)

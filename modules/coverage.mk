@@ -24,7 +24,7 @@ endef
 
 define fetch_coverage_dist
 $(call download_csum,$(coverage_dist_url),\
-                     $(FETCHDIR)/$(coverage_dist_name),\
+                     $(coverage_dist_name),\
                      $(coverage_dist_sum))
 endef
 $(call gen_fetch_rules,coverage,coverage_dist_name,fetch_coverage_dist)

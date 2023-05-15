@@ -23,7 +23,7 @@ endef
 
 define fetch_cffi_dist
 $(call download_csum,$(cffi_dist_url),\
-                     $(FETCHDIR)/$(cffi_dist_name),\
+                     $(cffi_dist_name),\
                      $(cffi_dist_sum))
 endef
 $(call gen_fetch_rules,cffi,cffi_dist_name,fetch_cffi_dist)

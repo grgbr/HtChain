@@ -20,7 +20,7 @@ endef
 
 define fetch_source-highlight_dist
 $(call download_csum,$(source-highlight_dist_url),\
-                     $(FETCHDIR)/$(source-highlight_dist_name),\
+                     $(source-highlight_dist_name),\
                      $(source-highlight_dist_sum))
 endef
 $(call gen_fetch_rules,source-highlight,\

@@ -20,7 +20,7 @@ endef
 
 define fetch_rhash_dist
 $(call download_csum,$(rhash_dist_url),\
-                     $(FETCHDIR)/$(rhash_dist_name),\
+                     $(rhash_dist_name),\
                      $(rhash_dist_sum))
 endef
 $(call gen_fetch_rules,rhash,rhash_dist_name,fetch_rhash_dist)

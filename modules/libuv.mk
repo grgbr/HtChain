@@ -25,7 +25,7 @@ endef
 
 define fetch_libuv_dist
 $(call download_csum,$(libuv_dist_url),\
-                     $(FETCHDIR)/$(libuv_dist_name),\
+                     $(libuv_dist_name),\
                      $(libuv_dist_sum))
 endef
 $(call gen_fetch_rules,libuv,libuv_dist_name,fetch_libuv_dist)

@@ -16,7 +16,7 @@ endef
 
 define fetch_expat_dist
 $(call download_csum,$(expat_dist_url),\
-                     $(FETCHDIR)/$(expat_dist_name),\
+                     $(expat_dist_name),\
                      $(expat_dist_sum))
 endef
 $(call gen_fetch_rules,expat,expat_dist_name,fetch_expat_dist)

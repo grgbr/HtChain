@@ -32,7 +32,7 @@ endef
 
 define fetch_decorator_dist
 $(call download_csum,$(decorator_dist_url),\
-                     $(FETCHDIR)/$(decorator_dist_name),\
+                     $(decorator_dist_name),\
                      $(decorator_dist_sum))
 endef
 $(call gen_fetch_rules,decorator,decorator_dist_name,fetch_decorator_dist)

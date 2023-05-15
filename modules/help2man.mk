@@ -20,7 +20,7 @@ endef
 
 define fetch_help2man_dist
 $(call download_csum,$(help2man_dist_url),\
-                     $(FETCHDIR)/$(help2man_dist_name),\
+                     $(help2man_dist_name),\
                      $(help2man_dist_sum))
 endef
 $(call gen_fetch_rules,help2man,help2man_dist_name,fetch_help2man_dist)

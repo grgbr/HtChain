@@ -16,7 +16,7 @@ endef
 
 define fetch_autoconf_dist
 $(call download_csum,$(autoconf_dist_url),\
-                     $(FETCHDIR)/$(autoconf_dist_name),\
+                     $(autoconf_dist_name),\
                      $(autoconf_dist_sum))
 endef
 $(call gen_fetch_rules,autoconf,autoconf_dist_name,fetch_autoconf_dist)

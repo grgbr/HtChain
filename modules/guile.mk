@@ -22,7 +22,7 @@ endef
 
 define fetch_guile_dist
 $(call download_csum,$(guile_dist_url),\
-                     $(FETCHDIR)/$(guile_dist_name),\
+                     $(guile_dist_name),\
                      $(guile_dist_sum))
 endef
 $(call gen_fetch_rules,guile,guile_dist_name,fetch_guile_dist)

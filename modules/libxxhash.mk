@@ -18,7 +18,7 @@ endef
 
 define fetch_libxxhash_dist
 $(call download_csum,$(libxxhash_dist_url),\
-                     $(FETCHDIR)/$(libxxhash_dist_name),\
+                     $(libxxhash_dist_name),\
                      $(libxxhash_dist_sum))
 endef
 $(call gen_fetch_rules,libxxhash,libxxhash_dist_name,fetch_libxxhash_dist)

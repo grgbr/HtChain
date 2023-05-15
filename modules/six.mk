@@ -20,7 +20,7 @@ endef
 
 define fetch_six_dist
 $(call download_csum,$(six_dist_url),\
-                     $(FETCHDIR)/$(six_dist_name),\
+                     $(six_dist_name),\
                      $(six_dist_sum))
 endef
 $(call gen_fetch_rules,six,six_dist_name,fetch_six_dist)

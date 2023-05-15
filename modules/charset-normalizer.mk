@@ -24,7 +24,7 @@ endef
 
 define fetch_charset-normalizer_dist
 $(call download_csum,$(charset-normalizer_dist_url),\
-                     $(FETCHDIR)/$(charset-normalizer_dist_name),\
+                     $(charset-normalizer_dist_name),\
                      $(charset-normalizer_dist_sum))
 endef
 $(call gen_fetch_rules,charset-normalizer,\

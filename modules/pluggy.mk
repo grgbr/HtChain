@@ -19,7 +19,7 @@ endef
 
 define fetch_pluggy_dist
 $(call download_csum,$(pluggy_dist_url),\
-                     $(FETCHDIR)/$(pluggy_dist_name),\
+                     $(pluggy_dist_name),\
                      $(pluggy_dist_sum))
 endef
 $(call gen_fetch_rules,pluggy,pluggy_dist_name,fetch_pluggy_dist)

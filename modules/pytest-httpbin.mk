@@ -22,7 +22,7 @@ endef
 
 define fetch_pytest-httpbin_dist
 $(call download_csum,$(pytest-httpbin_dist_url),\
-                     $(FETCHDIR)/$(pytest-httpbin_dist_name),\
+                     $(pytest-httpbin_dist_name),\
                      $(pytest-httpbin_dist_sum))
 endef
 $(call gen_fetch_rules,pytest-httpbin,\

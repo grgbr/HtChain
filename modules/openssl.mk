@@ -25,7 +25,7 @@ endef
 
 define fetch_openssl_dist
 $(call download_csum,$(openssl_dist_url),\
-                     $(FETCHDIR)/$(openssl_dist_name),\
+                     $(openssl_dist_name),\
                      $(openssl_dist_sum))
 endef
 $(call gen_fetch_rules,openssl,openssl_dist_name,fetch_openssl_dist)

@@ -21,7 +21,7 @@ endef
 
 define fetch_mpc_dist
 $(call download_csum,$(mpc_dist_url),\
-                     $(FETCHDIR)/$(mpc_dist_name),\
+                     $(mpc_dist_name),\
                      $(mpc_dist_sum))
 endef
 $(call gen_fetch_rules,mpc,mpc_dist_name,fetch_mpc_dist)

@@ -16,7 +16,7 @@ endef
 
 define fetch_libyaml_dist
 $(call download_csum,$(libyaml_dist_url),\
-                     $(FETCHDIR)/$(libyaml_dist_name),\
+                     $(libyaml_dist_name),\
                      $(libyaml_dist_sum))
 endef
 $(call gen_fetch_rules,libyaml,libyaml_dist_name,fetch_libyaml_dist)

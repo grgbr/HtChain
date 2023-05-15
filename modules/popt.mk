@@ -20,7 +20,7 @@ endef
 
 define fetch_popt_dist
 $(call download_csum,$(popt_dist_url),\
-                     $(FETCHDIR)/$(popt_dist_name),\
+                     $(popt_dist_name),\
                      $(popt_dist_sum))
 endef
 $(call gen_fetch_rules,popt,popt_dist_name,fetch_popt_dist)

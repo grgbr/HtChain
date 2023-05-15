@@ -36,7 +36,7 @@ endef
 
 define fetch_cheetah3_dist
 $(call download_csum,$(cheetah3_dist_url),\
-                     $(FETCHDIR)/$(cheetah3_dist_name),\
+                     $(cheetah3_dist_name),\
                      $(cheetah3_dist_sum))
 endef
 $(call gen_fetch_rules,cheetah3,cheetah3_dist_name,fetch_cheetah3_dist)

@@ -25,7 +25,7 @@ endef
 
 define fetch_pygments_dist
 $(call download_csum,$(pygments_dist_url),\
-                     $(FETCHDIR)/$(pygments_dist_name),\
+                     $(pygments_dist_name),\
                      $(pygments_dist_sum))
 endef
 $(call gen_fetch_rules,pygments,pygments_dist_name,fetch_pygments_dist)

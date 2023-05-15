@@ -19,7 +19,7 @@ endef
 
 define fetch_tomli_dist
 $(call download_csum,$(tomli_dist_url),\
-                     $(FETCHDIR)/$(tomli_dist_name),\
+                     $(tomli_dist_name),\
                      $(tomli_dist_sum))
 endef
 $(call gen_fetch_rules,tomli,tomli_dist_name,fetch_tomli_dist)

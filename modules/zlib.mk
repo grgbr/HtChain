@@ -19,7 +19,7 @@ endef
 
 define fetch_zlib_dist
 $(call download_csum,$(zlib_dist_url),\
-                     $(FETCHDIR)/$(zlib_dist_name),\
+                     $(zlib_dist_name),\
                      $(zlib_dist_sum))
 endef
 $(call gen_fetch_rules,zlib,zlib_dist_name,fetch_zlib_dist)

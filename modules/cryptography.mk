@@ -31,7 +31,7 @@ endef
 
 define fetch_cryptography_dist
 $(call download_csum,$(cryptography_dist_url),\
-                     $(FETCHDIR)/$(cryptography_dist_name),\
+                     $(cryptography_dist_name),\
                      $(cryptography_dist_sum))
 endef
 $(call gen_fetch_rules,cryptography,\

@@ -22,7 +22,7 @@ endef
 
 define fetch_pytest-cov_dist
 $(call download_csum,$(pytest-cov_dist_url),\
-                     $(FETCHDIR)/$(pytest-cov_dist_name),\
+                     $(pytest-cov_dist_name),\
                      $(pytest-cov_dist_sum))
 endef
 $(call gen_fetch_rules,pytest-cov,pytest-cov_dist_name,fetch_pytest-cov_dist)

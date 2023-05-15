@@ -18,7 +18,7 @@ endef
 
 define fetch_breathe_dist
 $(call download_csum,$(breathe_dist_url),\
-                     $(FETCHDIR)/$(breathe_dist_name),\
+                     $(breathe_dist_name),\
                      $(breathe_dist_sum))
 endef
 $(call gen_fetch_rules,breathe,breathe_dist_name,fetch_breathe_dist)

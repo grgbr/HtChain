@@ -26,7 +26,7 @@ endef
 
 define fetch_xmlschema_dist
 $(call download_csum,$(xmlschema_dist_url),\
-                     $(FETCHDIR)/$(xmlschema_dist_name),\
+                     $(xmlschema_dist_name),\
                      $(xmlschema_dist_sum))
 endef
 $(call gen_fetch_rules,xmlschema,xmlschema_dist_name,fetch_xmlschema_dist)

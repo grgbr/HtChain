@@ -24,7 +24,7 @@ endef
 
 define fetch_gcc_dist
 $(call download_csum,$(gcc_dist_url),\
-                     $(FETCHDIR)/$(gcc_dist_name),\
+                     $(gcc_dist_name),\
                      $(gcc_dist_sum))
 endef
 $(call gen_fetch_rules,gcc,gcc_dist_name,fetch_gcc_dist)

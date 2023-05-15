@@ -22,7 +22,7 @@ endef
 
 define fetch_expect_dist
 $(call download_csum,$(expect_dist_url),\
-                     $(FETCHDIR)/$(expect_dist_name),\
+                     $(expect_dist_name),\
                      $(expect_dist_sum))
 endef
 $(call gen_fetch_rules,expect,expect_dist_name,fetch_expect_dist)

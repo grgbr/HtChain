@@ -16,7 +16,7 @@ endef
 
 define fetch_sphinxcontrib-jsmath_dist
 $(call download_csum,$(sphinxcontrib-jsmath_dist_url),\
-                     $(FETCHDIR)/$(sphinxcontrib-jsmath_dist_name),\
+                     $(sphinxcontrib-jsmath_dist_name),\
                      $(sphinxcontrib-jsmath_dist_sum))
 endef
 $(call gen_fetch_rules,sphinxcontrib-jsmath,\

@@ -19,7 +19,7 @@ endef
 
 define fetch_flit-scm_dist
 $(call download_csum,$(flit-scm_dist_url),\
-                     $(FETCHDIR)/$(flit-scm_dist_name),\
+                     $(flit-scm_dist_name),\
                      $(flit-scm_dist_sum))
 endef
 $(call gen_fetch_rules,flit-scm,flit-scm_dist_name,fetch_flit-scm_dist)

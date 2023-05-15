@@ -24,7 +24,7 @@ endef
 
 define fetch_bison_dist
 $(call download_csum,$(bison_dist_url),\
-                     $(FETCHDIR)/$(bison_dist_name),\
+                     $(bison_dist_name),\
                      $(bison_dist_sum))
 endef
 $(call gen_fetch_rules,bison,bison_dist_name,fetch_bison_dist)

@@ -31,7 +31,7 @@ endef
 
 define fetch_typing-extensions_dist
 $(call download_csum,$(typing-extensions_dist_url),\
-                     $(FETCHDIR)/$(typing-extensions_dist_name),\
+                     $(typing-extensions_dist_name),\
                      $(typing-extensions_dist_sum))
 endef
 $(call gen_fetch_rules,typing-extensions,\

@@ -21,7 +21,7 @@ endef
 
 define fetch_raven_dist
 $(call download_csum,$(raven_dist_url),\
-                     $(FETCHDIR)/$(raven_dist_name),\
+                     $(raven_dist_name),\
                      $(raven_dist_sum))
 endef
 $(call gen_fetch_rules,raven,raven_dist_name,fetch_raven_dist)

@@ -29,7 +29,7 @@ endef
 
 define fetch_sphinx_dist
 $(call download_csum,$(sphinx_dist_url),\
-                     $(FETCHDIR)/$(sphinx_dist_name),\
+                     $(sphinx_dist_name),\
                      $(sphinx_dist_sum))
 endef
 $(call gen_fetch_rules,sphinx,sphinx_dist_name,fetch_sphinx_dist)

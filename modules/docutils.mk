@@ -22,7 +22,7 @@ endef
 
 define fetch_docutils_dist
 $(call download_csum,$(docutils_dist_url),\
-                     $(FETCHDIR)/$(docutils_dist_name),\
+                     $(docutils_dist_name),\
                      $(docutils_dist_sum))
 endef
 $(call gen_fetch_rules,docutils,docutils_dist_name,fetch_docutils_dist)

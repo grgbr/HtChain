@@ -27,7 +27,7 @@ endef
 
 define fetch_iniconfig_dist
 $(call download_csum,$(iniconfig_dist_url),\
-                     $(FETCHDIR)/$(iniconfig_dist_name),\
+                     $(iniconfig_dist_name),\
                      $(iniconfig_dist_sum))
 endef
 $(call gen_fetch_rules,iniconfig,iniconfig_dist_name,fetch_iniconfig_dist)

@@ -19,7 +19,7 @@ endef
 
 define fetch_elfutils_dist
 $(call download_csum,$(elfutils_dist_url),\
-                     $(FETCHDIR)/$(elfutils_dist_name),\
+                     $(elfutils_dist_name),\
                      $(elfutils_dist_sum))
 endef
 $(call gen_fetch_rules,elfutils,elfutils_dist_name,fetch_elfutils_dist)

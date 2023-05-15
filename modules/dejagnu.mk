@@ -22,7 +22,7 @@ endef
 
 define fetch_dejagnu_dist
 $(call download_csum,$(dejagnu_dist_url),\
-                     $(FETCHDIR)/$(dejagnu_dist_name),\
+                     $(dejagnu_dist_name),\
                      $(dejagnu_dist_sum))
 endef
 $(call gen_fetch_rules,dejagnu,dejagnu_dist_name,fetch_dejagnu_dist)

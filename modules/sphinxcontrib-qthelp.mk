@@ -16,7 +16,7 @@ endef
 
 define fetch_sphinxcontrib-qthelp_dist
 $(call download_csum,$(sphinxcontrib-qthelp_dist_url),\
-                     $(FETCHDIR)/$(sphinxcontrib-qthelp_dist_name),\
+                     $(sphinxcontrib-qthelp_dist_name),\
                      $(sphinxcontrib-qthelp_dist_sum))
 endef
 $(call gen_fetch_rules,sphinxcontrib-qthelp,\

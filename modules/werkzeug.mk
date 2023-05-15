@@ -24,7 +24,7 @@ endef
 
 define fetch_werkzeug_dist
 $(call download_csum,$(werkzeug_dist_url),\
-                     $(FETCHDIR)/$(werkzeug_dist_name),\
+                     $(werkzeug_dist_name),\
                      $(werkzeug_dist_sum))
 endef
 $(call gen_fetch_rules,werkzeug,werkzeug_dist_name,fetch_werkzeug_dist)

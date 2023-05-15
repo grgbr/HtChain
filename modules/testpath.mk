@@ -19,7 +19,7 @@ endef
 
 define fetch_testpath_dist
 $(call download_csum,$(testpath_dist_url),\
-                     $(FETCHDIR)/$(testpath_dist_name),\
+                     $(testpath_dist_name),\
                      $(testpath_dist_sum))
 endef
 $(call gen_fetch_rules,testpath,testpath_dist_name,fetch_testpath_dist)

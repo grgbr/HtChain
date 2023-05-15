@@ -14,7 +14,7 @@ pytest-freezegun_home      := https://github.com/ktosiek/pytest-freezegun
 
 define fetch_pytest-freezegun_dist
 $(call download_csum,$(pytest-freezegun_dist_url),\
-                     $(FETCHDIR)/$(pytest-freezegun_dist_name),\
+                     $(pytest-freezegun_dist_name),\
                      $(pytest-freezegun_dist_sum))
 endef
 $(call gen_fetch_rules,pytest-freezegun,pytest-freezegun_dist_name,fetch_pytest-freezegun_dist)

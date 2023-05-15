@@ -25,7 +25,7 @@ endef
 
 define fetch_autogen_dist
 $(call download_csum,$(autogen_dist_url),\
-                     $(FETCHDIR)/$(autogen_dist_name),\
+                     $(autogen_dist_name),\
                      $(autogen_dist_sum))
 endef
 $(call gen_fetch_rules,autogen,autogen_dist_name,fetch_autogen_dist)

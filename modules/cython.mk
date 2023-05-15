@@ -25,7 +25,7 @@ endef
 
 define fetch_cython_dist
 $(call download_csum,$(cython_dist_url),\
-                     $(FETCHDIR)/$(cython_dist_name),\
+                     $(cython_dist_name),\
                      $(cython_dist_sum))
 endef
 $(call gen_fetch_rules,cython,cython_dist_name,fetch_cython_dist)

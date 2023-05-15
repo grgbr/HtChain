@@ -24,7 +24,7 @@ endef
 
 define fetch_wcag-contrast-ratio_dist
 $(call download_csum,$(wcag-contrast-ratio_dist_url),\
-                     $(FETCHDIR)/$(wcag-contrast-ratio_dist_name),\
+                     $(wcag-contrast-ratio_dist_name),\
                      $(wcag-contrast-ratio_dist_sum))
 endef
 $(call gen_fetch_rules,wcag-contrast-ratio,\

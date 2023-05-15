@@ -23,7 +23,7 @@ endef
 
 define fetch_kconfig-frontends_dist
 $(call download_csum,$(kconfig-frontends_dist_url),\
-                     $(FETCHDIR)/$(kconfig-frontends_dist_name),\
+                     $(kconfig-frontends_dist_name),\
                      $(kconfig-frontends_dist_sum))
 endef
 $(call gen_fetch_rules,kconfig-frontends,\

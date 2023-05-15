@@ -20,7 +20,7 @@ endef
 
 define fetch_doxygen_dist
 $(call download_csum,$(doxygen_dist_url),\
-                     $(FETCHDIR)/$(doxygen_dist_name),\
+                     $(doxygen_dist_name),\
                      $(doxygen_dist_sum))
 endef
 $(call gen_fetch_rules,doxygen,doxygen_dist_name,fetch_doxygen_dist)

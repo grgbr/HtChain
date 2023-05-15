@@ -19,7 +19,7 @@ endef
 
 define fetch_m4_dist
 $(call download_csum,$(m4_dist_url),\
-                     $(FETCHDIR)/$(m4_dist_name),\
+                     $(m4_dist_name),\
                      $(m4_dist_sum))
 endef
 $(call gen_fetch_rules,m4,m4_dist_name,fetch_m4_dist)

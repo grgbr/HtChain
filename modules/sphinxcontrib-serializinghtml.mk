@@ -20,7 +20,7 @@ endef
 
 define fetch_sphinxcontrib-serializinghtml_dist
 $(call download_csum,$(sphinxcontrib-serializinghtml_dist_url),\
-                     $(FETCHDIR)/$(sphinxcontrib-serializinghtml_dist_name),\
+                     $(sphinxcontrib-serializinghtml_dist_name),\
                      $(sphinxcontrib-serializinghtml_dist_sum))
 endef
 $(call gen_fetch_rules,sphinxcontrib-serializinghtml,\

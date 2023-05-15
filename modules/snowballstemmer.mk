@@ -26,7 +26,7 @@ endef
 
 define fetch_snowballstemmer_dist
 $(call download_csum,$(snowballstemmer_dist_url),\
-                     $(FETCHDIR)/$(snowballstemmer_dist_name),\
+                     $(snowballstemmer_dist_name),\
                      $(snowballstemmer_dist_sum))
 endef
 $(call gen_fetch_rules,snowballstemmer,\

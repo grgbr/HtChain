@@ -20,7 +20,7 @@ endef
 
 define fetch_pytest-mock_dist
 $(call download_csum,$(pytest-mock_dist_url),\
-                     $(FETCHDIR)/$(pytest-mock_dist_name),\
+                     $(pytest-mock_dist_name),\
                      $(pytest-mock_dist_sum))
 endef
 $(call gen_fetch_rules,pytest-mock,pytest-mock_dist_name,fetch_pytest-mock_dist)

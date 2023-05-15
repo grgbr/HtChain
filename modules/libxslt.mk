@@ -17,7 +17,7 @@ endef
 
 define fetch_libxslt_dist
 $(call download_csum,$(libxslt_dist_url),\
-                     $(FETCHDIR)/$(libxslt_dist_name),\
+                     $(libxslt_dist_name),\
                      $(libxslt_dist_sum))
 endef
 $(call gen_fetch_rules,libxslt,libxslt_dist_name,fetch_libxslt_dist)

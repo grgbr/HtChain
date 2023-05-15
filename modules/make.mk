@@ -21,7 +21,7 @@ endef
 
 define fetch_make_dist
 $(call download_csum,$(make_dist_url),\
-                     $(FETCHDIR)/$(make_dist_name),\
+                     $(make_dist_name),\
                      $(make_dist_sum))
 endef
 $(call gen_fetch_rules,make,make_dist_name,fetch_make_dist)

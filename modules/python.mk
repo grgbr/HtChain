@@ -23,7 +23,7 @@ endef
 
 define fetch_python_dist
 $(call download_csum,$(python_dist_url),\
-                     $(FETCHDIR)/$(python_dist_name),\
+                     $(python_dist_name),\
                      $(python_dist_sum))
 endef
 $(call gen_fetch_rules,python,python_dist_name,fetch_python_dist)

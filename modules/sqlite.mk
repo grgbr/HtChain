@@ -28,7 +28,7 @@ endef
 
 define fetch_sqlite_dist
 $(call download_csum,$(sqlite_dist_url),\
-                     $(FETCHDIR)/$(sqlite_dist_name),\
+                     $(sqlite_dist_name),\
                      $(sqlite_dist_sum))
 endef
 $(call gen_fetch_rules,sqlite,sqlite_dist_name,fetch_sqlite_dist)

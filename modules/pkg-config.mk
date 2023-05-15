@@ -20,7 +20,7 @@ endef
 
 define fetch_pkg-config_dist
 $(call download_csum,$(pkg-config_dist_url),\
-                     $(FETCHDIR)/$(pkg-config_dist_name),\
+                     $(pkg-config_dist_name),\
                      $(pkg-config_dist_sum))
 endef
 $(call gen_fetch_rules,pkg-config,pkg-config_dist_name,fetch_pkg-config_dist)

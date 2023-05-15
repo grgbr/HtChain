@@ -16,7 +16,7 @@ endef
 
 define fetch_libmpdec_dist
 $(call download_csum,$(libmpdec_dist_url),\
-                     $(FETCHDIR)/$(libmpdec_dist_name),\
+                     $(libmpdec_dist_name),\
                      $(libmpdec_dist_sum))
 endef
 $(call gen_fetch_rules,libmpdec,libmpdec_dist_name,fetch_libmpdec_dist)
@@ -27,7 +27,7 @@ libmpdec_test_dist_name := libmpdec-test.zip
 
 define fetch_libmpdec_test_dist
 $(call download_csum,$(libmpdec_test_dist_url),\
-                     $(FETCHDIR)/$(libmpdec_test_dist_name),\
+                     $(libmpdec_test_dist_name),\
                      $(libmpdec_test_dist_sum))
 endef
 $(call gen_fetch_rules,libmpdec,\

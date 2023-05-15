@@ -16,7 +16,7 @@ endef
 
 define fetch_libffi_dist
 $(call download_csum,$(libffi_dist_url),\
-                     $(FETCHDIR)/$(libffi_dist_name),\
+                     $(libffi_dist_name),\
                      $(libffi_dist_sum))
 endef
 $(call gen_fetch_rules,libffi,libffi_dist_name,fetch_libffi_dist)

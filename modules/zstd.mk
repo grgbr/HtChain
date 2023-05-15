@@ -16,7 +16,7 @@ endef
 
 define fetch_zstd_dist
 $(call download_csum,$(zstd_dist_url),\
-                     $(FETCHDIR)/$(zstd_dist_name),\
+                     $(zstd_dist_name),\
                      $(zstd_dist_sum))
 endef
 $(call gen_fetch_rules,zstd,zstd_dist_name,fetch_zstd_dist)

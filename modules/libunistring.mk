@@ -19,7 +19,7 @@ endef
 
 define fetch_libunistring_dist
 $(call download_csum,$(libunistring_dist_url),\
-                     $(FETCHDIR)/$(libunistring_dist_name),\
+                     $(libunistring_dist_name),\
                      $(libunistring_dist_sum))
 endef
 $(call gen_fetch_rules,libunistring,\

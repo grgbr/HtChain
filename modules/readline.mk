@@ -25,7 +25,7 @@ endef
 
 define fetch_readline_dist
 $(call download_csum,$(readline_dist_url),\
-                     $(FETCHDIR)/$(readline_dist_name),\
+                     $(readline_dist_name),\
                      $(readline_dist_sum))
 endef
 $(call gen_fetch_rules,readline,readline_dist_name,fetch_readline_dist)

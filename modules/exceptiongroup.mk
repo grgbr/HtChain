@@ -23,7 +23,7 @@ endef
 
 define fetch_exceptiongroup_dist
 $(call download_csum,$(exceptiongroup_dist_url),\
-                     $(FETCHDIR)/$(exceptiongroup_dist_name),\
+                     $(exceptiongroup_dist_name),\
                      $(exceptiongroup_dist_sum))
 endef
 $(call gen_fetch_rules,exceptiongroup,\

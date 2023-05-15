@@ -38,7 +38,7 @@ endef
 
 define fetch_pytest-xdist_dist
 $(call download_csum,$(pytest-xdist_dist_url),\
-                     $(FETCHDIR)/$(pytest-xdist_dist_name),\
+                     $(pytest-xdist_dist_name),\
                      $(pytest-xdist_dist_sum))
 endef
 $(call gen_fetch_rules,pytest-xdist,\

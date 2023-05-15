@@ -22,7 +22,7 @@ endef
 
 define fetch_freezegun_dist
 $(call download_csum,$(freezegun_dist_url),\
-                     $(FETCHDIR)/$(freezegun_dist_name),\
+                     $(freezegun_dist_name),\
                      $(freezegun_dist_sum))
 endef
 $(call gen_fetch_rules,freezegun,freezegun_dist_name,fetch_freezegun_dist)

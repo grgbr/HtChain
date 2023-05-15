@@ -17,7 +17,7 @@ endef
 
 define fetch_babeltrace_dist
 $(call download_csum,$(babeltrace_dist_url),\
-                     $(FETCHDIR)/$(babeltrace_dist_name),\
+                     $(babeltrace_dist_name),\
                      $(babeltrace_dist_sum))
 endef
 $(call gen_fetch_rules,babeltrace,babeltrace_dist_name,fetch_babeltrace_dist)

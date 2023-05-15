@@ -21,7 +21,7 @@ endef
 
 define fetch_cpan-gettext_dist
 $(call download_csum,$(cpan-gettext_dist_url),\
-                     $(FETCHDIR)/$(cpan-gettext_dist_name),\
+                     $(cpan-gettext_dist_name),\
                      $(cpan-gettext_dist_sum))
 endef
 $(call gen_fetch_rules,cpan-gettext,\

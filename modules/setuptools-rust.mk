@@ -23,7 +23,7 @@ endef
 
 define fetch_setuptools-rust_dist
 $(call download_csum,$(setuptools-rust_dist_url),\
-                     $(FETCHDIR)/$(setuptools-rust_dist_name),\
+                     $(setuptools-rust_dist_name),\
                      $(setuptools-rust_dist_sum))
 endef
 $(call gen_fetch_rules,setuptools-rust,\

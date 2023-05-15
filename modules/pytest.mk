@@ -20,7 +20,7 @@ endef
 
 define fetch_pytest_dist
 $(call download_csum,$(pytest_dist_url),\
-                     $(FETCHDIR)/$(pytest_dist_name),\
+                     $(pytest_dist_name),\
                      $(pytest_dist_sum))
 endef
 $(call gen_fetch_rules,pytest,pytest_dist_name,fetch_pytest_dist)

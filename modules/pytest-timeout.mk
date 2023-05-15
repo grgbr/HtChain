@@ -29,7 +29,7 @@ endef
 
 define fetch_pytest-timeout_dist
 $(call download_csum,$(pytest-timeout_dist_url),\
-                     $(FETCHDIR)/$(pytest-timeout_dist_name),\
+                     $(pytest-timeout_dist_name),\
                      $(pytest-timeout_dist_sum))
 endef
 $(call gen_fetch_rules,pytest-timeout,\

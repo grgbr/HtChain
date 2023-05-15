@@ -31,7 +31,7 @@ endef
 
 define fetch_requests_dist
 $(call download_csum,$(requests_dist_url),\
-                     $(FETCHDIR)/$(requests_dist_name),\
+                     $(requests_dist_name),\
                      $(requests_dist_sum))
 endef
 $(call gen_fetch_rules,requests,requests_dist_name,fetch_requests_dist)

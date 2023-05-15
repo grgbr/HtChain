@@ -31,7 +31,7 @@ endef
 
 define fetch_xz-utils_dist
 $(call download_csum,$(xz-utils_dist_url),\
-                     $(FETCHDIR)/$(xz-utils_dist_name),\
+                     $(xz-utils_dist_name),\
                      $(xz-utils_dist_sum))
 endef
 $(call gen_fetch_rules,xz-utils,xz-utils_dist_name,fetch_xz-utils_dist)

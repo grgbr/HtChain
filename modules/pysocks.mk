@@ -20,7 +20,7 @@ endef
 
 define fetch_pysocks_dist
 $(call download_csum,$(pysocks_dist_url),\
-                     $(FETCHDIR)/$(pysocks_dist_name),\
+                     $(pysocks_dist_name),\
                      $(pysocks_dist_sum))
 endef
 $(call gen_fetch_rules,pysocks,pysocks_dist_name,fetch_pysocks_dist)

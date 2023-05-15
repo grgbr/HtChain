@@ -20,7 +20,7 @@ endef
 
 define fetch_isl_dist
 $(call download_csum,$(isl_dist_url),\
-                     $(FETCHDIR)/$(isl_dist_name),\
+                     $(isl_dist_name),\
                      $(isl_dist_sum))
 endef
 $(call gen_fetch_rules,isl,isl_dist_name,fetch_isl_dist)

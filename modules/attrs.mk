@@ -28,7 +28,7 @@ endef
 
 define fetch_attrs_dist
 $(call download_csum,$(attrs_dist_url),\
-                     $(FETCHDIR)/$(attrs_dist_name),\
+                     $(attrs_dist_name),\
                      $(attrs_dist_sum))
 endef
 $(call gen_fetch_rules,attrs,attrs_dist_name,fetch_attrs_dist)

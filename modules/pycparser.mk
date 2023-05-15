@@ -20,7 +20,7 @@ endef
 
 define fetch_pycparser_dist
 $(call download_csum,$(pycparser_dist_url),\
-                     $(FETCHDIR)/$(pycparser_dist_name),\
+                     $(pycparser_dist_name),\
                      $(pycparser_dist_sum))
 endef
 $(call gen_fetch_rules,pycparser,pycparser_dist_name,fetch_pycparser_dist)

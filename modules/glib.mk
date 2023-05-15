@@ -17,7 +17,7 @@ endef
 
 define fetch_glib_dist
 $(call download_csum,$(glib_dist_url),\
-                     $(FETCHDIR)/$(glib_dist_name),\
+                     $(glib_dist_name),\
                      $(glib_dist_sum))
 endef
 $(call gen_fetch_rules,glib,glib_dist_name,fetch_glib_dist)

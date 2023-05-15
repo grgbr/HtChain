@@ -22,7 +22,7 @@ endef
 
 define fetch_ninja_dist
 $(call download_csum,$(ninja_dist_url),\
-                     $(FETCHDIR)/$(ninja_dist_name),\
+                     $(ninja_dist_name),\
                      $(ninja_dist_sum))
 endef
 $(call gen_fetch_rules,ninja,ninja_dist_name,fetch_ninja_dist)

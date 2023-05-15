@@ -20,7 +20,7 @@ endef
 
 define fetch_gdbm_dist
 $(call download_csum,$(gdbm_dist_url),\
-                     $(FETCHDIR)/$(gdbm_dist_name),\
+                     $(gdbm_dist_name),\
                      $(gdbm_dist_sum))
 endef
 $(call gen_fetch_rules,gdbm,gdbm_dist_name,fetch_gdbm_dist)

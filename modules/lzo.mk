@@ -18,7 +18,7 @@ endef
 
 define fetch_lzo_dist
 $(call download_csum,$(lzo_dist_url),\
-                     $(FETCHDIR)/$(lzo_dist_name),\
+                     $(lzo_dist_name),\
                      $(lzo_dist_sum))
 endef
 $(call gen_fetch_rules,lzo,lzo_dist_name,fetch_lzo_dist)

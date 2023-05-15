@@ -25,7 +25,7 @@ endef
 
 define fetch_pyyaml_dist
 $(call download_csum,$(pyyaml_dist_url),\
-                     $(FETCHDIR)/$(pyyaml_dist_name),\
+                     $(pyyaml_dist_name),\
                      $(pyyaml_dist_sum))
 endef
 $(call gen_fetch_rules,pyyaml,pyyaml_dist_name,fetch_pyyaml_dist)
