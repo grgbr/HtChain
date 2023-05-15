@@ -6,13 +6,15 @@ log()
 }
 
 # Show help
-usage() {
+usage()
+{
 	local ret=$1
 
 	cat >&2 <<_EOF
-Usage: $(basename $0) [OPTIONS] <DIR>
+Usage: $(basename $0) [OPTIONS] [DIR]
 
-Strip all binary files found under <DIR> directory.
+Strip all binary files found under [DIR] directory.
+Or files from stdin if not DIR or DIR = -
 
 With OPTIONS:
   -h|--help -- this help message
@@ -56,35 +58,48 @@ while [ $# -gt 0 ]; do
 	shift 1
 done
 
-if [ $# -ne 1 ]; then
+if [ $# -eq 0 ]; then
+	dir="-"
+elif [ $# -eq 1 ]; then
+	dir="$1"
+else
 	log "Invalid number of arguments.\n"
 	usage 1
 fi
 
-dir="$1"
-if [ ! -d "$dir" ]; then
+if [ "$dir" != "-" ] -a [ ! -d "$dir" ]; then
+	log "$dir: Invalid directory specified.\n"
 	exit 1
 fi
-
 # file does not recognize guile 2.2+ object files (byte-compiled files) since
 # using a regular ELF format. Skip them as they are not strippable anyway.
 #
 # Also note that some files are installed read only. This is the reason why we
 # make them user writeable (chmod) before stripping...
-find "$dir" -type f ! -path "*/guile/*.go" | while read f; do
-	type=$(file --brief --mime "$f")
-	case "$type" in
-	"application/x-executable; charset=binary")
-		echo "STRIP $f" >&2
-		chmod u+w "$f"
-		strip --strip-all "$f";;
-	"application/x-pie-executable; charset=binary")
-		echo "STRIP $f" >&2
-		chmod u+w "$f"
-		strip --strip-all "$f";;
-	"application/x-sharedlib; charset=binary")
-		echo "STRIP $f" >&2
-		chmod u+w "$f"
-		strip --strip-unneeded "$f" || true;;
-	esac
-done
+strip_files()
+{
+	local f
+	while read f; do
+		type=$(file --brief --mime "$f")
+		case "$type" in
+		"application/x-executable; charset=binary")
+			echo "STRIP $f" >&2
+			chmod u+w "$f"
+			strip --strip-all "$f";;
+		"application/x-pie-executable; charset=binary")
+			echo "STRIP $f" >&2
+			chmod u+w "$f"
+			strip --strip-all "$f";;
+		"application/x-sharedlib; charset=binary")
+			echo "STRIP $f" >&2
+			chmod u+w "$f"
+			strip --strip-unneeded "$f" || true;;
+		esac
+	done
+}
+
+if [ "$dir" -eq "-" ]; then
+	strip_files
+else
+	find "$dir" -type f ! -path "*/guile/*.go" | strip_files
+fi

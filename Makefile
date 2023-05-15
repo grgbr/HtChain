@@ -386,16 +386,20 @@ stage: $(stage_targets)
 	$(call rmrf,$(stagedir)/share/man)
 	$(scriptdir)/strip.sh $(stagedir)
 
-.PHONY: check-stage-paths
-check-stage-paths:
-	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(stagedir) $(stagedir)
+.PHONY: check-stage-rpath
+check-stage-rpath: $(stage_targets)
+	env READELF='$(stage_readelf)' \
 	$(testdir)/check_rpath.sh $(if $(V),--verbose) \
 	                          $(stagedir) \
-	                          '^$(stagedir)/lib.*'
+	                          '^$(PREFIX)/lib.*'
+
+.PHONY: check-stage-shebang
+check-stage-shebang: $(stage_targets)
+	$(testdir)/check_shebang.sh $(if $(V),--verbose) $(stagedir) $(stagedir)
 
 .PHONY: check-stage
 check-stage: $(filter-out $(check_black_list),$(stage_check_targets)) \
-             check-stage-paths
+             check-stage-rpath check-stage-shebang
 
 .PHONY: clobber-stage
 clobber-stage:
@@ -474,6 +478,16 @@ $(debfile): $(final_targets) \
 	    --expression='s/@@DEBBINDEPS@@/$(debbindeps)/g' \
 	    $(TOPDIR)/debian/control.in > $(debdir)/DEBIAN/control
 	fakeroot dpkg-deb --build "$(debdir)" "$(outdir)"
+
+.PHONY: install
+install: $(final_targets)
+	$(MKDIR) --parents --mode=755 $(PREFIX)
+	$(call mirror_cmd,$(finaldir)$(PREFIX),$(PREFIX))
+	$(Q)find $(finaldir)$(PREFIX) -name "*.la" -printf "$(PREFIX)/%P\n" | xargs rm
+
+.PHONY: install-strip
+install-strip: install
+	$(Q)find "$(finaldir)$(PREFIX)" -type f ! -path "*/guile/*.go" -printf "$(PREFIX)/%P\n" | $(scriptdir)/strip.sh
 
 include build/doc.mk
 
@@ -558,3 +572,5 @@ $(_goals): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
 	$(call dock_run_make,$(DEBDIST),$(@))
 
 endif # ($(DEBDIST),)
+
+.DEFAULT_GOAL := all

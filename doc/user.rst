@@ -13,36 +13,8 @@ strategy, available on common debian package based distrib
 
 .. include:: ../generated/packages.rst
 
-Supported platforms
-###################
-
-As of today, the following toolchain support is provided :
-
-:a38x: Marvell Armada 38x SoC based platforms
-
-.. table:: Toolchains components
-
-   +----------------+-----------------------------+
-   |                | Toolchains                  |
-   + Components     +-----------------------------+
-   |                | a38x                        |
-   +================+=============================+
-   | autoconf       | 2.69                        |
-   +----------------+-----------------------------+
-   | automake       | 1.16.1                      |
-   +----------------+-----------------------------+
-   | libtool        | 2.4.6                       |
-   +----------------+-----------------------------+
-   | pkg-config     | 0.26.2                      |
-   +----------------+-----------------------------+
-   | binutils       | 2.32                        |
-   +----------------+-----------------------------+
-   | gcc            | 8.3.0                       |
-   +----------------+-----------------------------+
-   | glibc6         | 2.29                        |
-   +----------------+-----------------------------+
-   | packager       | crosstool-ng 1.24.0         |
-   +----------------+---------------+-------------+
+Default settings
+################
 
 Toolchain default settings are described into the table below [1]_.
 
@@ -51,25 +23,25 @@ Toolchain default settings are described into the table below [1]_.
    +-------------------------------+------------------------------------+
    | gcc / glibc settings          | Toolchains                         |
    +-------------+-----------------+------------------------------------+
-   | Name        | GCC switch      | a38x                               |
+   | Name        | GCC switch      | x86_64 GNU                         |
    +=============+=================+====================================+
-   | ABI         | -mabi           | aapcs-linux                        |
-   +-------------+-----------------+------------------------------------+
-   | TLS model   | -mtls-dialect   | gnu                                |
-   +-------------+-----------------+------------------------------------+
-   | Arch        | -march          | armv7-a+mp+sec+simd                |
-   +-------------+-----------------+------------------------------------+
-   | float ABI   | -mfloat-abi     | hard                               |
-   +-------------+-----------------+------------------------------------+
-   | FPU         | -mfpu           | neon-vfpv3                         |
-   +-------------+-----------------+------------------------------------+
-   | Instruction | -mthumb / -marm | ARM  (with no interwork)           |
-   | state       |                 |                                    |
-   +-------------+-----------------+------------------------------------+
-   | CPU         | -mcpu / -mtune  | cortex-a9                          |
-   +-------------+-----------------+------------------------------------+
-   | system tuple                  | armv7_a38x-xtchain-linux-gnueabihf |
-   +-------------------------------+------------------------------------+
+   .. | ABI         | -mabi           | aapcs-linux                        |
+   .. +-------------+-----------------+------------------------------------+
+   .. | TLS model   | -mtls-dialect   | gnu                                |
+   .. +-------------+-----------------+------------------------------------+
+   .. | Arch        | -march          | armv7-a+mp+sec+simd                |
+   .. +-------------+-----------------+------------------------------------+
+   .. | float ABI   | -mfloat-abi     | hard                               |
+   .. +-------------+-----------------+------------------------------------+
+   .. | FPU         | -mfpu           | neon-vfpv3                         |
+   .. +-------------+-----------------+------------------------------------+
+   .. | Instruction | -mthumb / -marm | ARM  (with no interwork)           |
+   .. | state       |                 |                                    |
+   .. +-------------+-----------------+------------------------------------+
+   .. | CPU         | -mcpu / -mtune  | cortex-a9                          |
+   .. +-------------+-----------------+------------------------------------+
+   .. | system tuple                  | armv7_a38x-xtchain-linux-gnueabihf |
+   .. +-------------------------------+------------------------------------+
 
 
 Build / install workflow
@@ -111,7 +83,7 @@ packages (see `Build`_ section).
 Getting help
 ************
 
-From XtChain source tree root, enter :
+From HtChain source tree root, enter :
 
 .. code-block:: console
 
@@ -120,40 +92,38 @@ From XtChain source tree root, enter :
 Build
 *****
 
-First of all, install all required dependencies :
+Building toolchain is performed out of source tree like so :
 
 .. code-block:: console
 
-   $ make prepare
-
-Building toolchain *a38x* is performed out of source tree like so :
-
-.. code-block:: console
-
-   $ make build-a38x BUILDDIR=/tmp/xtchain_build PREFIX=/opt/xtchain
-
-This will basically build every components of the *a38x* toolchain :
-
-* under the */tmp/xtchain_build* directory ;
-* using */opt/xtchain/a38x* as the futur install directory path.
+   $ make
 
 Install
 *******
 
-Installing toolchain *a38x* is performed according to the following
-command :
+Installing toolchain is performed according to the following command :
 
 .. code-block:: console
 
-   $ make install-a38x BUILDDIR=/tmp/xtchain_build PREFIX=/opt/xtchain
-   
-This instructs to deploy / install built components found under :
+   $ make install
 
-* the */tmp/xtchain_build* directory ;
-* under the */opt/xtchain/a38x* directory path.
+Installing striped toolchain is performed according to the following command :
+
+.. code-block:: console
+
+   $ make install-strip
 
 If you want to install the toolchain into a system-wide directory, you will most
 likely need root priviledge to run the above command.
+
+Debian file
+***********
+
+Making deb file is performed according to the following command :
+
+.. code-block:: console
+
+   $ make debian
 
 Install directory hierarchy
 ***************************
@@ -162,22 +132,47 @@ The directory hierarchy installed by the example commands above is show below.
 
 .. code-block:: console
 
-   $ ls -l /opt/xtchain/a38x/
-   total 28
-   drwxr-xr-x  7 greg home 4096 Aug 22 18:22 .
-   drwxr-xr-x  3 greg home 4096 Aug 22 20:13 ..
-   dr-xr-xr-x  8 greg home 4096 Aug 22 18:52 armv7_a38x-xtchain-linux-gnueabihf
-   drwxr-xr-x  2 greg home 4096 Aug 22 18:21 bin
-   drwxr-xr-x  3 greg home 4096 Aug 22 18:21 include
-   drwxr-xr-x  2 greg home 4096 Aug 22 18:21 lib
-   drwxr-xr-x 11 greg home 4096 Aug 22 18:06 share
+   $ ls -l /opt/htchain/htchain-12/
+   total 68
+   drwxr-xr-x 11 root root  4096 mai   13 14:30 ./
+   drwxr-xr-x  3 root root  4096 mai   13 13:44 ../
+   drwxr-xr-x  3 root root 12288 mai   13 15:28 bin/
+   drwxr-xr-x  6 root root  4096 mai   13 14:28 etc/
+   drwxr-xr-x 38 root root  4096 mai   13 15:28 include/
+   drwxr-xr-x 20 root root 20480 mai   13 15:28 lib/
+   drwxr-xr-x  2 root root  4096 mai   13 15:28 lib64/
+   drwxr-xr-x  3 root root  4096 mai   13 15:28 libexec/
+   drwxr-xr-x  2 root root  4096 mai   13 14:11 sbin/
+   drwxr-xr-x 32 root root  4096 mai   13 15:28 share/
+   drwxr-xr-x  4 root root  4096 mai   13 14:30 x86_64-pc-linux-gnu/
 
-In the excerpt above :
+Cross distribution building
+***************************
 
-* tools generating objects for target will be found under the
-  *armv7_a38x-xtchain-linux-gnueabihf* directory
-* development host only tools will be found into *bin", *include*, *lib* and
-  *share* remaining directories.
+With docker, it's possible to build for other distribution. For exemple to make
+debian file for ubuntu jammy use the following command :
+
+.. code-block:: console
+
+   $ make debian DEBDIST=jammy
+
+.. table:: Supported distribution
+
+   +--------------+--------------+--------------+
+   | Distribution | Version      | DEBDIST      |
+   +==============+==============+==============+
+   | ubuntu       | bionic       | bionic       |
+   +--------------+--------------+--------------+
+   | ubuntu       | focal        | focal        |
+   +--------------+--------------+--------------+
+   | ubuntu       | jammy        | jammy        |
+   +--------------+--------------+--------------+
+   | debian       | bullseye     | bullseye     |
+   +--------------+--------------+--------------+
+   | debian       | buster       | buster       |
+   +--------------+--------------+--------------+
+   | kali linux   | rolling      | kali-rolling |
+   +--------------+--------------+--------------+
 
 Adding a new toolchain
 ######################
