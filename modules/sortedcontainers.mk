@@ -22,7 +22,7 @@ endef
 
 define fetch_sortedcontainers_dist
 $(call download_csum,$(sortedcontainers_dist_url),\
-                     $(FETCHDIR)/$(sortedcontainers_dist_name),\
+                     $(sortedcontainers_dist_name),\
                      $(sortedcontainers_dist_sum))
 endef
 $(call gen_fetch_rules,sortedcontainers,\

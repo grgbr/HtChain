@@ -17,7 +17,7 @@ endef
 
 define fetch_pcre2_dist
 $(call download_csum,$(pcre2_dist_url),\
-                     $(FETCHDIR)/$(pcre2_dist_name),\
+                     $(pcre2_dist_name),\
                      $(pcre2_dist_sum))
 endef
 $(call gen_fetch_rules,pcre2,pcre2_dist_name,fetch_pcre2_dist)

@@ -25,7 +25,7 @@ endef
 
 define fetch_click_dist
 $(call download_csum,$(click_dist_url),\
-                     $(FETCHDIR)/$(click_dist_name),\
+                     $(click_dist_name),\
                      $(click_dist_sum))
 endef
 $(call gen_fetch_rules,click,click_dist_name,fetch_click_dist)

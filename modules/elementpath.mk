@@ -19,7 +19,7 @@ endef
 
 define fetch_elementpath_dist
 $(call download_csum,$(elementpath_dist_url),\
-                     $(FETCHDIR)/$(elementpath_dist_name),\
+                     $(elementpath_dist_name),\
                      $(elementpath_dist_sum))
 endef
 $(call gen_fetch_rules,elementpath,elementpath_dist_name,fetch_elementpath_dist)

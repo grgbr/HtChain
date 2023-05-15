@@ -18,7 +18,7 @@ endef
 
 define fetch_libipt_dist
 $(call download_csum,$(libipt_dist_url),\
-                     $(FETCHDIR)/$(libipt_dist_name),\
+                     $(libipt_dist_name),\
                      $(libipt_dist_sum))
 endef
 $(call gen_fetch_rules,libipt,libipt_dist_name,fetch_libipt_dist)

@@ -21,7 +21,7 @@ endef
 
 define fetch_httpbin_dist
 $(call download_csum,$(httpbin_dist_url),\
-                     $(FETCHDIR)/$(httpbin_dist_name),\
+                     $(httpbin_dist_name),\
                      $(httpbin_dist_sum))
 endef
 $(call gen_fetch_rules,httpbin,httpbin_dist_name,fetch_httpbin_dist)

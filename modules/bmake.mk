@@ -20,7 +20,7 @@ endef
 
 define fetch_bmake_dist
 $(call download_csum,$(bmake_dist_url),\
-                     $(FETCHDIR)/$(bmake_dist_name),\
+                     $(bmake_dist_name),\
                      $(bmake_dist_sum))
 endef
 $(call gen_fetch_rules,bmake,bmake_dist_name,fetch_bmake_dist)

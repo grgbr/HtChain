@@ -16,7 +16,7 @@ endef
 
 define fetch_sphinxcontrib-applehelp_dist
 $(call download_csum,$(sphinxcontrib-applehelp_dist_url),\
-                     $(FETCHDIR)/$(sphinxcontrib-applehelp_dist_name),\
+                     $(sphinxcontrib-applehelp_dist_name),\
                      $(sphinxcontrib-applehelp_dist_sum))
 endef
 $(call gen_fetch_rules,sphinxcontrib-applehelp,\

@@ -18,7 +18,7 @@ endef
 
 define fetch_mpfr_dist
 $(call download_csum,$(mpfr_dist_url),\
-                     $(FETCHDIR)/$(mpfr_dist_name),\
+                     $(mpfr_dist_name),\
                      $(mpfr_dist_sum))
 endef
 $(call gen_fetch_rules,mpfr,mpfr_dist_name,fetch_mpfr_dist)

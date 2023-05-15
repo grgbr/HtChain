@@ -26,7 +26,7 @@ endef
 
 define fetch_lxml_dist
 $(call download_csum,$(lxml_dist_url),\
-                     $(FETCHDIR)/$(lxml_dist_name),\
+                     $(lxml_dist_name),\
                      $(lxml_dist_sum))
 endef
 $(call gen_fetch_rules,lxml,lxml_dist_name,fetch_lxml_dist)

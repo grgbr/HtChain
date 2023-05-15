@@ -26,7 +26,7 @@ endef
 
 define fetch_flex_dist
 $(call download_csum,$(flex_dist_url),\
-                     $(FETCHDIR)/$(flex_dist_name),\
+                     $(flex_dist_name),\
                      $(flex_dist_sum))
 endef
 $(call gen_fetch_rules,flex,flex_dist_name,fetch_flex_dist)

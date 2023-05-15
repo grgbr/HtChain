@@ -21,7 +21,7 @@ endef
 
 define fetch_texinfo_dist
 $(call download_csum,$(texinfo_dist_url),\
-                     $(FETCHDIR)/$(texinfo_dist_name),\
+                     $(texinfo_dist_name),\
                      $(texinfo_dist_sum))
 endef
 $(call gen_fetch_rules,texinfo,texinfo_dist_name,fetch_texinfo_dist)

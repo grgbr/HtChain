@@ -30,7 +30,7 @@ endef
 
 define fetch_perl_dist
 $(call download_csum,$(perl_dist_url),\
-                     $(FETCHDIR)/$(perl_dist_name),\
+                     $(perl_dist_name),\
                      $(perl_dist_sum))
 endef
 $(call gen_fetch_rules,perl,perl_dist_name,fetch_perl_dist)

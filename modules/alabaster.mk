@@ -23,7 +23,7 @@ endef
 
 define fetch_alabaster_dist
 $(call download_csum,$(alabaster_dist_url),\
-                     $(FETCHDIR)/$(alabaster_dist_name),\
+                     $(alabaster_dist_name),\
                      $(alabaster_dist_sum))
 endef
 $(call gen_fetch_rules,alabaster,alabaster_dist_name,fetch_alabaster_dist)

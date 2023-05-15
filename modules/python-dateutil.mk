@@ -32,7 +32,7 @@ endef
 
 define fetch_python-dateutil_dist
 $(call download_csum,$(python-dateutil_dist_url),\
-                     $(FETCHDIR)/$(python-dateutil_dist_name),\
+                     $(python-dateutil_dist_name),\
                      $(python-dateutil_dist_sum))
 endef
 $(call gen_fetch_rules,python-dateutil,\

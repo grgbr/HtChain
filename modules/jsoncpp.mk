@@ -23,7 +23,7 @@ endef
 
 define fetch_jsoncpp_dist
 $(call download_csum,$(jsoncpp_dist_url),\
-                     $(FETCHDIR)/$(jsoncpp_dist_name),\
+                     $(jsoncpp_dist_name),\
                      $(jsoncpp_dist_sum))
 endef
 $(call gen_fetch_rules,jsoncpp,jsoncpp_dist_name,fetch_jsoncpp_dist)

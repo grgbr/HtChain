@@ -19,7 +19,7 @@ endef
 
 define fetch_acl_dist
 $(call download_csum,$(acl_dist_url),\
-                     $(FETCHDIR)/$(acl_dist_name),\
+                     $(acl_dist_name),\
                      $(acl_dist_sum))
 endef
 $(call gen_fetch_rules,acl,acl_dist_name,fetch_acl_dist)

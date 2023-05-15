@@ -27,7 +27,7 @@ endef
 
 define fetch_webencodings_dist
 $(call download_csum,$(webencodings_dist_url),\
-                     $(FETCHDIR)/$(webencodings_dist_name),\
+                     $(webencodings_dist_name),\
                      $(webencodings_dist_sum))
 endef
 $(call gen_fetch_rules,webencodings,webencodings_dist_name,fetch_webencodings_dist)

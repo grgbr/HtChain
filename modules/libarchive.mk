@@ -47,7 +47,7 @@ endef
 
 define fetch_libarchive_dist
 $(call download_csum,$(libarchive_dist_url),\
-                     $(FETCHDIR)/$(libarchive_dist_name),\
+                     $(libarchive_dist_name),\
                      $(libarchive_dist_sum))
 endef
 $(call gen_fetch_rules,libarchive,libarchive_dist_name,fetch_libarchive_dist)

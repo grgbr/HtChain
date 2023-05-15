@@ -19,7 +19,7 @@ endef
 
 define fetch_gettext_dist
 $(call download_csum,$(gettext_dist_url),\
-                     $(FETCHDIR)/$(gettext_dist_name),\
+                     $(gettext_dist_name),\
                      $(gettext_dist_sum))
 endef
 $(call gen_fetch_rules,gettext,gettext_dist_name,fetch_gettext_dist)

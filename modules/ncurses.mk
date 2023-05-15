@@ -24,7 +24,7 @@ endef
 
 define fetch_ncurses_dist
 $(call download_csum,$(ncurses_dist_url),\
-                     $(FETCHDIR)/$(ncurses_dist_name),\
+                     $(ncurses_dist_name),\
                      $(ncurses_dist_sum))
 endef
 $(call gen_fetch_rules,ncurses,ncurses_dist_name,fetch_ncurses_dist)
@@ -34,9 +34,8 @@ urxvt_tinfo_dist_sum  := 325d65f4fd84e10ef4ebf8b06a003d4afe4ded2e5ec36d7c49d6c17
 urxvt_tinfo_dist_name := $(notdir $(urxvt_tinfo_dist_url))
 
 define fetch_urxvt_tinfo_dist
-$(call download,$(urxvt_tinfo_dist_url),$(FETCHDIR)/$(urxvt_tinfo_dist_name))
 $(call download_csum,$(urxvt_tinfo_dist_url),\
-                     $(FETCHDIR)/$(urxvt_tinfo_dist_name),\
+                     $(urxvt_tinfo_dist_name),\
                      $(urxvt_tinfo_dist_sum))
 endef
 $(call gen_fetch_rules,ncurses,urxvt_tinfo_dist_name,fetch_urxvt_tinfo_dist)

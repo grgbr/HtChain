@@ -19,7 +19,7 @@ endef
 
 define fetch_setuptools-scm_dist
 $(call download_csum,$(setuptools-scm_dist_url),\
-                     $(FETCHDIR)/$(setuptools-scm_dist_name),\
+                     $(setuptools-scm_dist_name),\
                      $(setuptools-scm_dist_sum))
 endef
 $(call gen_fetch_rules,setuptools-scm,\

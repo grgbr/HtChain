@@ -20,7 +20,7 @@ endef
 
 define fetch_hatchling_dist
 $(call download_csum,$(hatchling_dist_url),\
-                     $(FETCHDIR)/$(hatchling_dist_name),\
+                     $(hatchling_dist_name),\
                      $(hatchling_dist_sum))
 endef
 $(call gen_fetch_rules,hatchling,hatchling_dist_name,fetch_hatchling_dist)

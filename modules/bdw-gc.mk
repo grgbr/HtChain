@@ -25,7 +25,7 @@ endef
 
 define fetch_bdw-gc_dist
 $(call download_csum,$(bdw-gc_dist_url),\
-                     $(FETCHDIR)/$(bdw-gc_dist_name),\
+                     $(bdw-gc_dist_name),\
                      $(bdw-gc_dist_sum))
 endef
 $(call gen_fetch_rules,bdw-gc,bdw-gc_dist_name,fetch_bdw-gc_dist)

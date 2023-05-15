@@ -16,7 +16,7 @@ endef
 
 define fetch_markupsafe_dist
 $(call download_csum,$(markupsafe_dist_url),\
-                     $(FETCHDIR)/$(markupsafe_dist_name),\
+                     $(markupsafe_dist_name),\
                      $(markupsafe_dist_sum))
 endef
 $(call gen_fetch_rules,markupsafe,markupsafe_dist_name,fetch_markupsafe_dist)

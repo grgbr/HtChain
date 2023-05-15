@@ -25,7 +25,7 @@ endef
 
 define fetch_cmake_dist
 $(call download_csum,$(cmake_dist_url),\
-                     $(FETCHDIR)/$(cmake_dist_name),\
+                     $(cmake_dist_name),\
                      $(cmake_dist_sum))
 endef
 $(call gen_fetch_rules,cmake,cmake_dist_name,fetch_cmake_dist)

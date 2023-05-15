@@ -16,7 +16,7 @@ endef
 
 define fetch_sphinxcontrib-jquery_dist
 $(call download_csum,$(sphinxcontrib-jquery_dist_url),\
-                     $(FETCHDIR)/$(sphinxcontrib-jquery_dist_name),\
+                     $(sphinxcontrib-jquery_dist_name),\
                      $(sphinxcontrib-jquery_dist_sum))
 endef
 $(call gen_fetch_rules,sphinxcontrib-jquery,\

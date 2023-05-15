@@ -24,7 +24,7 @@ endef
 
 define fetch_tcl_dist
 $(call download_csum,$(tcl_dist_url),\
-                     $(FETCHDIR)/$(tcl_dist_name),\
+                     $(tcl_dist_name),\
                      $(tcl_dist_sum))
 endef
 $(call gen_fetch_rules,tcl,tcl_dist_name,fetch_tcl_dist)

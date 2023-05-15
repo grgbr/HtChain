@@ -22,7 +22,7 @@ endef
 
 define fetch_curl_dist
 $(call download_csum,$(curl_dist_url),\
-                     $(FETCHDIR)/$(curl_dist_name),\
+                     $(curl_dist_name),\
                      $(curl_dist_sum))
 endef
 $(call gen_fetch_rules,curl,curl_dist_name,fetch_curl_dist)

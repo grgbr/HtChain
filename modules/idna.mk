@@ -22,7 +22,7 @@ endef
 
 define fetch_idna_dist
 $(call download_csum,$(idna_dist_url),\
-                     $(FETCHDIR)/$(idna_dist_name),\
+                     $(idna_dist_name),\
                      $(idna_dist_sum))
 endef
 $(call gen_fetch_rules,idna,idna_dist_name,fetch_idna_dist)

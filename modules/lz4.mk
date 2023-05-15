@@ -18,7 +18,7 @@ endef
 
 define fetch_lz4_dist
 $(call download_csum,$(lz4_dist_url),\
-                     $(FETCHDIR)/$(lz4_dist_name),\
+                     $(lz4_dist_name),\
                      $(lz4_dist_sum))
 endef
 $(call gen_fetch_rules,lz4,lz4_dist_name,fetch_lz4_dist)

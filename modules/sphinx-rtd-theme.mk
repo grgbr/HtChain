@@ -19,7 +19,7 @@ endef
 
 define fetch_sphinx-rtd-theme_dist
 $(call download_csum,$(sphinx-rtd-theme_dist_url),\
-                     $(FETCHDIR)/$(sphinx-rtd-theme_dist_name),\
+                     $(sphinx-rtd-theme_dist_name),\
                      $(sphinx-rtd-theme_dist_sum))
 endef
 $(call gen_fetch_rules,sphinx-rtd-theme,\

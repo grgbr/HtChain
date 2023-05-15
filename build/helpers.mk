@@ -46,22 +46,24 @@ $(scriptdir)/gpg_verify.sh --homedir "$(FETCHDIR)/.gnupg" \
 endef
 
 define download_csum
-if [ ! -r "$(strip $(2))" ]; then \
+if [ ! -r "$(FETCHDIR)/$(strip $(2))" ]; then \
 	if ! msg=$$($(CURL) --silent \
 	                    --show-error \
 	                    --stderr - \
-	                    --location '$(strip $(1))' \
-	                    --output '$(strip $(2).tmp)'); then \
-		echo "download: $(notdir $(strip $(2))): $$msg" >&2; \
+	                    --location $(if $(FETCHURI),\
+	                                     '$(FETCHURI)/$(strip $(2))',\
+	                                     '$(strip $(1))') \
+	                    --output '$(FETCHDIR)/$(strip $(2)).tmp'); then \
+		echo "download: $(strip $(2)): $$msg" >&2; \
 		exit 1; \
 	fi; \
-	if ! echo '$(strip $(3)) $(strip $(2)).tmp' | \
+	if ! echo '$(strip $(3)) $(FETCHDIR)/$(strip $(2)).tmp' | \
 	     sha512sum --check --strict --status -; then \
-		echo 'download: $(notdir $(strip $(2))): checksum mismatch' >&2; \
+		echo 'download: $(strip $(2)): checksum mismatch' >&2; \
 		exit 1; \
 	else \
-		$(call mv,$(strip $(2)).tmp,$(strip $(2))); \
-		$(SYNC) --file-system '$(strip $(2))'; \
+		$(call mv,$(FETCHDIR)/$(strip $(2)).tmp,$(FETCHDIR)/$(strip $(2))); \
+		$(SYNC) --file-system '$(FETCHDIR)/$(strip $(2))'; \
 	fi; \
 fi
 endef

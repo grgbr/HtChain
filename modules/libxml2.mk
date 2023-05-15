@@ -22,7 +22,7 @@ endef
 
 define fetch_libxml2_dist
 $(call download_csum,$(libxml2_dist_url),\
-                     $(FETCHDIR)/$(libxml2_dist_name),\
+                     $(libxml2_dist_name),\
                      $(libxml2_dist_sum))
 endef
 $(call gen_fetch_rules,libxml2,libxml2_dist_name,fetch_libxml2_dist)

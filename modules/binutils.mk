@@ -17,7 +17,7 @@ endef
 
 define fetch_binutils_dist
 $(call download_csum,$(binutils_dist_url),\
-                     $(FETCHDIR)/$(binutils_dist_name),\
+                     $(binutils_dist_name),\
                      $(binutils_dist_sum))
 endef
 $(call gen_fetch_rules,binutils,binutils_dist_name,fetch_binutils_dist)

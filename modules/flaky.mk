@@ -23,7 +23,7 @@ endef
 
 define fetch_flaky_dist
 $(call download_csum,$(flaky_dist_url),\
-                     $(FETCHDIR)/$(flaky_dist_name),\
+                     $(flaky_dist_name),\
                      $(flaky_dist_sum))
 endef
 $(call gen_fetch_rules,flaky,flaky_dist_name,fetch_flaky_dist)

@@ -24,7 +24,7 @@ endef
 
 define fetch_libtool_dist
 $(call download_csum,$(libtool_dist_url),\
-                     $(FETCHDIR)/$(libtool_dist_name),\
+                     $(libtool_dist_name),\
                      $(libtool_dist_sum))
 endef
 $(call gen_fetch_rules,libtool,libtool_dist_name,fetch_libtool_dist)

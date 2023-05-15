@@ -28,7 +28,7 @@ endef
 
 define fetch_flit_core_dist
 $(call download_csum,$(flit_core_dist_url),\
-                     $(FETCHDIR)/$(flit_core_dist_name),\
+                     $(flit_core_dist_name),\
                      $(flit_core_dist_sum))
 endef
 $(call gen_fetch_rules,flit_core,flit_core_dist_name,fetch_flit_core_dist)

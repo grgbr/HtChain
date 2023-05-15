@@ -27,7 +27,7 @@ endef
 
 define fetch_automake_dist
 $(call download_csum,$(automake_dist_url),\
-                     $(FETCHDIR)/$(automake_dist_name),\
+                     $(automake_dist_name),\
                      $(automake_dist_sum))
 endef
 $(call gen_fetch_rules,automake,automake_dist_name,fetch_automake_dist)

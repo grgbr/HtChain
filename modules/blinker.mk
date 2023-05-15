@@ -22,7 +22,7 @@ endef
 
 define fetch_blinker_dist
 $(call download_csum,$(blinker_dist_url),\
-                     $(FETCHDIR)/$(blinker_dist_name),\
+                     $(blinker_dist_name),\
                      $(blinker_dist_sum))
 endef
 $(call gen_fetch_rules,blinker,blinker_dist_name,fetch_blinker_dist)

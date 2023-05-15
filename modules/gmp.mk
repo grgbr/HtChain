@@ -19,7 +19,7 @@ endef
 
 define fetch_gmp_dist
 $(call download_csum,$(gmp_dist_url),\
-                     $(FETCHDIR)/$(gmp_dist_name),\
+                     $(gmp_dist_name),\
                      $(gmp_dist_sum))
 endef
 $(call gen_fetch_rules,gmp,gmp_dist_name,fetch_gmp_dist)

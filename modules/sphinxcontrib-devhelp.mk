@@ -17,7 +17,7 @@ endef
 
 define fetch_sphinxcontrib-devhelp_dist
 $(call download_csum,$(sphinxcontrib-devhelp_dist_url),\
-                     $(FETCHDIR)/$(sphinxcontrib-devhelp_dist_name),\
+                     $(sphinxcontrib-devhelp_dist_name),\
                      $(sphinxcontrib-devhelp_dist_sum))
 endef
 $(call gen_fetch_rules,sphinxcontrib-devhelp,\

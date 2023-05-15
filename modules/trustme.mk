@@ -20,7 +20,7 @@ endef
 
 define fetch_trustme_dist
 $(call download_csum,$(trustme_dist_url),\
-                     $(FETCHDIR)/$(trustme_dist_name),\
+                     $(trustme_dist_name),\
                      $(trustme_dist_sum))
 endef
 $(call gen_fetch_rules,trustme,trustme_dist_name,fetch_trustme_dist)

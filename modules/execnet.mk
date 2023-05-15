@@ -24,7 +24,7 @@ endef
 
 define fetch_execnet_dist
 $(call download_csum,$(execnet_dist_url),\
-                     $(FETCHDIR)/$(execnet_dist_name),\
+                     $(execnet_dist_name),\
                      $(execnet_dist_sum))
 endef
 $(call gen_fetch_rules,execnet,execnet_dist_name,fetch_execnet_dist)

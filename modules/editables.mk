@@ -21,7 +21,7 @@ endef
 
 define fetch_editables_dist
 $(call download_csum,$(editables_dist_url),\
-                     $(FETCHDIR)/$(editables_dist_name),\
+                     $(editables_dist_name),\
                      $(editables_dist_sum))
 endef
 $(call gen_fetch_rules,editables,editables_dist_name,fetch_editables_dist)

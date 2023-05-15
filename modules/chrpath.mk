@@ -17,7 +17,7 @@ endef
 
 define fetch_chrpath_dist
 $(call download_csum,$(chrpath_dist_url),\
-                     $(FETCHDIR)/$(chrpath_dist_name),\
+                     $(chrpath_dist_name),\
                      $(chrpath_dist_sum))
 endef
 $(call gen_fetch_rules,chrpath,chrpath_dist_name,fetch_chrpath_dist)

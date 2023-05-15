@@ -22,7 +22,7 @@ endef
 
 define fetch_tornado_dist
 $(call download_csum,$(tornado_dist_url),\
-                     $(FETCHDIR)/$(tornado_dist_name),\
+                     $(tornado_dist_name),\
                      $(tornado_dist_sum))
 endef
 $(call gen_fetch_rules,tornado,tornado_dist_name,fetch_tornado_dist)

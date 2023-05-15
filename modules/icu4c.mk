@@ -17,7 +17,7 @@ endef
 
 define fetch_icu4c_dist
 $(call download_csum,$(icu4c_dist_url),\
-                     $(FETCHDIR)/$(icu4c_dist_name),\
+                     $(icu4c_dist_name),\
                      $(icu4c_dist_sum))
 endef
 $(call gen_fetch_rules,icu4c,icu4c_dist_name,fetch_icu4c_dist)

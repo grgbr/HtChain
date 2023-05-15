@@ -29,7 +29,7 @@ endef
 
 define fetch_pytz_dist
 $(call download_csum,$(pytz_dist_url),\
-                     $(FETCHDIR)/$(pytz_dist_name),\
+                     $(pytz_dist_name),\
                      $(pytz_dist_sum))
 endef
 $(call gen_fetch_rules,pytz,pytz_dist_name,fetch_pytz_dist)

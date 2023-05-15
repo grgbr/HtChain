@@ -22,7 +22,7 @@ endef
 
 define fetch_pretend_dist
 $(call download_csum,$(pretend_dist_url),\
-                     $(FETCHDIR)/$(pretend_dist_name),\
+                     $(pretend_dist_name),\
                      $(pretend_dist_sum))
 endef
 $(call gen_fetch_rules,pretend,pretend_dist_name,fetch_pretend_dist)

@@ -21,7 +21,7 @@ endef
 
 define fetch_hatch-vcs_dist
 $(call download_csum,$(hatch-vcs_dist_url),\
-                     $(FETCHDIR)/$(hatch-vcs_dist_name),\
+                     $(hatch-vcs_dist_name),\
                      $(hatch-vcs_dist_sum))
 endef
 $(call gen_fetch_rules,hatch-vcs,hatch-vcs_dist_name,fetch_hatch-vcs_dist)

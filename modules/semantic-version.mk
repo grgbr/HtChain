@@ -22,7 +22,7 @@ endef
 
 define fetch_semantic-version_dist
 $(call download_csum,$(semantic-version_dist_url),\
-                     $(FETCHDIR)/$(semantic-version_dist_name),\
+                     $(semantic-version_dist_name),\
                      $(semantic-version_dist_sum))
 endef
 $(call gen_fetch_rules,semantic-version,\

@@ -18,7 +18,7 @@ endef
 
 define fetch_babel_dist
 $(call download_csum,$(babel_dist_url),\
-                     $(FETCHDIR)/$(babel_dist_name),\
+                     $(babel_dist_name),\
                      $(babel_dist_sum))
 endef
 $(call gen_fetch_rules,babel,babel_dist_name,fetch_babel_dist)

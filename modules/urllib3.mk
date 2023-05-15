@@ -24,7 +24,7 @@ endef
 
 define fetch_urllib3_dist
 $(call download_csum,$(urllib3_dist_url),\
-                     $(FETCHDIR)/$(urllib3_dist_name),\
+                     $(urllib3_dist_name),\
                      $(urllib3_dist_sum))
 endef
 $(call gen_fetch_rules,urllib3,urllib3_dist_name,fetch_urllib3_dist)

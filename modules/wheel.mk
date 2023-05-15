@@ -22,7 +22,7 @@ endef
 
 define fetch_wheel_dist
 $(call download_csum,$(wheel_dist_url),\
-                     $(FETCHDIR)/$(wheel_dist_name),\
+                     $(wheel_dist_name),\
                      $(wheel_dist_sum))
 endef
 $(call gen_fetch_rules,wheel,wheel_dist_name,fetch_wheel_dist)

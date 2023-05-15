@@ -20,7 +20,7 @@ endef
 
 define fetch_html5lib_dist
 $(call download_csum,$(html5lib_dist_url),\
-                     $(FETCHDIR)/$(html5lib_dist_name),\
+                     $(html5lib_dist_name),\
                      $(html5lib_dist_sum))
 endef
 $(call gen_fetch_rules,html5lib,html5lib_dist_name,fetch_html5lib_dist)

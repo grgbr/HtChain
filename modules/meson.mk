@@ -17,7 +17,7 @@ endef
 
 define fetch_meson_dist
 $(call download_csum,$(meson_dist_url),\
-                     $(FETCHDIR)/$(meson_dist_name),\
+                     $(meson_dist_name),\
                      $(meson_dist_sum))
 endef
 $(call gen_fetch_rules,meson,meson_dist_name,fetch_meson_dist)

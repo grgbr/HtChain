@@ -16,7 +16,7 @@ endef
 
 define fetch_imagesize_dist
 $(call download_csum,$(imagesize_dist_url),\
-                     $(FETCHDIR)/$(imagesize_dist_name),\
+                     $(imagesize_dist_name),\
                      $(imagesize_dist_sum))
 endef
 $(call gen_fetch_rules,imagesize,imagesize_dist_name,fetch_imagesize_dist)

@@ -21,7 +21,7 @@ endef
 
 define fetch_boost_dist
 $(call download_csum,$(boost_dist_url),\
-                     $(FETCHDIR)/$(boost_dist_name),\
+                     $(boost_dist_name),\
                      $(boost_dist_sum))
 endef
 $(call gen_fetch_rules,boost,boost_dist_name,fetch_boost_dist)

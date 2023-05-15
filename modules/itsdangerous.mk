@@ -24,7 +24,7 @@ endef
 
 define fetch_itsdangerous_dist
 $(call download_csum,$(itsdangerous_dist_url),\
-                     $(FETCHDIR)/$(itsdangerous_dist_name),\
+                     $(itsdangerous_dist_name),\
                      $(itsdangerous_dist_sum))
 endef
 $(call gen_fetch_rules,itsdangerous,\

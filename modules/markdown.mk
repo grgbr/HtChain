@@ -21,7 +21,7 @@ endef
 
 define fetch_markdown_dist
 $(call download_csum,$(markdown_dist_url),\
-                     $(FETCHDIR)/$(markdown_dist_name),\
+                     $(markdown_dist_name),\
                      $(markdown_dist_sum))
 endef
 $(call gen_fetch_rules,markdown,markdown_dist_name,fetch_markdown_dist)

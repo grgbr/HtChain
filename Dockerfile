@@ -14,6 +14,9 @@ USER root
 # Install basic tools
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get --yes update
+# Somme docker minimize env by removing doc and doc tools. Force unminimize it
+# for test inside docker (like perl)
+RUN if [ -f /usr/local/sbin/unminimize ]; then yes | /usr/local/sbin/unminimize; fi
 RUN apt-get --yes install sudo util-linux make locales $DEBSRCDEPS
 RUN apt-get --yes clean
 RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen && locale-gen

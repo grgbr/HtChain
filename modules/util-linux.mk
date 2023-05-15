@@ -18,7 +18,7 @@ endef
 
 define fetch_util-linux_dist
 $(call download_csum,$(util-linux_dist_url),\
-                     $(FETCHDIR)/$(util-linux_dist_name),\
+                     $(util-linux_dist_name),\
                      $(util-linux_dist_sum))
 endef
 $(call gen_fetch_rules,util-linux,util-linux_dist_name,fetch_util-linux_dist)

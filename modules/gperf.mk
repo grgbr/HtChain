@@ -19,7 +19,7 @@ endef
 
 define fetch_gperf_dist
 $(call download_csum,$(gperf_dist_url),\
-                     $(FETCHDIR)/$(gperf_dist_name),\
+                     $(gperf_dist_name),\
                      $(gperf_dist_sum))
 endef
 $(call gen_fetch_rules,gperf,gperf_dist_name,fetch_gperf_dist)

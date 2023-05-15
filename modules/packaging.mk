@@ -18,7 +18,7 @@ endef
 
 define fetch_packaging_dist
 $(call download_csum,$(packaging_dist_url),\
-                     $(FETCHDIR)/$(packaging_dist_name),\
+                     $(packaging_dist_name),\
                      $(packaging_dist_sum))
 endef
 $(call gen_fetch_rules,packaging,packaging_dist_name,fetch_packaging_dist)

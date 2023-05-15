@@ -21,7 +21,7 @@ endef
 
 define fetch_brotlipy_dist
 $(call download_csum,$(brotlipy_dist_url),\
-                     $(FETCHDIR)/$(brotlipy_dist_name),\
+                     $(brotlipy_dist_name),\
                      $(brotlipy_dist_sum))
 endef
 $(call gen_fetch_rules,brotlipy,brotlipy_dist_name,fetch_brotlipy_dist)

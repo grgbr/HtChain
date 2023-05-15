@@ -27,7 +27,7 @@ endef
 
 define fetch_readthedocs-sphinx-ext_dist
 $(call download_csum,$(readthedocs-sphinx-ext_dist_url),\
-                     $(FETCHDIR)/$(readthedocs-sphinx-ext_dist_name),\
+                     $(readthedocs-sphinx-ext_dist_name),\
                      $(readthedocs-sphinx-ext_dist_sum))
 endef
 $(call gen_fetch_rules,readthedocs-sphinx-ext,\

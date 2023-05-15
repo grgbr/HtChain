@@ -22,7 +22,7 @@ endef
 
 define fetch_mock_dist
 $(call download_csum,$(mock_dist_url),\
-                     $(FETCHDIR)/$(mock_dist_name),\
+                     $(mock_dist_name),\
                      $(mock_dist_sum))
 endef
 $(call gen_fetch_rules,mock,mock_dist_name,fetch_mock_dist)

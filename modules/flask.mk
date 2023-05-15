@@ -19,7 +19,7 @@ endef
 
 define fetch_flask_dist
 $(call download_csum,$(flask_dist_url),\
-                     $(FETCHDIR)/$(flask_dist_name),\
+                     $(flask_dist_name),\
                      $(flask_dist_sum))
 endef
 $(call gen_fetch_rules,flask,flask_dist_name,fetch_flask_dist)

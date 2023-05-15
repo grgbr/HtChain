@@ -32,7 +32,7 @@ endef
 
 define fetch_jinja2_dist
 $(call download_csum,$(jinja2_dist_url),\
-                     $(FETCHDIR)/$(jinja2_dist_name),\
+                     $(jinja2_dist_name),\
                      $(jinja2_dist_sum))
 endef
 $(call gen_fetch_rules,jinja2,jinja2_dist_name,fetch_jinja2_dist)

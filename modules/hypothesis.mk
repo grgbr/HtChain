@@ -25,7 +25,7 @@ endef
 
 define fetch_hypothesis_dist
 $(call download_csum,$(hypothesis_dist_url),\
-                     $(FETCHDIR)/$(hypothesis_dist_name),\
+                     $(hypothesis_dist_name),\
                      $(hypothesis_dist_sum))
 endef
 $(call gen_fetch_rules,hypothesis,hypothesis_dist_name,fetch_hypothesis_dist)
