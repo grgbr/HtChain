@@ -99,8 +99,13 @@ define fetch_rules
 fetch-$(strip $(1)): $(FETCHDIR)/$($(strip $(2)))
 $(FETCHDIR)/$($(strip $(2))): | $(OUTDIR)/stamp/pkgs-setup $(FETCHDIR)
 	$$(call log,$(1),fetching)
+ifeq ($(OFFLINE),)
 	$$($(strip $(3)))
 	@touch $$(@)
+else
+	echo "$$(@): cannot download missing file: OFFLINE mode enabled!"  >&2; \
+	exit 1
+endif
 
 fetch: fetch-$(strip $(1))
 
