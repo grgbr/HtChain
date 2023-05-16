@@ -17,6 +17,9 @@ setup: setup-sigs
 setup-sigs: | $(OUTDIR)/stamp/pkgs-setup $(FETCHDIR)
 	$(call setup_sigs_cmds)
 
+.PHONY: prepare
+prepare: setup-pkgs
+
 .PHONY: setup-pkgs
 setup-pkgs:
 	$(call setup_pkgs_cmds)
@@ -52,14 +55,6 @@ clobber:
 		        -type d \
 		        -exec rm -rf {} \; ; \
 	fi
-
-.PHONY: install
-install:
-
-.PHONY: uninstall
-uninstall:
-	find $(stampdir) -maxdepth 2 -name installed -delete
-	$(call rmrf,$(stagedir))
 
 .PHONY: check
 check:
