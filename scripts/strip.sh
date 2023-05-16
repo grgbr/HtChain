@@ -67,7 +67,7 @@ else
 	usage 1
 fi
 
-if [ "$dir" != "-" ] -a [ ! -d "$dir" ]; then
+if [ "$dir" != "-" -a ! -d "$dir" ]; then
 	log "$dir: Invalid directory specified.\n"
 	exit 1
 fi
@@ -98,7 +98,7 @@ strip_files()
 	done
 }
 
-if [ "$dir" -eq "-" ]; then
+if [ "$dir" = "-" ]; then
 	strip_files
 else
 	find "$dir" -type f ! -path "*/guile/*.go" | strip_files
