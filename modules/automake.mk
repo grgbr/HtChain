@@ -100,7 +100,7 @@ define automake_check_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          check \
          PERL="$(stage_perl)" \
-         PATH="$(stagedir)/bin:$(PATH)"
+         PATH="$(stagedir)/bin:$(PATH)"  $(2)
 endef
 
 ################################################################################
@@ -170,7 +170,8 @@ uninstall_final-automake = $(call automake_uninstall_cmds,\
                                   final-automake,\
                                   $(PREFIX),\
                                   $(finaldir))
-check_final-automake     = $(call automake_check_cmds,final-automake)
+check_final-automake     = $(call automake_check_cmds,final-automake,\
+                                  LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-automake,automake,config_final-automake)
 $(call gen_clobber_rules,final-automake)
