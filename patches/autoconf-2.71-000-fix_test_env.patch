@@ -1,0 +1,17 @@
+--- a/tests/local.at	2023-05-16 16:51:22.202309527 +0200
++++ b/tests/local.at	2021-01-28 21:46:48.000000000 +0100
+@@ -475,12 +475,14 @@
+   $SED '/^ac_cv_/ b skip
+ 	/^m4_defn([m4_re_word])=./ !d
+ 	/^[[^=]]*='\'''\''$/ d
++  /^[[^=]]*=""$/ d
+ 	/^a[[cs]]_/ d
+ 	: skip
+ 	/^OLDPWD=/ d
+ 	/^PPID=/ d
+ 	/^RANDOM=/ d
+ 	/^SECONDS=/ d
++  /^SHLVL=/ d
+ 	/^START_TIME=/ d
+ 	/^ToD=/ d
+ 	/'\'\\\$\''=/ d
