@@ -24,7 +24,7 @@ RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen && locale-gen
 # $HTCHAIN_GID user group created by scripts/dock_start.sh
 RUN addgroup --system htchain
 RUN umask 0337 && \
-    echo '%htchain ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get' \
+    echo '%htchain ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get, /usr/bin/make' \
     > /etc/sudoers.d/htchain
 
 RUN addgroup --gid $HTCHAIN_GID $HTCHAIN_GROUP >/dev/null

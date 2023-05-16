@@ -3,6 +3,9 @@ SPHINXOPTS   := -a -j 1 \
                 -D release="$(version)"
 sphinx_build := $(stagedir)/bin/sphinx-build
 
+.PHONY: doc
+doc: build-html
+
 .PHONY: build-html
 build-html: $(OUTDIR)/stamp/doc/html-built
 

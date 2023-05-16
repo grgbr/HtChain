@@ -450,6 +450,9 @@ show-version:
 .PHONY: all
 all: final
 
+.PHONY: build
+build: final
+
 # Debian package architecture field
 debarch    := $(shell dpkg --print-architecture)
 # Debian package depends field
@@ -481,13 +484,17 @@ $(debfile): $(final_targets) \
 
 .PHONY: install
 install: $(final_targets)
-	$(MKDIR) --parents --mode=755 $(PREFIX)
-	$(call mirror_cmd,$(finaldir)$(PREFIX),$(PREFIX))
-	$(Q)find $(finaldir)$(PREFIX) -name "*.la" -printf "$(PREFIX)/%P\n" | xargs rm
+	$(MKDIR) --parents --mode=755 $(DESTDIR)$(PREFIX)
+	$(call mirror_cmd,$(finaldir)$(PREFIX),$(DESTDIR)$(PREFIX))
+	$(Q)find $(finaldir)$(PREFIX) -name "*.la" -printf "$(DESTDIR)$(PREFIX)/%P\n" | xargs rm
 
 .PHONY: install-strip
 install-strip: install
-	$(Q)find "$(finaldir)$(PREFIX)" -type f ! -path "*/guile/*.go" -printf "$(PREFIX)/%P\n" | $(scriptdir)/strip.sh
+	$(Q)find "$(finaldir)$(PREFIX)" -type f ! -path "*/guile/*.go" -printf "$(DESTDIR)$(PREFIX)/%P\n" | $(scriptdir)/strip.sh
+
+.PHONY: uninstall
+uninstall:
+	$(Q)$(call uninstall_from_refdir,$(finaldir)$(PREFIX),$(DESTDIR)$(PREFIX))
 
 include build/doc.mk
 
@@ -566,6 +573,9 @@ test-deps: $(OUTDIR)/$(DEBDIST)/stamp/docker-ready
 	$(call dock_run_cmd,$(DEBDIST),$(TOPDIR)/scripts/test_deps.sh)
 
 _goals := $(filter-out $(OUTDIR)% $(TOPDIR)% shell test-deps,$(MAKECMDGOALS))
+ifeq ($(_goals),)
+	_goals := all
+endif
 
 .PHONY: $(_goals)
 $(_goals): $(OUTDIR)/$(DEBDIST)/stamp/docker-ready

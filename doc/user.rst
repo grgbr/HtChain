@@ -25,61 +25,28 @@ Toolchain default settings are described into the table below [1]_.
    +-------------+-----------------+------------------------------------+
    | Name        | GCC switch      | x86_64 GNU                         |
    +=============+=================+====================================+
-   .. | ABI         | -mabi           | aapcs-linux                        |
-   .. +-------------+-----------------+------------------------------------+
-   .. | TLS model   | -mtls-dialect   | gnu                                |
-   .. +-------------+-----------------+------------------------------------+
-   .. | Arch        | -march          | armv7-a+mp+sec+simd                |
-   .. +-------------+-----------------+------------------------------------+
-   .. | float ABI   | -mfloat-abi     | hard                               |
-   .. +-------------+-----------------+------------------------------------+
-   .. | FPU         | -mfpu           | neon-vfpv3                         |
-   .. +-------------+-----------------+------------------------------------+
-   .. | Instruction | -mthumb / -marm | ARM  (with no interwork)           |
-   .. | state       |                 |                                    |
-   .. +-------------+-----------------+------------------------------------+
-   .. | CPU         | -mcpu / -mtune  | cortex-a9                          |
-   .. +-------------+-----------------+------------------------------------+
-   .. | system tuple                  | armv7_a38x-xtchain-linux-gnueabihf |
-   .. +-------------------------------+------------------------------------+
+   | ABI         |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | TLS model   |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | Arch        |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | float ABI   |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | FPU         |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | Instruction |                 |                                    |
+   | state       |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | CPU         |                 |                                    |
+   +-------------+-----------------+------------------------------------+
+   | system tuple                  |                                    |
+   +-------------------------------+------------------------------------+
 
 
 Build / install workflow
 ########################
 
-Prerequisites
-*************
-
-Packages listed below are required to build and install cross toolchains onto
-your development host :
-
-* coreutils
-* tar
-* patch
-* help2man
-* gcc
-* g++
-* make
-* autoconf
-* automake
-* libtool / libtool-bin
-* libncurses5-dev
-* git
-* ssh
-* pkg-config
-* flex
-* bison
-* texinfo
-* texlive / texlive-formats-extra / latexmk
-* gawk
-* rsync
-* python3-sphinx / python3-sphinx-rtd-theme
-* unzip
-* fakeroot
-
-Main Makefile comes with a *prepare* target allowing to install all required
-packages (see `Build`_ section).
-  
 Getting help
 ************
 
@@ -89,6 +56,50 @@ From HtChain source tree root, enter :
 
    $ make help
 
+
+Prerequisites
+*************
+
+Packages listed below are required to build toolchains onto your development 
+host :
+
+* lsb-release
+* curl
+* file
+* gpg
+* tar
+* gzip
+* bzip2
+* xz-utils
+* lzip
+* unzip
+* patch
+* diffutils
+* procps
+* rsync
+* fakeroot
+* grep
+* sed
+* gawk
+* make
+* gcc
+* g++
+* netbase
+* git
+* ca-certificates
+* rustc
+* latexmk
+* texlive-latex-extra
+* texlive-font-utils
+* desktop-file-utils
+
+Main Makefile comes with a *prepare* target allowing to install all required
+packages (see `Build`_ section) for somme distribution.
+
+.. code-block:: console
+
+   $ make prepare
+
 Build
 *****
 
@@ -97,6 +108,16 @@ Building toolchain is performed out of source tree like so :
 .. code-block:: console
 
    $ make
+
+Check
+*****
+
+Checking toolchain is performed out of source tree like so :
+
+.. code-block:: console
+
+   $ make check
+
 
 Install
 *******
