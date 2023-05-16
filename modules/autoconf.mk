@@ -26,6 +26,8 @@ $(call rmrf,$(srcdir)/autoconf)
 $(call untar,$(srcdir)/autoconf,\
              $(FETCHDIR)/$(autoconf_dist_name),\
              --strip-components=1)
+cd $(srcdir)/autoconf && \
+patch -p1 < $(PATCHDIR)/autoconf-2.71-000-fix_test_env.patch
 endef
 $(call gen_xtract_rules,autoconf,xtract_autoconf)
 
@@ -77,7 +79,7 @@ endef
 define autoconf_check_cmds
 +$(MAKE) --directory $(builddir)/$(strip $(1)) \
          check \
-         PATH="$(stagedir)/bin:$(PATH)"
+         PATH="$(stagedir)/bin:$(PATH)" $(2)
 endef
 
 ################################################################################
@@ -146,7 +148,8 @@ endef
 uninstall_final-autoconf    = $(call autoconf_uninstall_cmds,final-autoconf,\
                                                              $(PREFIX),\
                                                              $(finaldir))
-check_final-autoconf        = $(call autoconf_check_cmds,final-autoconf)
+check_final-autoconf        = $(call autoconf_check_cmds,final-autoconf,\
+                                     LD_LIBRARY_PATH='$(stage_lib_path)')
 
 $(call gen_config_rules_with_dep,final-autoconf,autoconf,config_final-autoconf)
 $(call gen_clobber_rules,final-autoconf)
