@@ -106,6 +106,20 @@ $(call uninstall_from_refdir,\
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
+# $(1): targets base name / module name
+# $(2): build / install prefix
+# $(3): environment
+# $(4): b2 arguments
+define boost_check_cmds
+cd $(builddir)/$(strip $(1))/status && \
+env $(3) $(builddir)/$(strip $(1))/b2 -d$(if $(V),2,1) \
+              -q \
+              --user-config="$(builddir)/$(strip $(1))/user-config.jam" \
+              --prefix='$(installdir)/$(strip $(1))' \
+              --check-libs-only \
+              $(4)
+endef
+
 boost_common_config_args := --with-toolset=gcc \
                             --with-icu='$(stagedir)' \
                             --with-python='$(stage_python)'
@@ -151,6 +165,10 @@ build_stage-boost        = $(call boost_build_cmds,stage-boost,\
                                                    $(stagedir),\
                                                    $(boost_stage_config_env),\
                                                    $(boost_common_b2_args))
+check_stage-boost        = $(call boost_check_cmds,stage-boost,\
+                                                   $(stagedir),\
+                                                   $(boost_stage_config_env),\
+                                                   $(boost_common_b2_args))
 clean_stage-boost        = $(call boost_clean_cmds,stage-boost)
 install_stage-boost      = $(call boost_install_cmds,stage-boost,$(stagedir))
 uninstall_stage-boost    = $(call boost_uninstall_cmds,stage-boost,$(stagedir))
@@ -161,7 +179,7 @@ $(call gen_build_rules,stage-boost,build_stage-boost)
 $(call gen_clean_rules,stage-boost,clean_stage-boost)
 $(call gen_install_rules,stage-boost,install_stage-boost)
 $(call gen_uninstall_rules,stage-boost,uninstall_stage-boost)
-$(call gen_no_check_rules,stage-boost)
+$(call gen_check_rules,stage-boost,check_stage-boost)
 $(call gen_dir_rules,stage-boost)
 
 ################################################################################
@@ -187,6 +205,10 @@ build_final-boost        = $(call boost_build_cmds,final-boost,\
                                                    $(PREFIX),\
                                                    $(boost_final_config_env),\
                                                    $(boost_common_b2_args))
+check_final-boost        = $(call boost_check_cmds,final-boost,\
+                                                   $(PREFIX),\
+                                                   $(boost_final_config_env), \
+                                                   $(boost_common_b2_args))
 clean_final-boost        = $(call boost_clean_cmds,final-boost)
 install_final-boost      = $(call boost_install_cmds,final-boost,\
                                                      $(PREFIX),\
@@ -201,5 +223,5 @@ $(call gen_build_rules,final-boost,build_final-boost)
 $(call gen_clean_rules,final-boost,clean_final-boost)
 $(call gen_install_rules,final-boost,install_final-boost)
 $(call gen_uninstall_rules,final-boost,uninstall_final-boost)
-$(call gen_no_check_rules,final-boost)
+$(call gen_check_rules,final-boost,check_final-boost)
 $(call gen_dir_rules,final-boost)

@@ -38,7 +38,7 @@ def make(dist:str, tagrdet:str, mlen = 0) -> bool:
         return False
     return True
 
-def main(dist, fetch=False):
+def main(dist, fetch=False, test_only=False, module_filter=[]):
     global TEST_FAIL, TEST_OK, DOCKER_FROM
     TEST_FAIL, TEST_OK = 0, 0
 
@@ -46,9 +46,12 @@ def main(dist, fetch=False):
 
     modules = subprocess.check_output(['make', 'list'], cwd=TOPDIR).decode().splitlines()
     modules = [m for m in modules if 'final' in m]
+    modules.append('final-rpath')
+    modules.append('final-shebang')
+    if module_filter:
+        module_filter = [f"final-{m}" for m in module_filter]
+        modules = [m for m in modules if m in module_filter]
     modules = [f"check-{m}" for m in modules]
-    modules.append('check-final-rpath')
-    modules.append('check-final-shebang')
     mlen    = max([len(i) for i in modules])
     try:
         print(datetime.datetime.now().strftime("%A, %d. %B %Y %I:%M%p"))
@@ -56,10 +59,11 @@ def main(dist, fetch=False):
             if not make(dist[0], 'fetch', mlen):
                 raise Exception("Fetch fail cannot test less source code")
         for d in dist:
-            if not make(d, 'clobber', mlen):
-                continue
-            if not make(d, 'debian', mlen):
-                continue
+            if not test_only:
+                if not make(d, 'clobber', mlen):
+                    continue
+                if not make(d, 'debian', mlen):
+                    continue
             for m in modules:
                 make(d, m, mlen)
     finally:
@@ -74,5 +78,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Test build deps')
     parser.add_argument('--fetch', action='store_true', help='fetch data')
+    parser.add_argument('--test-only', action='store_true', help='no clobber and build before run tests')
+    parser.add_argument('--dist', choices=dist, help="specify distribution used for tests", default=None)
+    parser.add_argument('--module', action='append', help='select module to test')
     args = parser.parse_args()
-    main(dist, fetch=args.fetch)
+    if args.dist:
+        dist = [args.dist]
+    main(dist, fetch=args.fetch, test_only=args.test_only, module_filter=args.module)
