@@ -38,4 +38,5 @@ RUN adduser --uid $HTCHAIN_UID \
 RUN adduser $HTCHAIN_USER htchain >/dev/null
 RUN adduser $HTCHAIN_USER sudo >/dev/null
 
+ENV USER=$HTCHAIN_USER
 USER $HTCHAIN_USER

@@ -1,11 +1,6 @@
 Test review:
 ============
 
-final-boost
-final-curl
-final-glib: 292/357 glib:gio / gschema-compile
-final-cmake: boost
-final-gcc fails
 all stage test ??
 
 Fix:
@@ -56,5 +51,5 @@ TODO:
 * glib: enable documentation generation
 * debuginfod: deps from gcc gdb curl (test?) binutils
 * elfutils: build with debuginfod server support (depends on libmicrohttpd)
-* boost: run tests and generate documentation
+* boost: generate documentation
 * Dockerfile use private registry

@@ -154,7 +154,7 @@ endef
 #          RUNTESTFLAGS='GDB=$(stagedir)/bin/gdb gdb.base/ctf-constvars.exp'
 #
 # Skip gdb.base/valgrind*.exp since requiring a glibc with debug symbols
-#
+# Skip gdb.server/ext-run.exp since requiring systemd or init as pid 1
 # TODO:
 # =====
 # Review the following failing tests (which have been disabled):
@@ -175,6 +175,7 @@ endef
 gdb_skipped_tests := gdb.base/valgrind-bt.exp \
                      gdb.base/valgrind-disp-step.exp \
                      gdb.base/valgrind-infcall.exp \
+                     gdb.server/ext-run.exp \
                      \
                      gdb.python/py-breakpoint.exp \
                      gdb.cp/no-dmgl-verbose.exp \
@@ -187,7 +188,8 @@ gdb_skipped_tests := gdb.base/valgrind-bt.exp \
                      gdb.compile/compile-cplus-nested.exp \
                      gdb.compile/compile-cplus-virtual.exp \
                      gdb.compile/compile-cplus.exp \
-                     gdb.base/vla-struct-fields.exp
+                     gdb.base/vla-struct-fields.exp \
+                     gdb.base/share-env-with-gdbserver.exp
 
 define gdb_check_cmds
 if [ -f "/proc/sys/kernel/yama/ptrace_scope" -a \
@@ -198,13 +200,21 @@ if [ -f "/proc/sys/kernel/yama/ptrace_scope" -a \
   echo "WARNING: echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope"; \
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; \
 fi
+if [ -f "/proc/sys/kernel/core_pattern" -a \
+     `cat /proc/sys/kernel/core_pattern` != "core" ]; then \
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; \
+  echo "WARNING: gdb test need /proc/sys/kernel/core_pattern equal to core"; \
+  echo "WARNING: Please use folowing command on host:"; \
+  echo "WARNING: echo "core" | sudo tee /proc/sys/kernel/core_pattern"; \
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"; \
+fi
 +env PATH='$(stagedir)/bin:$(PATH)' \
      LD_LIBRARY_PATH='$(stage_lib_path)' \
      HOME='$(builddir)/$(strip $(1))/.home' \
      $(MAKE) --directory $(builddir)/$(strip $(1))/gdb/testsuite \
              check \
-             RUNTESTFLAGS='GDB=$(stagedir)/bin/gdb \
-                           GDBSERVER=$(stagedir)/bin/gdbserver \
+             RUNTESTFLAGS='GDBFLAGS="-l 9999" \
+                           CC_FOR_TARGET="$(stagedir)/bin/gcc" \
                            --ignore "$(notdir $(gdb_skipped_tests))"'
 endef
 

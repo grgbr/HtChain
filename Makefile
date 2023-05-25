@@ -354,7 +354,7 @@ MAKEFLAGS += --jobs $(JOBS)
 include build/rules.mk
 include $(module_mkfiles)
 
-check_black_list := %gdb
+check_black_list :=
 
 .PHONY: list-bstrap
 list-bstrap:
