@@ -1,0 +1,6 @@
+--- a/Tests/RunCMake/FindBoost/CommonNotFound.cmake	2022-04-12 16:06:39.000000000 +0200
++++ b/Tests/RunCMake/FindBoost/CommonNotFound.cmake	2023-05-25 11:39:47.163926777 +0200
+@@ -1,2 +1,2 @@
+ # Make sure to use the module mode signature here to not bypass FindBoost
+-find_package(Boost 1.80 COMPONENTS timer foobar)
++find_package(Boost 1.90 COMPONENTS timer foobar)

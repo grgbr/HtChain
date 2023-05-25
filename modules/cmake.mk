@@ -41,6 +41,8 @@ cd $(srcdir)/cmake && \
 	patch -p1 < $(PATCHDIR)/cmake-3.23.1-001-fix_sphinx_share_paths.patch
 cd $(srcdir)/cmake && \
 	patch -p1 < $(PATCHDIR)/cmake-3.23.1-002-fix_test_git_submodule_protocol_file_allow.patch
+cd $(srcdir)/cmake && \
+	patch -p1 < $(PATCHDIR)/cmake-3.23.1-003-fix_test_find_boost.patch
 endef
 $(call gen_xtract_rules,cmake,xtract_cmake)
 
@@ -126,6 +128,9 @@ endef
 #     CLICOLOR=0 CLICOLOR_FORCE=0
 # See https://gitlab.kitware.com/cmake/cmake/-/issues/22579
 # CC: force cmake use gcc builded in stage dir instead of platform clang
+# 
+# Exclude ExternalProject test because GIT_SUBMODULES subtest use file as URI
+# but transport 'file' not allowed by default.
 define cmake_check_cmds
 +env PATH="$(stagedir)/bin:$(PATH)" \
      LD_LIBRARY_PATH="$(stage_lib_path)" \
@@ -135,7 +140,7 @@ define cmake_check_cmds
          --directory $(builddir)/$(strip $(1)) \
          test \
          CLICOLOR=0 CLICOLOR_FORCE=0 \
-         ARGS="-j$(JOBS) --output-on-failure"
+         ARGS="-j$(JOBS) --output-on-failure -E ExternalProject"
 endef
 
 cmake_common_config_args := --datadir="/share/cmake" \
