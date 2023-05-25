@@ -47,6 +47,7 @@ env PATH="$(stagedir)/bin:$(PATH)" \
     HOME="$(builddir)/$(strip $(1))/.home" \
     PYTHONPATH="$(builddir)/$(strip $(1))" \
     SSL_CERT_DIR="/etc/ssl/certs" \
+    CI=false \
 $(stagedir)/bin/pytest --verbose
 endef
 
