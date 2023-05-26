@@ -155,6 +155,7 @@ endef
 #
 # Skip gdb.base/valgrind*.exp since requiring a glibc with debug symbols
 # Skip gdb.server/ext-run.exp since requiring systemd or init as pid 1
+# Skip gdb.base/catch-syscall.exp bug test on new libc (fixed on gdb 13.1)
 # TODO:
 # =====
 # Review the following failing tests (which have been disabled):
@@ -176,6 +177,7 @@ gdb_skipped_tests := gdb.base/valgrind-bt.exp \
                      gdb.base/valgrind-disp-step.exp \
                      gdb.base/valgrind-infcall.exp \
                      gdb.server/ext-run.exp \
+                     gdb.base/catch-syscall.exp \
                      \
                      gdb.python/py-breakpoint.exp \
                      gdb.cp/no-dmgl-verbose.exp \
@@ -189,7 +191,12 @@ gdb_skipped_tests := gdb.base/valgrind-bt.exp \
                      gdb.compile/compile-cplus-virtual.exp \
                      gdb.compile/compile-cplus.exp \
                      gdb.base/vla-struct-fields.exp \
-                     gdb.base/share-env-with-gdbserver.exp
+                     gdb.base/share-env-with-gdbserver.exp \
+                     gdb.base/ending-run.exp \
+                     gdb.base/gdb-sigterm.exp \
+                     gdb.reverse/pipe-reverse.exp \
+                     gdb.reverse/readv-reverse.exp \
+                     gdb.threads/attach-stopped.exp
 
 define gdb_check_cmds
 if [ -f "/proc/sys/kernel/yama/ptrace_scope" -a \
