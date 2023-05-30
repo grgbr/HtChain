@@ -5,8 +5,8 @@
 # * fix failing tests: test_asyncio test_asyncio test_socket
 ################################################################################
 
-python_dist_url   := https://www.python.org/ftp/python/3.10.9/Python-3.10.9.tar.xz
-python_dist_sum   := d66ea8adeb6dc4951e612175f8838b3092967ff275b7a3470f2d86f470036aa2221e722c3144d90bcd230b88efd53dde204213f72f703e524e4b833e2ccc68e2
+python_dist_url   := https://www.python.org/ftp/python/3.10.11/Python-3.10.11.tar.xz
+python_dist_sum   := fa113b4b635d271a1412999587ec64654d337db263851a6a9d88b3cab4ed66dba76fe03e65c4d341f0a83fd8182d35e245bfd9827465d7aebcb4deb71af4d047
 python_dist_name  := $(subst P,p,$(notdir $(python_dist_url)))
 python_vers       := $(patsubst python-%.tar.xz,%,$(python_dist_name))
 _python_vers_toks := $(subst .,$(space),$(python_vers))
