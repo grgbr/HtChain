@@ -2,8 +2,8 @@
 # gcc modules
 ################################################################################
 
-gcc_dist_url  := https://ftp.gnu.org/gnu/gcc/gcc-12.1.0/gcc-12.1.0.tar.xz
-gcc_dist_sum  := 2121d295292814a6761edf1fba08c5f633ebe16f52b80e7b73a91050e71e1d2ed98bf17eebad263e191879561c02b48906c53faa4c4670c486a26fc75df23900
+gcc_dist_url  := https://ftp.gnu.org/gnu/gcc/gcc-12.3.0/gcc-12.3.0.tar.xz
+gcc_dist_sum  := 8fb799dfa2e5de5284edf8f821e3d40c2781e4c570f5adfdb1ca0671fcae3fb7f794ea783e80f01ec7bfbf912ca508e478bd749b2755c2c14e4055648146c204
 gcc_dist_name := $(notdir $(gcc_dist_url))
 gcc_vers      := $(patsubst gcc-%.tar.xz,%,$(gcc_dist_name))
 gcc_brief     := GNU compiler collection
