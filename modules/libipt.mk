@@ -81,12 +81,21 @@ fi
 $(call cleanup_empty_dirs,$(strip $(3))$(strip $(2)))
 endef
 
+# $(1): targets base name / module name
+define libipt_check_cmds
++$(MAKE) --directory $(builddir)/$(strip $(1)) \
+         test \
+         LD_LIBRARY_PATH="$(stage_lib_path)"
+endef
+
+# Enable ptunit, a unit test system and libipt unit tests
 libipt_common_config_args := -DCMAKE_BUILD_TYPE=Release \
                              -DCMAKE_C_COMPILER='$(stage_cc)' \
                              -DFEATURE_THREADS=ON \
                              -DPEVENT=ON \
                              -DFEATURE_ELF=ON \
-                             -DSIDEBAND=ON
+                             -DSIDEBAND=ON \
+                             -DPTUNIT=ON
 
 ################################################################################
 # Staging definitions
@@ -107,6 +116,7 @@ install_stage-libipt      = $(call libipt_install_cmds,stage-libipt)
 uninstall_stage-libipt    = $(call libipt_uninstall_cmds,\
                                    stage-libipt,\
                                    $(stagedir))
+check_stage-libipt        = $(call libipt_check_cmds,stage-libipt)
 
 $(call gen_config_rules_with_dep,stage-libipt,libipt,config_stage-libipt)
 $(call gen_clobber_rules,stage-libipt)
@@ -114,7 +124,7 @@ $(call gen_build_rules,stage-libipt,build_stage-libipt)
 $(call gen_clean_rules,stage-libipt,clean_stage-libipt)
 $(call gen_install_rules,stage-libipt,install_stage-libipt)
 $(call gen_uninstall_rules,stage-libipt,uninstall_stage-libipt)
-$(call gen_no_check_rules,stage-libipt)
+$(call gen_check_rules,stage-libipt,check_stage-libipt)
 $(call gen_dir_rules,stage-libipt)
 
 ################################################################################
@@ -136,6 +146,7 @@ install_final-libipt      = $(call libipt_install_cmds,final-libipt,$(finaldir))
 uninstall_final-libipt    = $(call libipt_uninstall_cmds,final-libipt,\
                                                          $(PREFIX),\
                                                          $(finaldir))
+check_final-libipt        = $(call libipt_check_cmds,final-libipt)
 
 $(call gen_config_rules_with_dep,final-libipt,libipt,config_final-libipt)
 $(call gen_clobber_rules,final-libipt)
@@ -143,5 +154,5 @@ $(call gen_build_rules,final-libipt,build_final-libipt)
 $(call gen_clean_rules,final-libipt,clean_final-libipt)
 $(call gen_install_rules,final-libipt,install_final-libipt)
 $(call gen_uninstall_rules,final-libipt,uninstall_final-libipt)
-$(call gen_no_check_rules,final-libipt)
+$(call gen_check_rules,final-libipt,check_final-libipt)
 $(call gen_dir_rules,final-libipt)
